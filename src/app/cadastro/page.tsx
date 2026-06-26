@@ -1,15 +1,44 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function CadastroPage() {
+  const router = useRouter();
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [erro, setErro] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErro("");
+    setCarregando(true);
+
+    try {
+      const res = await fetch("/api/auth/cadastro", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome, email, senha }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErro(data.erro);
+        return;
+      }
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      router.push("/admin");
+    } catch {
+      setErro("Erro ao conectar com o servidor");
+    } finally {
+      setCarregando(false);
+    }
   };
 
   return (
@@ -20,6 +49,12 @@ export default function CadastroPage() {
           <p className="mb-8 text-zinc-500">
             Preencha os dados para se cadastrar
           </p>
+
+          {erro && (
+            <div className="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">
+              {erro}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
@@ -78,9 +113,10 @@ export default function CadastroPage() {
 
             <button
               type="submit"
-              className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+              disabled={carregando}
+              className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
             >
-              Cadastrar
+              {carregando ? "Cadastrando..." : "Cadastrar"}
             </button>
           </form>
 
