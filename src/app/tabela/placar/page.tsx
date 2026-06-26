@@ -309,16 +309,18 @@ export default function PlacarPage() {
                           {p.estadio.nome} ({p.estadio.cidade})
                         </span>
                       </div>
-      </div>
-                })}
-              </div>
-            )}
-          </section>
-        </main>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </section>
+      </main>
 
-        {showModalLogin && (
-          <ModalLogin onClose={() => setShowModalLogin(false)} />
-        )}
+      {showModalLogin && (
+        <ModalLogin onClose={() => setShowModalLogin(false)} />
+      )}
 
       </div>
     </PaginaAnimada>
