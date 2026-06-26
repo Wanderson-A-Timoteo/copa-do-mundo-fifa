@@ -19,7 +19,7 @@ export async function GET() {
     orderBy: { id: "asc" },
   });
 
-  const classificacao = grupos.map((grupo) => {
+  const classificacao = grupos.map((grupo: any) => {
     const pontos: Record<number, { p: number; j: number; v: number; e: number; d: number; gp: number; gc: number; sg: number }> = {};
 
     for (const sel of grupo.selecoes) {
@@ -41,11 +41,11 @@ export async function GET() {
     }
 
     const selecoes = grupo.selecoes
-      .map((s) => ({
+      .map((s: any) => ({
         ...s,
         ...pontos[s.id],
       }))
-      .sort((a, b) => b.p - a.p || b.sg - a.sg || b.gp - a.gp);
+      .sort((a: any, b: any) => b.p - a.p || b.sg - a.sg || b.gp - a.gp);
 
     return { id: grupo.id, nome: grupo.nome, selecoes };
   });
