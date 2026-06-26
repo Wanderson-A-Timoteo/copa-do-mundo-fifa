@@ -22,6 +22,7 @@
     "@react-oauth/google": "^0.13.5",
     "bcryptjs": "^3.0.3",
     "country-flag-icons": "^1.6.19",
+    "framer-motion": "^12.42.0",
     "google-auth-library": "^10.9.0",
     "jsonwebtoken": "^9.0.3",
     "next": "16.2.9",
