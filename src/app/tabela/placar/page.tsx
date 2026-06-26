@@ -310,19 +310,17 @@ export default function PlacarPage() {
                         </span>
                       </div>
       </div>
-    </div>
+                })}
+              </div>
+            )}
+          </section>
+        </main>
+
+        {showModalLogin && (
+          <ModalLogin onClose={() => setShowModalLogin(false)} />
+        )}
+
+      </div>
     </PaginaAnimada>
-  );
-              })}
-            </div>
-          )}
-        </section>
-      </main>
-
-      {showModalLogin && (
-        <ModalLogin onClose={() => setShowModalLogin(false)} />
-      )}
-
-    </div>
   );
 }
