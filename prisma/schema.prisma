@@ -24,7 +24,7 @@ model User {
 }
 
 model Grupo {
-  id        String    @id // A, B, C, ... L
+  id        String    @id
   nome      String    @unique
   selecoes  Selecao[]
   partidas  Partida[]
@@ -45,8 +45,8 @@ model Selecao {
   corSecundaria String?
   titulos       Int       @default(0)
 
-  jogadores  Jogador[]
-  figurinhas Figurinha[]
+  jogadores    Jogador[]
+  figurinhas   Figurinha[]
   partidasCasa Partida[] @relation("mandante")
   partidasFora Partida[] @relation("visitante")
 
@@ -54,14 +54,14 @@ model Selecao {
 }
 
 model Jogador {
-  id          Int       @id @default(autoincrement())
-  selecaoId   Int
-  selecao     Selecao   @relation(fields: [selecaoId], references: [id])
-  nome        String
-  numeroCamisa Int?
-  posicao     String // Goleiro, Defensor, Meia, Atacante
+  id            Int       @id @default(autoincrement())
+  selecaoId     Int
+  selecao       Selecao   @relation(fields: [selecaoId], references: [id])
+  nome          String
+  numeroCamisa  Int?
+  posicao       String
   dataNascimento DateTime?
-  fotoUrl     String?
+  fotoUrl       String?
 
   figurinha Figurinha?
 
@@ -83,21 +83,21 @@ model Estadio {
 }
 
 model Partida {
-  id                Int      @id @default(autoincrement())
-  fase              String // GRUPOS, OITAVAS, OITAVAS_16, QUARTAS, SEMI, TERCEIRO, FINAL
-  grupoId           String?
-  grupo             Grupo?   @relation(fields: [grupoId], references: [id])
-  selecaoMandanteId Int
-  selecaoVisitanteId Int
-  mandante          Selecao  @relation("mandante", fields: [selecaoMandanteId], references: [id])
-  visitante         Selecao  @relation("visitante", fields: [selecaoVisitanteId], references: [id])
-  dataHora          DateTime
-  estadioId         Int
-  estadio           Estadio  @relation(fields: [estadioId], references: [id])
-  golsMandante      Int?
-  golsVisitante     Int?
-  encerrada         Boolean  @default(false)
-  vencedorId        Int?
+  id                  Int      @id @default(autoincrement())
+  fase                String
+  grupoId             String?
+  grupo               Grupo?   @relation(fields: [grupoId], references: [id])
+  selecaoMandanteId   Int
+  selecaoVisitanteId  Int
+  mandante            Selecao  @relation("mandante", fields: [selecaoMandanteId], references: [id])
+  visitante           Selecao  @relation("visitante", fields: [selecaoVisitanteId], references: [id])
+  dataHora            DateTime
+  estadioId           Int
+  estadio             Estadio  @relation(fields: [estadioId], references: [id])
+  golsMandante        Int?
+  golsVisitante       Int?
+  encerrada           Boolean  @default(false)
+  vencedorId          Int?
 
   palpites Palpite[]
 
@@ -111,11 +111,11 @@ model Figurinha {
   selecao   Selecao  @relation(fields: [selecaoId], references: [id])
   jogadorId Int?     @unique
   jogador   Jogador? @relation(fields: [jogadorId], references: [id])
-  tipo      String   @default("jogador") // jogador, selecao, estadio, especial
-  raridade  String   @default("comum") // comum, rara, lendaria
+  tipo      String   @default("jogador")
+  raridade  String   @default("comum")
   imagemUrl String?
 
-  albumUsuarios AlbumFigurinha[]
+  albumUsuarios    AlbumFigurinha[]
   trocasOferecidas Troca[] @relation("oferecida")
   trocasDesejadas  Troca[] @relation("desejada")
 
@@ -135,31 +135,31 @@ model AlbumFigurinha {
 }
 
 model Troca {
-  id              Int      @id @default(autoincrement())
-  remetenteId     Int
-  remetente       User     @relation("troca_remetente", fields: [remetenteId], references: [id])
-  destinatarioId  Int
-  destinatario    User     @relation("troca_destinatario", fields: [destinatarioId], references: [id])
-  figurinhaOferecidaId Int
-  figurinhaOferecida   Figurinha @relation("oferecida", fields: [figurinhaOferecidaId], references: [id])
-  figurinhaDesejadaId  Int
-  figurinhaDesejada    Figurinha @relation("desejada", fields: [figurinhaDesejadaId], references: [id])
-  status          String   @default("pendente") // pendente, aceita, recusada
-  createdAt       DateTime @default(now()) @map("created_at")
+  id                    Int      @id @default(autoincrement())
+  remetenteId           Int
+  remetente             User     @relation("troca_remetente", fields: [remetenteId], references: [id])
+  destinatarioId        Int
+  destinatario          User     @relation("troca_destinatario", fields: [destinatarioId], references: [id])
+  figurinhaOferecidaId  Int
+  figurinhaOferecida    Figurinha @relation("oferecida", fields: [figurinhaOferecidaId], references: [id])
+  figurinhaDesejadaId   Int
+  figurinhaDesejada     Figurinha @relation("desejada", fields: [figurinhaDesejadaId], references: [id])
+  status                String   @default("pendente")
+  createdAt             DateTime @default(now()) @map("created_at")
 
   @@map("trocas")
 }
 
 model Palpite {
-  id        Int      @id @default(autoincrement())
-  usuarioId Int
-  usuario   User     @relation(fields: [usuarioId], references: [id])
-  partidaId Int
-  partida   Partida  @relation(fields: [partidaId], references: [id])
-  golsMandante Int
+  id            Int      @id @default(autoincrement())
+  usuarioId     Int
+  usuario       User     @relation(fields: [usuarioId], references: [id])
+  partidaId     Int
+  partida       Partida  @relation(fields: [partidaId], references: [id])
+  golsMandante  Int
   golsVisitante Int
-  pontos    Int?
-  createdAt DateTime @default(now()) @map("created_at")
+  pontos        Int?
+  createdAt     DateTime @default(now()) @map("created_at")
 
   @@unique([usuarioId, partidaId])
   @@map("palpites")
