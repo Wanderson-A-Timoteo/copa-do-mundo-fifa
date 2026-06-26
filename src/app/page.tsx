@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
           <Link href="/selecoes" className="hover:underline">Seleções</Link>
           <Link href="/tabela" className="hover:underline">Tabela</Link>
           <Link href="/album" className="hover:underline">Álbum</Link>
+          <ThemeToggle />
           <Link
             href="/login"
             className="rounded-lg bg-zinc-900 px-4 py-2 text-white dark:bg-zinc-100 dark:text-zinc-900"
@@ -22,7 +24,7 @@ export default function Home() {
         <h2 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
           Copa do Mundo FIFA 2026
         </h2>
-        <p className="mt-4 max-w-lg text-zinc-500">
+        <p className="mt-4 max-w-lg text-zinc-500 dark:text-zinc-400">
           Canadá · Estados Unidos · México
         </p>
 
@@ -49,15 +51,15 @@ export default function Home() {
 
         <div className="mt-16 grid gap-4 sm:grid-cols-3">
           <div className="rounded-xl border border-zinc-200 p-6 text-left dark:border-zinc-800">
-            <div className="text-2xl">48</div>
+            <div className="text-2xl font-bold">48</div>
             <div className="mt-1 text-sm text-zinc-500">Seleções</div>
           </div>
           <div className="rounded-xl border border-zinc-200 p-6 text-left dark:border-zinc-800">
-            <div className="text-2xl">104</div>
+            <div className="text-2xl font-bold">104</div>
             <div className="mt-1 text-sm text-zinc-500">Partidas</div>
           </div>
           <div className="rounded-xl border border-zinc-200 p-6 text-left dark:border-zinc-800">
-            <div className="text-2xl">16</div>
+            <div className="text-2xl font-bold">16</div>
             <div className="mt-1 text-sm text-zinc-500">Estádios</div>
           </div>
         </div>
