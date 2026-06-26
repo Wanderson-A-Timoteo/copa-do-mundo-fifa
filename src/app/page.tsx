@@ -4,13 +4,16 @@ import UserMenu from "@/components/UserMenu";
 import HeroCarousel from "@/components/HeroCarousel";
 import ActiveLink from "@/components/ActiveLink";
 import { FlagIcon } from "@/components/FlagIcon";
+import { IconTrophy } from "@/components/Icons";
 
 export default function Home() {
   return (
     <div className="relative flex min-h-screen flex-col">
       <HeroCarousel />
       <header className="relative z-20 flex items-center justify-between px-6 py-4">
-        <h1 className="text-lg font-bold text-white">Copa 2026</h1>
+        <h1 className="inline-flex items-center gap-1.5 text-lg font-bold text-white">
+          <IconTrophy className="h-5 w-5" /> Copa 2026
+        </h1>
         <nav className="flex items-center gap-4 text-sm text-white">
           <ActiveLink href="/">Início</ActiveLink>
           <ActiveLink href="/selecoes">Seleções</ActiveLink>
