@@ -40,6 +40,10 @@ export async function GET() {
       else { m.p += 1; v.p += 1; m.e++; v.e++; }
     }
 
+    for (const sel of grupo.selecoes) {
+      pontos[sel.id].sg = pontos[sel.id].gp - pontos[sel.id].gc;
+    }
+
     const selecoes = grupo.selecoes
       .map((s: any) => ({
         ...s,

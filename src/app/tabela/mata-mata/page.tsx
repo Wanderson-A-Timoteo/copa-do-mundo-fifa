@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import NavHeader from "@/components/NavHeader";
+import { FlagIcon } from "@/components/FlagIcon";
 
 interface SelecaoResumo {
   id: number;
   nome: string;
-  corPrimaria: string | null;
+  codigoPais: string | null;
 }
 
 interface PartidaComInfo {
@@ -93,13 +94,7 @@ export default function TabelaMataMataPage() {
                             <>
                               <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
-                                  <div
-                                    className="h-2.5 w-2.5 rounded-full"
-                                    style={{
-                                      backgroundColor:
-                                        partida.mandante.corPrimaria || "#666",
-                                    }}
-                                  />
+                                  <FlagIcon codigo={partida.mandante.codigoPais} className="h-4 w-auto rounded-sm" />
                                   <span className="truncate max-w-[100px]">
                                     {partida.mandante.nome}
                                   </span>
@@ -112,13 +107,7 @@ export default function TabelaMataMataPage() {
                               </div>
                               <div className="mt-1.5 flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2">
-                                  <div
-                                    className="h-2.5 w-2.5 rounded-full"
-                                    style={{
-                                      backgroundColor:
-                                        partida.visitante.corPrimaria || "#666",
-                                    }}
-                                  />
+                                  <FlagIcon codigo={partida.visitante.codigoPais} className="h-4 w-auto rounded-sm" />
                                   <span className="truncate max-w-[100px]">
                                     {partida.visitante.nome}
                                   </span>

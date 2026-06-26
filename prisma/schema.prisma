@@ -11,8 +11,9 @@ model User {
   id        Int      @id @default(autoincrement())
   nome      String
   email     String   @unique
-  senha     String
-  createdAt DateTime @default(now()) @map("created_at")
+  senha     String?
+  role      String   @default("TORCEDOR")
+  createdAt DateTime @default(now())  @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   albumFigurinhas AlbumFigurinha[]
@@ -35,6 +36,8 @@ model Grupo {
 model Selecao {
   id            Int       @id @default(autoincrement())
   nome          String
+  slug          String?   @unique
+  codigoPais    String?
   bandeiraUrl   String?
   grupoId       String
   grupo         Grupo     @relation(fields: [grupoId], references: [id])

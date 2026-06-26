@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
+import { FlagIcon } from "@/components/FlagIcon";
 
 interface Jogador {
   id: number;
@@ -27,10 +28,10 @@ interface Partida {
 interface Selecao {
   id: number;
   nome: string;
+  codigoPais: string | null;
   grupoId: string;
   continente: string;
   rankingFifa: number | null;
-  corPrimaria: string | null;
   titulos: number;
   tecnico: string | null;
   grupo: { id: string; nome: string };
@@ -44,10 +45,10 @@ export default function DetalheSelecaoPage() {
   const [selecao, setSelecao] = useState<Selecao | null>(null);
 
   useEffect(() => {
-    fetch(`/api/selecoes/${params.id}`)
+    fetch(`/api/selecoes/${params.slug}`)
       .then((r) => r.json())
       .then((d) => setSelecao(d.selecao));
-  }, [params.id]);
+  }, [params.slug]);
 
   if (!selecao) {
     return (
@@ -66,13 +67,11 @@ export default function DetalheSelecaoPage() {
     <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-5xl px-6 py-8">
+        <Link href="/selecoes" className="mb-6 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
+          ← Voltar
+        </Link>
         <div className="flex items-center gap-6">
-          <div
-            className="flex h-20 w-20 items-center justify-center rounded-full text-4xl font-bold text-white"
-            style={{ backgroundColor: selecao.corPrimaria || "#666" }}
-          >
-            {selecao.nome.charAt(0)}
-          </div>
+          <FlagIcon codigo={selecao.codigoPais} className="h-20 w-auto rounded-sm" />
           <div>
             <h1 className="text-3xl font-bold">{selecao.nome}</h1>
             <p className="text-zinc-500">
