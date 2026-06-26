@@ -43,19 +43,19 @@ export default function Home() {
           <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/selecoes"
-              className="rounded-lg bg-white px-6 py-3 text-sm font-medium text-zinc-900"
+              className="rounded-lg bg-white px-6 py-3 text-sm font-medium text-zinc-900 transition-all duration-200 hover:scale-[1.03] hover:bg-zinc-100"
             >
               Ver Seleções
             </Link>
             <Link
               href="/tabela"
-              className="rounded-lg border border-white/40 px-6 py-3 text-sm font-medium text-white"
+              className="rounded-lg border border-white/40 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:border-white/60 hover:bg-white/10 hover:shadow-lg hover:shadow-white/20"
             >
               Tabela de Jogos
             </Link>
             <Link
               href="/album"
-              className="rounded-lg border border-white/40 px-6 py-3 text-sm font-medium text-white"
+              className="rounded-lg border border-white/40 px-6 py-3 text-sm font-medium text-white transition-all duration-200 hover:border-white/60 hover:bg-white/10 hover:shadow-lg hover:shadow-white/20"
             >
               Álbum de Figurinhas
             </Link>
