@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 
 interface ClassificacaoSelecao {
@@ -24,6 +25,8 @@ interface GrupoComClassificacao {
 }
 
 export default function TabelaPage() {
+  const router = useRouter();
+  const pathname = usePathname();
   const [grupos, setGrupos] = useState<GrupoComClassificacao[]>([]);
 
   useEffect(() => {
@@ -36,10 +39,33 @@ export default function TabelaPage() {
     <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-7xl px-6 py-8">
-        <h1 className="text-3xl font-bold">Tabela de Jogos</h1>
-        <p className="mt-1 text-zinc-500">Classificação dos 12 grupos</p>
+        <div className="mb-6 flex items-center gap-4">
+          <h1 className="text-3xl font-bold">Tabela de Jogos</h1>
+          <div className="flex gap-2">
+            <button
+              onClick={() => router.push("/tabela")}
+              className={`rounded-lg px-4 py-1.5 text-sm transition-colors ${
+                pathname === "/tabela"
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  : "border border-zinc-300 dark:border-zinc-700"
+              }`}
+            >
+              Grupos
+            </button>
+            <button
+              onClick={() => router.push("/tabela/mata-mata")}
+              className={`rounded-lg px-4 py-1.5 text-sm transition-colors ${
+                pathname === "/tabela/mata-mata"
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  : "border border-zinc-300 dark:border-zinc-700"
+              }`}
+            >
+              Mata-Mata
+            </button>
+          </div>
+        </div>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {grupos.map((grupo) => (
             <div
               key={grupo.id}
