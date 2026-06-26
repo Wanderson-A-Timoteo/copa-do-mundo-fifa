@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface ClassificacaoSelecao {
   id: number;
@@ -37,7 +38,8 @@ export default function TabelaPage() {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <PaginaAnimada>
+      <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-7xl px-6 py-8">
         <div className="mb-6 flex items-center gap-4">
@@ -126,5 +128,6 @@ export default function TabelaPage() {
         </div>
       </main>
     </div>
+    </PaginaAnimada>
   );
 }

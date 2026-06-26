@@ -6,6 +6,7 @@ import { FlagIcon } from "@/components/FlagIcon";
 import ModalLogin from "@/components/ModalLogin";
 
 import { IconCalendar, IconClock, IconMapPin } from "@/components/Icons";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface ClassificacaoSelecao {
   id: number;
@@ -118,7 +119,8 @@ export default function PlacarPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <PaginaAnimada>
+      <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <a
@@ -307,9 +309,10 @@ export default function PlacarPage() {
                           {p.estadio.nome} ({p.estadio.cidade})
                         </span>
                       </div>
-                    </div>
-                  </div>
-                );
+      </div>
+    </div>
+    </PaginaAnimada>
+  );
               })}
             </div>
           )}

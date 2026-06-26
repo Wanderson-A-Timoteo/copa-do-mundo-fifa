@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface Selecao {
   id: number;
@@ -32,7 +33,8 @@ export default function SelecoesPage() {
   const grupos = "ABCDEFGHIJKL".split("");
 
   return (
-    <div className="min-h-screen">
+    <PaginaAnimada>
+      <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-7xl px-6 py-8">
         <h1 className="text-3xl font-bold">Seleções</h1>
@@ -93,5 +95,6 @@ export default function SelecoesPage() {
         </div>
       </main>
     </div>
+    </PaginaAnimada>
   );
 }

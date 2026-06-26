@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { IconShield, IconUser } from "@/components/Icons";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface UserItem {
   id: number;
@@ -111,7 +112,8 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <PaginaAnimada>
+      <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-3xl px-6 py-8">
         <h1 className="text-3xl font-bold">
@@ -175,5 +177,6 @@ export default function AdminPage() {
         </section>
       </main>
     </div>
+    </PaginaAnimada>
   );
 }

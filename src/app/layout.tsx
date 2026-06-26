@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ThemeProvider from "@/components/ThemeProvider";
-import PageTransition from "@/components/PageTransition";
+import TransitionWrapper from "@/components/TransitionWrapper";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -30,7 +30,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
           <ThemeProvider>
-            <PageTransition>{children}</PageTransition>
+            <TransitionWrapper>{children}</TransitionWrapper>
           </ThemeProvider>
         </GoogleOAuthProvider>
       </body>

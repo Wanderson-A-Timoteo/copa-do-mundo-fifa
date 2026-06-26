@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface Jogador {
   id: number;
@@ -52,19 +53,22 @@ export default function DetalheSelecaoPage() {
 
   if (!selecao) {
     return (
-      <div className="min-h-screen">
+      <PaginaAnimada>
+        <div className="min-h-screen">
         <NavHeader />
         <div className="flex flex-1 items-center justify-center p-8">
           <p className="text-zinc-500">Carregando...</p>
         </div>
       </div>
+      </PaginaAnimada>
     );
   }
 
   const posicoes = ["Goleiro", "Defensor", "Meia", "Atacante"];
 
   return (
-    <div className="min-h-screen">
+    <PaginaAnimada>
+      <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-5xl px-6 py-8">
         <Link href="/selecoes" className="mb-6 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100">
@@ -151,5 +155,6 @@ export default function DetalheSelecaoPage() {
         </section>
       </main>
     </div>
+    </PaginaAnimada>
   );
 }

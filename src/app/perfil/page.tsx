@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { IconShield, IconUser } from "@/components/Icons";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 export default function PerfilPage() {
   const router = useRouter();
@@ -43,7 +44,8 @@ export default function PerfilPage() {
   const isAdmin = user.role === "ADMIN";
 
   return (
-    <div className="min-h-screen">
+    <PaginaAnimada>
+      <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-lg px-6 py-8">
         <h1 className="text-3xl font-bold">Perfil</h1>
@@ -91,5 +93,6 @@ export default function PerfilPage() {
         </div>
       </main>
     </div>
+    </PaginaAnimada>
   );
 }

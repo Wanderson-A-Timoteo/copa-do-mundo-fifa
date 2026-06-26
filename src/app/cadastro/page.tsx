@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 export default function CadastroPage() {
   const router = useRouter();
@@ -47,7 +48,8 @@ export default function CadastroPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <PaginaAnimada>
+      <div className="flex min-h-screen flex-col md:flex-row">
       <div className="flex w-full items-center justify-center p-8 md:w-2/5">
         <div className="w-full max-w-sm">
           <h2 className="mb-2 text-2xl font-bold">Criar conta</h2>
@@ -171,5 +173,6 @@ export default function CadastroPage() {
         </div>
       </div>
     </div>
+    </PaginaAnimada>
   );
 }
