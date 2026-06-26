@@ -19,6 +19,7 @@ export default function Home() {
           <ActiveLink href="/selecoes">Seleções</ActiveLink>
           <ActiveLink href="/tabela">Tabela</ActiveLink>
           <ActiveLink href="/album">Álbum</ActiveLink>
+          <ActiveLink href="/estadios">Estádios</ActiveLink>
           <ThemeToggle />
           <UserMenu />
         </nav>
