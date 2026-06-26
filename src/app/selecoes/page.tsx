@@ -3,16 +3,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
+import { FlagIcon } from "@/components/FlagIcon";
 
 interface Selecao {
   id: number;
   nome: string;
-  bandeiraUrl: string | null;
+  slug: string | null;
+  codigoPais: string | null;
   grupoId: string;
   continente: string;
   rankingFifa: number | null;
   corPrimaria: string | null;
-  corSecundaria: string | null;
   titulos: number;
   _count: { jogadores: number };
 }
@@ -67,16 +68,11 @@ export default function SelecoesPage() {
           {selecoes.map((sel) => (
             <Link
               key={sel.id}
-              href={`/selecoes/${sel.id}`}
+              href={`/selecoes/${sel.slug || sel.id}`}
               className="group rounded-xl border border-zinc-200 p-5 transition-all hover:border-zinc-400 hover:shadow-md dark:border-zinc-800 dark:hover:border-zinc-600"
             >
               <div className="flex items-center gap-4">
-                <div
-                  className="flex h-14 w-14 items-center justify-center rounded-full text-2xl font-bold text-white"
-                  style={{ backgroundColor: sel.corPrimaria || "#666" }}
-                >
-                  {sel.nome.charAt(0)}
-                </div>
+                <FlagIcon codigo={sel.codigoPais} className="h-10 w-auto rounded-sm" />
                 <div>
                   <h2 className="font-semibold group-hover:underline">
                     {sel.nome}

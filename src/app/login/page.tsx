@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,6 +11,10 @@ export default function LoginPage() {
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
+
+  function handleGoogleSuccess() {
+    router.push("/");
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +37,7 @@ export default function LoginPage() {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      router.push("/admin");
+      router.push("/");
     } catch {
       setErro("Erro ao conectar com o servidor");
     } finally {
@@ -114,6 +119,17 @@ export default function LoginPage() {
             </button>
           </form>
 
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-zinc-300 dark:border-zinc-700" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-900">ou</span>
+            </div>
+          </div>
+
+          <GoogleLoginButton onSuccess={handleGoogleSuccess} />
+
           <p className="mt-8 text-center text-sm text-zinc-500">
             Não tem conta?{" "}
             <Link
@@ -121,6 +137,14 @@ export default function LoginPage() {
               className="font-medium text-zinc-900 underline underline-offset-2 hover:text-zinc-600 dark:text-zinc-100 dark:hover:text-zinc-400"
             >
               Cadastre-se
+            </Link>
+          </p>
+          <p className="mt-2 text-center">
+            <Link
+              href="/"
+              className="text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+            >
+              ← Voltar para início
             </Link>
           </p>
         </div>

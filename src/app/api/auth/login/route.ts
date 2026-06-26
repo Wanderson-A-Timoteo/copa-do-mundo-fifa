@@ -22,6 +22,13 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!user.senha) {
+      return NextResponse.json(
+        { erro: "Esta conta usa login com Google. Faça login com Google." },
+        { status: 401 }
+      );
+    }
+
     const senhaValida = await compararSenha(senha, user.senha);
 
     if (!senhaValida) {
@@ -35,7 +42,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       token,
-      user: { id: user.id, nome: user.nome, email: user.email },
+      user: { id: user.id, nome: user.nome, email: user.email, role: user.role ?? "TORCEDOR" },
     });
   } catch {
     return NextResponse.json(

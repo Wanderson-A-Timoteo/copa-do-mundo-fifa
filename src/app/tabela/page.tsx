@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
+import { FlagIcon } from "@/components/FlagIcon";
 
 interface ClassificacaoSelecao {
   id: number;
   nome: string;
-  corPrimaria: string | null;
+  codigoPais: string | null;
   p: number;
   j: number;
   v: number;
@@ -62,6 +63,16 @@ export default function TabelaPage() {
             >
               Mata-Mata
             </button>
+            <button
+              onClick={() => router.push("/tabela/placar")}
+              className={`rounded-lg px-4 py-1.5 text-sm transition-colors ${
+                pathname === "/tabela/placar"
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  : "border border-zinc-300 dark:border-zinc-700"
+              }`}
+            >
+              Placar
+            </button>
           </div>
         </div>
 
@@ -94,10 +105,7 @@ export default function TabelaPage() {
                       <td className="py-2 font-bold text-zinc-400">{idx + 1}</td>
                       <td className="py-2">
                         <div className="flex items-center gap-2">
-                          <div
-                            className="h-3 w-3 rounded-full"
-                            style={{ backgroundColor: sel.corPrimaria || "#666" }}
-                          />
+                          <FlagIcon codigo={sel.codigoPais} className="h-4 w-auto rounded-sm" />
                           <span className="font-medium">{sel.nome}</span>
                         </div>
                       </td>

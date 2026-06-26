@@ -19,7 +19,10 @@
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@react-oauth/google": "^0.13.5",
     "bcryptjs": "^3.0.3",
+    "country-flag-icons": "^1.6.19",
+    "google-auth-library": "^10.9.0",
     "jsonwebtoken": "^9.0.3",
     "next": "16.2.9",
     "pg": "^8.22.0",

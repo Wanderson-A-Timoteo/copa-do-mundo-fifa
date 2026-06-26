@@ -2,6 +2,8 @@
 
 import { useEffect, useState, useCallback } from "react";
 import NavHeader from "@/components/NavHeader";
+import { FlagIcon } from "@/components/FlagIcon";
+import { IconStar } from "@/components/Icons";
 import Link from "next/link";
 
 interface Figurinha {
@@ -9,7 +11,7 @@ interface Figurinha {
   numero: number;
   tipo: string;
   raridade: string;
-  selecao: { id: number; nome: string; corPrimaria: string | null };
+  selecao: { id: number; nome: string; codigoPais: string | null; corPrimaria: string | null };
   jogador: { nome: string; posicao: string } | null;
 }
 
@@ -163,25 +165,20 @@ export default function AlbumPage() {
                 return true;
               })
               .map((fig) => (
-                <div
-                  key={fig.id}
-                  className={`relative flex aspect-[3/4] cursor-default flex-col items-center justify-center rounded-lg border p-1 text-center transition-all hover:scale-105 ${getStatusStyle(fig.id)} ${
-                    statusFigurinha(fig.id) === "faltando"
-                      ? "border-zinc-200 dark:border-zinc-800"
-                      : "border-zinc-300 dark:border-zinc-600"
-                  }`}
-                  style={{
-                    backgroundColor: statusFigurinha(fig.id) !== "faltando"
-                      ? (fig.selecao.corPrimaria || "#666") + "20"
-                      : undefined,
-                  }}
-                >
                   <div
-                    className="mb-1 h-3 w-3 rounded-full"
+                    key={fig.id}
+                    className={`relative flex aspect-[3/4] cursor-default flex-col items-center justify-center rounded-lg border p-1 text-center transition-all hover:scale-105 ${getStatusStyle(fig.id)} ${
+                      statusFigurinha(fig.id) === "faltando"
+                        ? "border-zinc-200 dark:border-zinc-800"
+                        : "border-zinc-300 dark:border-zinc-600"
+                    }`}
                     style={{
-                      backgroundColor: fig.selecao.corPrimaria || "#666",
+                      backgroundColor: statusFigurinha(fig.id) !== "faltando"
+                        ? (fig.selecao.corPrimaria || "#666") + "20"
+                        : undefined,
                     }}
-                  />
+                  >
+                    <FlagIcon codigo={fig.selecao.codigoPais} className="mb-1 h-5 w-auto rounded-sm" />
                   <span className="text-[10px] font-bold leading-tight">
                     {fig.jogador?.nome || fig.selecao.nome}
                   </span>
@@ -224,6 +221,7 @@ export default function AlbumPage() {
                     animationDuration: "0.5s",
                   }}
                 >
+                  <FlagIcon codigo={fig.selecao.codigoPais} className="mx-auto mb-2 h-8 w-auto rounded-sm" />
                   <div className="text-lg font-bold">
                     {fig.jogador?.nome || fig.selecao.nome}
                   </div>
@@ -232,7 +230,8 @@ export default function AlbumPage() {
                   </div>
                   {fig.raridade === "rara" && (
                     <div className="mt-1 text-sm font-bold text-yellow-300">
-                      ⭐ RARA
+                      <IconStar className="mr-1 inline-block h-4 w-4" />
+                      RARA
                     </div>
                   )}
                 </div>
