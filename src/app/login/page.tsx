@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -46,7 +47,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <PaginaAnimada>
+      <div className="flex min-h-screen flex-col md:flex-row">
       <div className="relative flex h-48 w-full md:h-auto md:w-3/5">
         <img
           src="https://images.unsplash.com/photo-1577223625816-7546f13df25d?auto=format&fit=crop&w=1200&q=80"
@@ -150,5 +152,6 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+    </PaginaAnimada>
   );
 }

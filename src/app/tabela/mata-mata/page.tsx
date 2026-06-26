@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface SelecaoResumo {
   id: number;
@@ -53,7 +54,8 @@ export default function TabelaMataMataPage() {
     partidas.filter((p) => p.fase === fase);
 
   return (
-    <div className="min-h-screen">
+    <PaginaAnimada>
+      <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-7xl px-6 py-8">
         <div className="mb-6 flex items-center gap-4">
@@ -164,5 +166,6 @@ export default function TabelaMataMataPage() {
         </section>
       </main>
     </div>
+    </PaginaAnimada>
   );
 }

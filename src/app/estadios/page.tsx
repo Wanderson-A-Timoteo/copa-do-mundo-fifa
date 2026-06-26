@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import NavHeader from "@/components/NavHeader";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface Estadio {
   id: number;
@@ -23,7 +24,8 @@ export default function EstadiosPage() {
   const paises = ["Estados Unidos", "México", "Canadá"];
 
   return (
-    <div className="min-h-screen">
+    <PaginaAnimada>
+      <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-7xl px-6 py-8">
         <h1 className="text-3xl font-bold">Estádios</h1>
@@ -59,5 +61,6 @@ export default function EstadiosPage() {
         })}
       </main>
     </div>
+    </PaginaAnimada>
   );
 }

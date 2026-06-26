@@ -5,6 +5,7 @@ import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconStar } from "@/components/Icons";
 import Link from "next/link";
+import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface Figurinha {
   id: number;
@@ -106,7 +107,8 @@ export default function AlbumPage() {
     : 0;
 
   return (
-    <div className="min-h-screen">
+    <PaginaAnimada>
+      <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-7xl px-6 py-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -247,5 +249,6 @@ export default function AlbumPage() {
         </div>
       )}
     </div>
+    </PaginaAnimada>
   );
 }
