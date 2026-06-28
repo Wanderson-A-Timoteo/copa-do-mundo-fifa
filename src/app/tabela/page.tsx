@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
@@ -30,12 +30,36 @@ export default function TabelaPage() {
   const router = useRouter();
   const pathname = usePathname();
   const [grupos, setGrupos] = useState<GrupoComClassificacao[]>([]);
+  const [logado, setLogado] = useState(false);
+
+  const carregar = useCallback(() => {
+    const t = localStorage.getItem("token");
+    if (!t) {
+      setGrupos([]);
+      setLogado(false);
+      return;
+    }
+    setLogado(true);
+
+    const raw = localStorage.getItem("user");
+    if (!raw) { setGrupos([]); return; }
+
+    try {
+      const user = JSON.parse(raw);
+      if (!user?.id) { setGrupos([]); return; }
+      fetch(`/api/grupos?usuarioId=${user.id}`, {
+        headers: { Authorization: `Bearer ${t}` },
+      })
+        .then((r) => r.json())
+        .then((d) => setGrupos(d.grupos ?? []));
+    } catch {
+      setGrupos([]);
+    }
+  }, []);
 
   useEffect(() => {
-    fetch("/api/grupos")
-      .then((r) => r.json())
-      .then((d) => setGrupos(d.grupos));
-  }, []);
+    carregar();
+  }, [carregar]);
 
   return (
     <PaginaAnimada>
@@ -78,6 +102,15 @@ export default function TabelaPage() {
           </div>
         </div>
 
+        {grupos.length === 0 ? (
+          <div className="py-16 text-center">
+            {logado ? (
+              <p className="text-lg text-zinc-500">Nenhum palpite registrado ainda.</p>
+            ) : (
+              <p className="text-lg text-zinc-500">Faça login para ver sua classificação</p>
+            )}
+          </div>
+        ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {grupos.map((grupo) => (
             <div
@@ -126,6 +159,7 @@ export default function TabelaPage() {
             </div>
           ))}
         </div>
+        )}
       </main>
     </div>
     </PaginaAnimada>

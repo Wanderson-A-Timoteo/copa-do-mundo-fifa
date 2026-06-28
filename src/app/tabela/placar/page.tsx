@@ -61,63 +61,70 @@ export default function PlacarPage() {
 
   const carregar = useCallback(() => {
     const t = localStorage.getItem("token");
+    if (!t) {
+      setGrupos([]);
+      setPartidas([]);
+      setPlacares({});
+      return;
+    }
+
     const headers: Record<string, string> = {};
     if (t) headers["Authorization"] = `Bearer ${t}`;
 
     const usuarioSalvo = localStorage.getItem("user");
-    let gruposUrl = "/api/grupos";
-    if (usuarioSalvo) {
-      const user = JSON.parse(usuarioSalvo);
-      gruposUrl = `/api/grupos?usuarioId=${user.id}`;
+    if (!usuarioSalvo) {
+      setGrupos([]);
+      setPartidas([]);
+      setPlacares({});
+      return;
     }
-    fetch(gruposUrl)
+
+    const user = JSON.parse(usuarioSalvo);
+    if (!user?.id) {
+      setGrupos([]);
+      setPartidas([]);
+      setPlacares({});
+      return;
+    }
+
+    fetch(`/api/grupos?usuarioId=${user.id}`)
       .then((r) => r.json())
       .then((d) => setGrupos(d.grupos));
+
     fetch("/api/partidas?fase=GRUPOS")
       .then((r) => r.json())
       .then((d) => {
         setPartidas(d.partidas);
-        if (t) {
-          fetch("/api/palpite", { headers })
-            .then((r) => r.json())
-            .then((palData) => {
-              const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
-              for (const partida of d.partidas) {
-                const palpite = palData.palpites?.find((pp: any) => pp.partidaId === partida.id);
-                if (palpite) {
-                  p[partida.id] = {
-                    golsMandante: String(palpite.golsMandante),
-                    golsVisitante: String(palpite.golsVisitante),
-                  };
-                } else {
-                  p[partida.id] = { golsMandante: "", golsVisitante: "" };
-                }
+        fetch("/api/palpite", { headers })
+          .then((r) => r.json())
+          .then((palData) => {
+            const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
+            for (const partida of d.partidas) {
+              const palpite = palData.palpites?.find((pp: any) => pp.partidaId === partida.id);
+              if (palpite) {
+                p[partida.id] = {
+                  golsMandante: String(palpite.golsMandante),
+                  golsVisitante: String(palpite.golsVisitante),
+                };
+              } else {
+                p[partida.id] = { golsMandante: "", golsVisitante: "" };
               }
-              setPlacares(p);
-            });
-        } else {
-          const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
-          for (const partida of d.partidas) {
-            p[partida.id] = {
-              golsMandante: partida.golsMandante !== null ? String(partida.golsMandante) : "",
-              golsVisitante: partida.golsVisitante !== null ? String(partida.golsVisitante) : "",
-            };
-          }
-          setPlacares(p);
-        }
+            }
+            setPlacares(p);
+          });
       });
   }, []);
 
   useEffect(() => { carregar(); }, [carregar]);
 
   const atualizarGrupos = useCallback(() => {
+    const t = localStorage.getItem("token");
+    if (!t) return;
     const usuarioSalvo = localStorage.getItem("user");
-    let url = "/api/grupos";
-    if (usuarioSalvo) {
-      const user = JSON.parse(usuarioSalvo);
-      url = `/api/grupos?usuarioId=${user.id}`;
-    }
-    fetch(url)
+    if (!usuarioSalvo) return;
+    const user = JSON.parse(usuarioSalvo);
+    if (!user?.id) return;
+    fetch(`/api/grupos?usuarioId=${user.id}`)
       .then((r) => r.json())
       .then((d) => setGrupos(d.grupos));
   }, []);
@@ -173,7 +180,18 @@ export default function PlacarPage() {
         <h1 className="mt-2 text-3xl font-bold">Placar</h1>
         <p className="mt-1 text-zinc-500">Registre os resultados dos jogos da fase de grupos</p>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+        {!token ? (
+          <div className="py-16 text-center">
+            <p className="text-lg text-zinc-500">Faça login para palpitar nos jogos</p>
+            <button
+              onClick={() => setShowModalLogin(true)}
+              className="mt-4 rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            >
+              Fazer Login
+            </button>
+          </div>
+        ) : (
+        <><div className="mt-6 flex flex-wrap gap-2">
           {grupos.map((g) => (
             <button
               key={g.id}
@@ -357,6 +375,8 @@ export default function PlacarPage() {
             </div>
           )}
         </section>
+        </>
+      )}
       </main>
 
       {showModalLogin && (
