@@ -54,16 +54,23 @@ async function main() {
       const qtdJog = await prisma.jogador.count({ where: { selecaoId: selecao.id } });
       if (qtdFig > 0 || qtdJog > 0) {
         console.log(`  ${nomeCorrigido}: deletando ${qtdFig} figurinhas e ${qtdJog} jogadores...`);
+        const idsFig = (await prisma.figurinha.findMany({ where: { selecaoId: selecao.id }, select: { id: true } })).map(f => f.id);
+        if (idsFig.length > 0) {
+          await prisma.albumFigurinha.deleteMany({ where: { figurinhaId: { in: idsFig } } });
+          await prisma.troca.deleteMany({ where: { figurinhaOferecidaId: { in: idsFig } } });
+          await prisma.troca.deleteMany({ where: { figurinhaDesejadaId: { in: idsFig } } });
+        }
         await prisma.figurinha.deleteMany({ where: { selecaoId: selecao.id } });
         await prisma.jogador.deleteMany({ where: { selecaoId: selecao.id } });
       }
     }
   }
 
-  // 3. Inserir jogadores e figurinhas
+  // 3. Inserir jogadores e figurinhas em lote
   let totalJogadores = 0;
   let totalFigurinhas = 0;
-  let numFigurinha = 1;
+  let numFigurinha = (await prisma.figurinha.findFirst({ orderBy: { numero: "desc" } }))?.numero ?? 0;
+  numFigurinha++;
 
   for (const selecao of todasSelecoes) {
     const nomeCorrigido = RENOMEAR_SELECOES[selecao.nome] ?? selecao.nome;
@@ -73,29 +80,27 @@ async function main() {
       continue;
     }
 
-    for (const j of jogadores) {
-      const jogador = await prisma.jogador.create({
-        data: {
-          selecaoId: selecao.id,
-          nome: j.nome,
-          posicao: j.posicao,
-          numeroCamisa: Math.floor(Math.random() * 30) + 1,
-        },
-      });
+    const jogadoresData = jogadores.map((j) => ({
+      selecaoId: selecao.id,
+      nome: j.nome,
+      posicao: j.posicao,
+      numeroCamisa: Math.floor(Math.random() * 30) + 1,
+    }));
 
-      await prisma.figurinha.create({
-        data: {
-          numero: numFigurinha++,
-          selecaoId: selecao.id,
-          jogadorId: jogador.id,
-          tipo: "jogador",
-          raridade: Math.random() < 0.1 ? "rara" : "comum",
-        },
-      });
+    const criados = await prisma.jogador.createManyAndReturn({ data: jogadoresData });
 
-      totalJogadores++;
-      totalFigurinhas++;
-    }
+    const figurinhasData = criados.map((jogador, i) => ({
+      numero: numFigurinha++,
+      selecaoId: selecao.id,
+      jogadorId: jogador.id,
+      tipo: "jogador",
+      raridade: Math.random() < 0.1 ? "rara" : "comum",
+    }));
+
+    await prisma.figurinha.createMany({ data: figurinhasData });
+
+    totalJogadores += criados.length;
+    totalFigurinhas += figurinhasData.length;
   }
 
   console.log(`\nSeed concluído!`);
