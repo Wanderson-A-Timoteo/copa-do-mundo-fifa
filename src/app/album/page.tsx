@@ -31,14 +31,22 @@ export default function AlbumPage() {
   const [novasFigurinhas, setNovasFigurinhas] = useState<Figurinha[]>([]);
   const [showAnimacao, setShowAnimacao] = useState(false);
   const [carregando, setCarregando] = useState(true);
+  const [token, setToken] = useState<string | null>(null);
 
-  const usuarioId = 1;
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, []);
+
+  const getAuthHeaders = () => {
+    const t = localStorage.getItem("token");
+    return t ? { Authorization: `Bearer ${t}` } : {};
+  };
 
   const carregarDados = useCallback(async () => {
     const params = filtroSelecao ? `?selecaoId=${filtroSelecao}` : "";
     const [figRes, albumRes] = await Promise.all([
       fetch(`/api/figurinhas${params}`),
-      fetch("/api/album", { headers: { "x-usuario-id": "1" } }),
+      fetch("/api/album", { headers: { ...getAuthHeaders() } }),
     ]);
 
     const figData = await figRes.json();
@@ -74,12 +82,13 @@ export default function AlbumPage() {
     setShowAnimacao(true);
     setAbrindo(false);
 
+    const authHeaders = getAuthHeaders();
     for (const fig of pacote) {
       await fetch("/api/album", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-usuario-id": "1",
+          ...authHeaders,
         },
         body: JSON.stringify({ figurinhaId: fig.id }),
       });

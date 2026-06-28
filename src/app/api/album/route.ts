@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { verificarToken } from "@/lib/auth";
 
 function getUsuarioId(request: Request): number | null {
-  const header = request.headers.get("x-usuario-id");
-  return header ? Number(header) : null;
+  const auth = request.headers.get("authorization");
+  if (!auth?.startsWith("Bearer ")) return null;
+  try {
+    return verificarToken(auth.slice(7)).userId;
+  } catch {
+    return null;
+  }
 }
 
 export async function GET(request: Request) {

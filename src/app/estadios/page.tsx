@@ -10,6 +10,7 @@ interface Estadio {
   cidade: string;
   pais: string;
   capacidade: number;
+  fotoUrl: string | null;
 }
 
 export default function EstadiosPage() {
@@ -41,18 +42,27 @@ export default function EstadiosPage() {
                 {estadiosDoPais.map((e) => (
                   <div
                     key={e.id}
-                    className="rounded-xl border border-zinc-200 p-5 dark:border-zinc-800"
+                    className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800"
                   >
-                    <h3 className="text-lg font-semibold">{e.nome}</h3>
-                    <p className="text-sm text-zinc-500">
-                      {e.cidade}, {e.pais}
-                    </p>
-                    <p className="mt-2 text-sm">
-                      <span className="font-bold">
-                        {e.capacidade.toLocaleString()}
-                      </span>{" "}
-                      lugares
-                    </p>
+                    {e.fotoUrl && (
+                      <img
+                        src={e.fotoUrl}
+                        alt={e.nome}
+                        className="h-48 w-full object-cover"
+                      />
+                    )}
+                    <div className="p-5">
+                      <h3 className="text-lg font-semibold">{e.nome}</h3>
+                      <p className="text-sm text-zinc-500">
+                        {e.cidade}, {e.pais}
+                      </p>
+                      <p className="mt-2 text-sm">
+                        <span className="font-bold">
+                          {e.capacidade.toLocaleString()}
+                        </span>{" "}
+                        lugares
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
