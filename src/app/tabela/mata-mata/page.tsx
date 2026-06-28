@@ -27,11 +27,11 @@ function getUserId(): number | null {
 
 type PlacaresState = Record<number, { golsMandante: string; golsVisitante: string }>;
 
-const CARD_W = 220;
-const CARD_H = 76;
+const CARD_W = 200;
+const CARD_H = 78;
 const COL_GAP = 48;
 const PITCH = CARD_W + COL_GAP;
-const ROW_UNIT = 40;
+const ROW_UNIT = 100;
 
 const LAYOUT_DATA = {
   nodes: [
@@ -39,7 +39,7 @@ const LAYOUT_DATA = {
     [79, 0, 4], [80, 0, 5], [83, 0, 6], [84, 0, 7],
     [90, 1, 0.5], [89, 1, 2.5], [92, 1, 4.5], [93, 1, 6.5],
     [97, 2, 1.5], [98, 2, 5.5],
-    [101, 3, 2.5], [104, 3, 4.5], [103, 3, 6.5], [102, 3, 8.5],
+    [101, 3, 1.5], [104, 3, 4.5], [103, 3, 6.5], [102, 3, 7.5],
     [99, 4, 1.5], [100, 4, 5.5],
     [95, 5, 0.5], [94, 5, 2.5], [96, 5, 4.5], [91, 5, 6.5],
     [86, 6, 0], [88, 6, 1], [81, 6, 2], [82, 6, 3],
@@ -60,16 +60,24 @@ const LAYOUT_DATA = {
 };
 
 function connectorPath(from: { col: number; row: number }, to: { col: number; row: number }): string {
-  const y1 = from.row * ROW_UNIT + ROW_UNIT / 2;
-  const y2 = to.row * ROW_UNIT + ROW_UNIT / 2;
-  const x1 = to.col > from.col
-    ? from.col * PITCH + CARD_W
-    : from.col * PITCH;
-  const x2 = to.col > from.col
-    ? to.col * PITCH
-    : to.col * PITCH + CARD_W;
-  const mx = (x1 + x2) / 2;
-  return `M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}`;
+  const y1 = from.row * ROW_UNIT + CARD_H / 2;
+  const y2 = to.row * ROW_UNIT + CARD_H / 2;
+  const OFFSET = 10;
+  if (to.col > from.col) {
+    const x1 = from.col * PITCH + CARD_W;
+    const x2 = to.col * PITCH;
+    const mx = (x1 + x2) / 2;
+    return `M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}`;
+  }
+  if (to.col < from.col) {
+    const x1 = from.col * PITCH;
+    const x2 = to.col * PITCH + CARD_W;
+    const mx = (x1 + x2) / 2;
+    return `M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}`;
+  }
+  const x = from.col * PITCH + CARD_W;
+  const mx = x + OFFSET;
+  return `M ${x} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x} ${y2}`;
 }
 
 export default function TabelaMataMataPage() {
@@ -231,7 +239,7 @@ export default function TabelaMataMataPage() {
                       key={i}
                       d={connectorPath(from, to)}
                       fill="none"
-                      strokeWidth="1.5"
+                      strokeWidth="2"
                       className="stroke-zinc-300 dark:stroke-zinc-600"
                     />
                   );
