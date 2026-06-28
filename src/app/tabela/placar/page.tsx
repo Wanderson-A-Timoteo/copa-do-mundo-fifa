@@ -51,7 +51,6 @@ export default function PlacarPage() {
   const [partidas, setPartidas] = useState<Partida[]>([]);
   const [grupoAtivo, setGrupoAtivo] = useState("A");
   const [placares, setPlacares] = useState<Record<number, { golsMandante: string; golsVisitante: string }>>({});
-  const [salvando, setSalvando] = useState<Record<number, boolean>>({});
   const [token, setToken] = useState<string | null>(null);
   const [showModalLogin, setShowModalLogin] = useState(false);
 
@@ -61,31 +60,74 @@ export default function PlacarPage() {
   }, []);
 
   const carregar = useCallback(() => {
-    fetch("/api/grupos")
+    const t = localStorage.getItem("token");
+    const headers: Record<string, string> = {};
+    if (t) headers["Authorization"] = `Bearer ${t}`;
+
+    const usuarioSalvo = localStorage.getItem("user");
+    let gruposUrl = "/api/grupos";
+    if (usuarioSalvo) {
+      const user = JSON.parse(usuarioSalvo);
+      gruposUrl = `/api/grupos?usuarioId=${user.id}`;
+    }
+    fetch(gruposUrl)
       .then((r) => r.json())
       .then((d) => setGrupos(d.grupos));
     fetch("/api/partidas?fase=GRUPOS")
       .then((r) => r.json())
       .then((d) => {
         setPartidas(d.partidas);
-        const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
-        for (const partida of d.partidas) {
-          p[partida.id] = {
-            golsMandante: partida.golsMandante !== null ? String(partida.golsMandante) : "",
-            golsVisitante: partida.golsVisitante !== null ? String(partida.golsVisitante) : "",
-          };
+        if (t) {
+          fetch("/api/palpite", { headers })
+            .then((r) => r.json())
+            .then((palData) => {
+              const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
+              for (const partida of d.partidas) {
+                const palpite = palData.palpites?.find((pp: any) => pp.partidaId === partida.id);
+                if (palpite) {
+                  p[partida.id] = {
+                    golsMandante: String(palpite.golsMandante),
+                    golsVisitante: String(palpite.golsVisitante),
+                  };
+                } else {
+                  p[partida.id] = { golsMandante: "", golsVisitante: "" };
+                }
+              }
+              setPlacares(p);
+            });
+        } else {
+          const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
+          for (const partida of d.partidas) {
+            p[partida.id] = {
+              golsMandante: partida.golsMandante !== null ? String(partida.golsMandante) : "",
+              golsVisitante: partida.golsVisitante !== null ? String(partida.golsVisitante) : "",
+            };
+          }
+          setPlacares(p);
         }
-        setPlacares(p);
       });
   }, []);
 
   useEffect(() => { carregar(); }, [carregar]);
 
+  const atualizarGrupos = useCallback(() => {
+    const usuarioSalvo = localStorage.getItem("user");
+    let url = "/api/grupos";
+    if (usuarioSalvo) {
+      const user = JSON.parse(usuarioSalvo);
+      url = `/api/grupos?usuarioId=${user.id}`;
+    }
+    fetch(url)
+      .then((r) => r.json())
+      .then((d) => setGrupos(d.grupos));
+  }, []);
+
   const partidasGrupo = partidas.filter((p) => p.grupoId === grupoAtivo);
   const grupo = grupos.find((g) => g.id === grupoAtivo);
 
   async function autoSalvar(partidaId: number) {
-    if (!token) return;
+    const t = localStorage.getItem("token");
+    if (!t) return;
     const p = placares[partidaId];
     if (!p) return;
     const golsMandante = parseInt(p.golsMandante);
@@ -94,15 +136,14 @@ export default function PlacarPage() {
 
     if (!isLimpar && (isNaN(golsMandante) || isNaN(golsVisitante))) return;
 
-    setSalvando((s) => ({ ...s, [partidaId]: true }));
     try {
-      const res = await fetch(`/api/partidas/${partidaId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      const res = await fetch("/api/palpite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${t}` },
         body: JSON.stringify(
           isLimpar
-            ? { golsMandante: null, golsVisitante: null }
-            : { golsMandante, golsVisitante }
+            ? { partidaId, golsMandante: null, golsVisitante: null }
+            : { partidaId, golsMandante, golsVisitante }
         ),
       });
       if (res.status === 401) {
@@ -112,9 +153,9 @@ export default function PlacarPage() {
         return;
       }
       if (!res.ok) return;
-      carregar();
-    } finally {
-      setSalvando((s) => ({ ...s, [partidaId]: false }));
+      atualizarGrupos();
+    } catch {
+      // ignore
     }
   }
 
