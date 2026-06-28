@@ -87,6 +87,26 @@ function connectorPath(from: { col: number; row: number }, to: { col: number; ro
   return `M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}`;
 }
 
+function matchDependents(matchNum: number): number[] {
+  const result: number[] = [];
+  const stack = [matchNum];
+  const todasPartidas = formatoCopa.fases.flatMap((f) => f.partidas);
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+    for (const p of todasPartidas) {
+      for (const fonte of [p.mandante, p.visitante]) {
+        if ((fonte.tipo === "vencedor" || fonte.tipo === "perdedor") && fonte.partidaAnterior === current) {
+          if (!result.includes(p.numero)) {
+            result.push(p.numero);
+            stack.push(p.numero);
+          }
+        }
+      }
+    }
+  }
+  return result;
+}
+
 export default function TabelaMataMataPage() {
   const router = useRouter();
   const [resultado, setResultado] = useState<BracketResult | null>(null);
@@ -152,7 +172,6 @@ export default function TabelaMataMataPage() {
         headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
         body: JSON.stringify({ partidaId, golsMandante, golsVisitante }),
       });
-      await carregar();
     } finally {
       setSalvando((prev) => {
         const next = new Set(prev);
@@ -161,6 +180,18 @@ export default function TabelaMataMataPage() {
       });
     }
   };
+
+  function bracketFromPlacares(ps: PlacaresState): BracketResult | null {
+    if (gruposRef.current.length === 0) return null;
+    const palpitesInput = Object.entries(ps)
+      .filter(([, v]) => v.golsMandante !== "" && v.golsVisitante !== "")
+      .map(([id, v]) => ({
+        partidaId: Number(id),
+        golsMandante: Number(v.golsMandante),
+        golsVisitante: Number(v.golsVisitante),
+      }));
+    return computeBracket(formatoCopa, gruposRef.current, palpitesInput);
+  }
 
   const handleChange = (partidaId: number, campo: "golsMandante" | "golsVisitante", value: string) => {
     const updated = { ...placares, [partidaId]: { ...placares[partidaId], [campo]: value } };
@@ -174,22 +205,46 @@ export default function TabelaMataMataPage() {
     const completo = gM !== null && gV !== null && !isNaN(gM) && !isNaN(gV);
     const vazio = gM === null && gV === null;
 
-    if (completo || vazio) {
+    if (completo) {
       timers.current[partidaId] = setTimeout(() => {
         salvarPalpite(partidaId, gM, gV);
       }, 800);
 
-      if (gruposRef.current.length > 0 && completo) {
-        const palpitesInput = Object.entries(updated)
-          .filter(([, v]) => v.golsMandante !== "" && v.golsVisitante !== "")
-          .map(([id, v]) => ({
-            partidaId: Number(id),
-            golsMandante: Number(v.golsMandante),
-            golsVisitante: Number(v.golsVisitante),
-          }));
-        const r = computeBracket(formatoCopa, gruposRef.current, palpitesInput);
-        setResultado(r);
-      }
+      const r = bracketFromPlacares(updated);
+      if (r) setResultado(r);
+    }
+
+    if (vazio) {
+      const dependents = matchDependents(partidaId);
+
+      timers.current[partidaId] = setTimeout(async () => {
+        const ids = [partidaId, ...dependents];
+        setSalvando((prev) => new Set([...prev, ...ids]));
+        try {
+          for (const id of ids) {
+            await fetch("/api/palpites/mata-mata", {
+              method: "POST",
+              headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
+              body: JSON.stringify({ partidaId: id, golsMandante: null, golsVisitante: null }),
+            });
+          }
+          await carregar();
+        } finally {
+          setSalvando((prev) => {
+            const next = new Set(prev);
+            for (const id of ids) next.delete(id);
+            return next;
+          });
+        }
+      }, 800);
+
+      const cleanPlacares = { ...updated };
+      delete cleanPlacares[partidaId];
+      for (const dep of dependents) delete cleanPlacares[dep];
+      setPlacares(cleanPlacares);
+
+      const r = bracketFromPlacares(cleanPlacares);
+      if (r) setResultado(r);
     }
   };
 
