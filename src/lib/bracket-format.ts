@@ -1,6 +1,6 @@
 export type FonteTime =
   | { tipo: "grupo"; posicao: 1 | 2 | 3; grupo: string }
-  | { tipo: "melhoresTerceiros"; rank: number }
+  | { tipo: "melhoresTerceiros"; grupos: string[] }
   | { tipo: "vencedor"; partidaAnterior: number }
   | { tipo: "perdedor"; partidaAnterior: number };
 

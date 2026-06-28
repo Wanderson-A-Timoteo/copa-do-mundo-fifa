@@ -1,4 +1,4 @@
-import { BracketFormat, FonteTime, PartidaBracket } from "@/lib/bracket-format";
+import { BracketFormat, FonteTime } from "@/lib/bracket-format";
 
 export interface SelecaoStanding {
   id: number;
@@ -52,10 +52,11 @@ export interface BracketResult {
 
 function resolverFonte(
   fonte: FonteTime,
+  numeroPartida: number,
   primeiro: Map<string, SelecaoStanding>,
   segundo: Map<string, SelecaoStanding>,
   terceiro: Map<string, SelecaoStanding>,
-  melhoresTerceiros: SelecaoStanding[],
+  terceirosAssignados: Map<number, SelecaoStanding>,
   vencedores: Map<number, SelecaoStanding>,
   perdedores: Map<number, SelecaoStanding>
 ): SelecaoStanding | null {
@@ -64,10 +65,8 @@ function resolverFonte(
       if (fonte.posicao === 1) return primeiro.get(fonte.grupo) ?? null;
       if (fonte.posicao === 2) return segundo.get(fonte.grupo) ?? null;
       return terceiro.get(fonte.grupo) ?? null;
-    case "melhoresTerceiros": {
-      const idx = fonte.rank - 1;
-      return melhoresTerceiros[idx] ?? null;
-    }
+    case "melhoresTerceiros":
+      return terceirosAssignados.get(numeroPartida) ?? null;
     case "vencedor":
       return vencedores.get(fonte.partidaAnterior) ?? null;
     case "perdedor":
@@ -106,16 +105,36 @@ export function computeBracket(
     }
   }
 
-  const vencedores = new Map<number, SelecaoStanding>();
-  const perdedores = new Map<number, SelecaoStanding>();
-
   const todasPartidas = format.fases.flatMap((f) =>
     f.partidas.map((p) => ({ ...p, fase: f.key, faseLabel: f.label }))
   );
 
+  const terceirosAssignados = new Map<number, SelecaoStanding>();
+  const disponiveis = [...melhoresTerceiros];
+
   for (const partida of todasPartidas) {
-    const mandante = resolverFonte(partida.mandante, primeiro, segundo, terceiro, melhoresTerceiros, vencedores, perdedores);
-    const visitante = resolverFonte(partida.visitante, primeiro, segundo, terceiro, melhoresTerceiros, vencedores, perdedores);
+    if (partida.mandante.tipo === "melhoresTerceiros") {
+      const idx = disponiveis.findIndex((t) => partida.mandante.grupos.includes(t.grupoId));
+      if (idx !== -1) {
+        terceirosAssignados.set(partida.numero, disponiveis[idx]);
+        disponiveis.splice(idx, 1);
+      }
+    }
+    if (partida.visitante.tipo === "melhoresTerceiros") {
+      const idx = disponiveis.findIndex((t) => partida.visitante.grupos.includes(t.grupoId));
+      if (idx !== -1) {
+        terceirosAssignados.set(partida.numero, disponiveis[idx]);
+        disponiveis.splice(idx, 1);
+      }
+    }
+  }
+
+  const vencedores = new Map<number, SelecaoStanding>();
+  const perdedores = new Map<number, SelecaoStanding>();
+
+  for (const partida of todasPartidas) {
+    const mandante = resolverFonte(partida.mandante, partida.numero, primeiro, segundo, terceiro, terceirosAssignados, vencedores, perdedores);
+    const visitante = resolverFonte(partida.visitante, partida.numero, primeiro, segundo, terceiro, terceirosAssignados, vencedores, perdedores);
 
     const palpite = palpitesPorPartida.get(partida.numero);
 
@@ -134,8 +153,8 @@ export function computeBracket(
     key: fase.key,
     label: fase.label,
     partidas: fase.partidas.map((p) => {
-      const mandante = resolverFonte(p.mandante, primeiro, segundo, terceiro, melhoresTerceiros, vencedores, perdedores);
-      const visitante = resolverFonte(p.visitante, primeiro, segundo, terceiro, melhoresTerceiros, vencedores, perdedores);
+      const mandante = resolverFonte(p.mandante, p.numero, primeiro, segundo, terceiro, terceirosAssignados, vencedores, perdedores);
+      const visitante = resolverFonte(p.visitante, p.numero, primeiro, segundo, terceiro, terceirosAssignados, vencedores, perdedores);
       const palpite = palpitesPorPartida.get(p.numero);
 
       return {
