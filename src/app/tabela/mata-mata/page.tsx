@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import PaginaAnimada from "@/components/PaginaAnimada";
-import { computeBracket, type GrupoStanding, type BracketResult } from "@/lib/compute-bracket";
+import { computeBracket, type GrupoStanding, type BracketResult, type PartidaResolvida } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
 import type { PartidaBracket } from "@/lib/bracket-format";
 
@@ -210,8 +210,8 @@ export default function TabelaMataMataPage() {
   };
 
   const partidasPorNumero = useMemo(() => {
-    if (!resultado) return new Map<number, (typeof resultado.fases)[0]["partidas"][0]>();
-    const m = new Map<number, (typeof resultado.fases)[0]["partidas"][0]>();
+    if (!resultado) return new Map<number, PartidaResolvida>();
+    const m = new Map<number, PartidaResolvida>();
     for (const fase of resultado.fases) {
       for (const p of fase.partidas) m.set(p.numero, p);
     }
