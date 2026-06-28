@@ -1,0 +1,28 @@
+export type FonteTime =
+  | { tipo: "grupo"; posicao: 1 | 2 | 3; grupo: string }
+  | { tipo: "melhoresTerceiros"; rank: number }
+  | { tipo: "vencedor"; partidaAnterior: number }
+  | { tipo: "perdedor"; partidaAnterior: number };
+
+export interface PartidaBracket {
+  numero: number;
+  dataHora: string;
+  mandante: FonteTime;
+  visitante: FonteTime;
+}
+
+export interface FaseBracket {
+  key: string;
+  label: string;
+  partidas: PartidaBracket[];
+}
+
+export interface BracketFormat {
+  grupos: number;
+  vagas: {
+    primeiro: number;
+    segundo: number;
+    melhoresTerceiros: number;
+  };
+  fases: FaseBracket[];
+}

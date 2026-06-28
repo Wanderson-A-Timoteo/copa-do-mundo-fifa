@@ -19,7 +19,8 @@ model User {
   albumFigurinhas AlbumFigurinha[]
   trocasEnviadas  Troca[]         @relation("troca_remetente")
   trocasRecebidas Troca[]         @relation("troca_destinatario")
-  palpites        Palpite[]
+  palpites            Palpite[]
+  palpitesMataMata    PalpiteMataMata[]
 
   @@map("users")
 }
@@ -166,4 +167,18 @@ model Palpite {
 
   @@unique([usuarioId, partidaId])
   @@map("palpites")
+}
+
+model PalpiteMataMata {
+  id            Int      @id @default(autoincrement())
+  usuarioId     Int
+  usuario       User     @relation(fields: [usuarioId], references: [id])
+  partidaId     Int
+  golsMandante  Int?
+  golsVisitante Int?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@unique([usuarioId, partidaId])
+  @@map("palpites_mata_mata")
 }
