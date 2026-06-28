@@ -39,11 +39,13 @@ const LAYOUT_DATA = {
     [79, 0, 4], [80, 0, 5], [83, 0, 6], [84, 0, 7],
     [90, 1, 0.5], [89, 1, 2.5], [92, 1, 4.5], [93, 1, 6.5],
     [97, 2, 1.5], [98, 2, 5.5],
-    [101, 3, 1.5], [104, 3, 4.5], [103, 3, 6.5], [102, 3, 7.5],
-    [99, 4, 1.5], [100, 4, 5.5],
-    [95, 5, 0.5], [94, 5, 2.5], [96, 5, 4.5], [91, 5, 6.5],
-    [86, 6, 0], [88, 6, 1], [81, 6, 2], [82, 6, 3],
-    [85, 6, 4], [87, 6, 5], [76, 6, 6], [78, 6, 7],
+    [101, 3, 3.5],
+    [104, 4, 3.5], [103, 4, 7.5],
+    [102, 5, 3.5],
+    [99, 6, 1.5], [100, 6, 5.5],
+    [95, 7, 0.5], [94, 7, 2.5], [96, 7, 4.5], [91, 7, 6.5],
+    [86, 8, 0], [88, 8, 1], [81, 8, 2], [82, 8, 3],
+    [85, 8, 4], [87, 8, 5], [76, 8, 6], [78, 8, 7],
   ] as [number, number, number][],
   connections: [
     [73, 90], [75, 90], [74, 89], [77, 89],
@@ -62,22 +64,14 @@ const LAYOUT_DATA = {
 function connectorPath(from: { col: number; row: number }, to: { col: number; row: number }): string {
   const y1 = from.row * ROW_UNIT + CARD_H / 2;
   const y2 = to.row * ROW_UNIT + CARD_H / 2;
-  const OFFSET = 10;
-  if (to.col > from.col) {
-    const x1 = from.col * PITCH + CARD_W;
-    const x2 = to.col * PITCH;
-    const mx = (x1 + x2) / 2;
-    return `M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}`;
-  }
-  if (to.col < from.col) {
-    const x1 = from.col * PITCH;
-    const x2 = to.col * PITCH + CARD_W;
-    const mx = (x1 + x2) / 2;
-    return `M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}`;
-  }
-  const x = from.col * PITCH + CARD_W;
-  const mx = x + OFFSET;
-  return `M ${x} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x} ${y2}`;
+  const x1 = to.col > from.col
+    ? from.col * PITCH + CARD_W
+    : from.col * PITCH;
+  const x2 = to.col > from.col
+    ? to.col * PITCH
+    : to.col * PITCH + CARD_W;
+  const mx = (x1 + x2) / 2;
+  return `M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}`;
 }
 
 export default function TabelaMataMataPage() {
@@ -254,7 +248,7 @@ export default function TabelaMataMataPage() {
                 const y = row * ROW_UNIT;
                 const podeEditar = !!p.mandante && !!p.visitante;
                 const salvandoAgora = salvando.has(p.numero);
-                const isRight = col >= 4;
+                const isRight = col >= 5;
 
                 return (
                   <div
