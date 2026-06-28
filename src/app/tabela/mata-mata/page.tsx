@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
+import { IconArrowLeft } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { computeBracket, type GrupoStanding, type BracketResult, type PartidaResolvida } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
@@ -25,11 +27,11 @@ function getUserId(): number | null {
 
 type PlacaresState = Record<number, { golsMandante: string; golsVisitante: string }>;
 
-const CARD_W = 190;
-const CARD_H = 72;
-const COL_GAP = 32;
+const CARD_W = 220;
+const CARD_H = 76;
+const COL_GAP = 48;
 const PITCH = CARD_W + COL_GAP;
-const ROW_UNIT = 34;
+const ROW_UNIT = 40;
 
 const LAYOUT_DATA = {
   nodes: [
@@ -37,13 +39,11 @@ const LAYOUT_DATA = {
     [79, 0, 4], [80, 0, 5], [83, 0, 6], [84, 0, 7],
     [90, 1, 0.5], [89, 1, 2.5], [92, 1, 4.5], [93, 1, 6.5],
     [97, 2, 1.5], [98, 2, 5.5],
-    [101, 3, 3.5],
-    [104, 4, 3.5], [103, 4, 7.5],
-    [102, 5, 3.5],
-    [99, 6, 1.5], [100, 6, 5.5],
-    [95, 7, 0.5], [94, 7, 2.5], [96, 7, 4.5], [91, 7, 6.5],
-    [86, 8, 0], [88, 8, 1], [81, 8, 2], [82, 8, 3],
-    [85, 8, 4], [87, 8, 5], [76, 8, 6], [78, 8, 7],
+    [101, 3, 2.5], [104, 3, 4.5], [103, 3, 6.5], [102, 3, 8.5],
+    [99, 4, 1.5], [100, 4, 5.5],
+    [95, 5, 0.5], [94, 5, 2.5], [96, 5, 4.5], [91, 5, 6.5],
+    [86, 6, 0], [88, 6, 1], [81, 6, 2], [82, 6, 3],
+    [85, 6, 4], [87, 6, 5], [76, 6, 6], [78, 6, 7],
   ] as [number, number, number][],
   connections: [
     [73, 90], [75, 90], [74, 89], [77, 89],
@@ -59,17 +59,7 @@ const LAYOUT_DATA = {
   ] as [number, number][],
 };
 
-const LABELS: Record<number, string> = {
-  73: "2A×2B", 74: "1E×3º", 75: "1F×2C", 76: "1C×2F",
-  77: "1I×3º", 78: "2E×2I", 79: "1A×3º", 80: "1L×3º",
-  81: "1D×3º", 82: "1G×3º", 83: "2K×2L", 84: "1H×2J",
-  85: "1B×3º", 86: "1J×2H", 87: "1K×3º", 88: "2D×2G",
-};
-
-function connectorPath(
-  from: { col: number; row: number },
-  to: { col: number; row: number }
-): string {
+function connectorPath(from: { col: number; row: number }, to: { col: number; row: number }): string {
   const y1 = from.row * ROW_UNIT + ROW_UNIT / 2;
   const y2 = to.row * ROW_UNIT + ROW_UNIT / 2;
   const x1 = to.col > from.col
@@ -83,6 +73,7 @@ function connectorPath(
 }
 
 export default function TabelaMataMataPage() {
+  const router = useRouter();
   const [resultado, setResultado] = useState<BracketResult | null>(null);
   const [placares, setPlacares] = useState<PlacaresState>({});
   const [salvando, setSalvando] = useState<Set<number>>(new Set());
@@ -182,7 +173,7 @@ export default function TabelaMataMataPage() {
     return m;
   }, [resultado]);
 
-  const faseTitulo = useMemo(() => {
+  const faseNome = useMemo(() => {
     if (!resultado) return new Map<number, string>();
     const m = new Map<number, string>();
     for (const fase of resultado.fases) {
@@ -197,6 +188,13 @@ export default function TabelaMataMataPage() {
         <NavHeader />
         <main className="mx-auto max-w-7xl px-6 py-8">
           <div className="mb-6 flex items-center gap-4">
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-1.5 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            >
+              <IconArrowLeft className="h-4 w-4" />
+              Voltar
+            </button>
             <h1 className="text-3xl font-bold">Mata-Mata</h1>
             <span className="text-sm text-zinc-500">Chaveamento eliminatório</span>
           </div>
@@ -248,22 +246,19 @@ export default function TabelaMataMataPage() {
                 const y = row * ROW_UNIT;
                 const podeEditar = !!p.mandante && !!p.visitante;
                 const salvandoAgora = salvando.has(p.numero);
-                const isRight = col >= 5;
+                const isRight = col >= 4;
 
                 return (
                   <div
                     key={num}
-                    className="absolute rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-800 dark:bg-zinc-900"
+                    className="absolute rounded-lg border border-zinc-200 bg-white p-2.5 dark:border-zinc-800 dark:bg-zinc-900"
                     style={{ left: x, top: y, width: CARD_W, height: CARD_H, zIndex: 1 }}
                   >
                     {p.mandante && p.visitante ? (
-                      <div className="flex h-full flex-col justify-between text-[12px]">
-                        <div className={`flex items-center gap-1 ${isRight ? "flex-row-reverse" : ""}`}>
-                          <div className="flex min-w-0 flex-1 items-center gap-1">
-                            <FlagIcon
-                              codigo={p.mandante.codigoPais}
-                              className="h-3.5 w-auto shrink-0 rounded-sm"
-                            />
+                      <div className="flex h-full flex-col gap-0.5 text-[13px]">
+                        <div className={`flex items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
+                          <div className={`flex min-w-0 flex-1 items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
+                            <FlagIcon codigo={p.mandante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />
                             <span
                               className={`truncate ${p.vencedor?.id === p.mandante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}
                             >
@@ -277,20 +272,17 @@ export default function TabelaMataMataPage() {
                               maxLength={2}
                               value={placar.golsMandante}
                               onChange={(e) => handleChange(p.numero, "golsMandante", e.target.value)}
-                              className={`w-6 shrink-0 rounded border px-0.5 py-0 text-center text-xs ${
+                              className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${
                                 salvandoAgora ? "opacity-50" : ""
                               } dark:border-zinc-700 dark:bg-zinc-800`}
                             />
                           ) : (
-                            <span className="w-6 shrink-0 text-center text-xs font-bold">{p.golsMandante ?? ""}</span>
+                            <span className="w-7 text-center text-xs font-bold">{p.golsMandante ?? ""}</span>
                           )}
                         </div>
-                        <div className={`flex items-center gap-1 ${isRight ? "flex-row-reverse" : ""}`}>
-                          <div className="flex min-w-0 flex-1 items-center gap-1">
-                            <FlagIcon
-                              codigo={p.visitante.codigoPais}
-                              className="h-3.5 w-auto shrink-0 rounded-sm"
-                            />
+                        <div className={`flex items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
+                          <div className={`flex min-w-0 flex-1 items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
+                            <FlagIcon codigo={p.visitante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />
                             <span
                               className={`truncate ${p.vencedor?.id === p.visitante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}
                             >
@@ -304,19 +296,18 @@ export default function TabelaMataMataPage() {
                               maxLength={2}
                               value={placar.golsVisitante}
                               onChange={(e) => handleChange(p.numero, "golsVisitante", e.target.value)}
-                              className={`w-6 shrink-0 rounded border px-0.5 py-0 text-center text-xs ${
+                              className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${
                                 salvandoAgora ? "opacity-50" : ""
                               } dark:border-zinc-700 dark:bg-zinc-800`}
                             />
                           ) : (
-                            <span className="w-6 shrink-0 text-center text-xs font-bold">{p.golsVisitante ?? ""}</span>
+                            <span className="w-7 text-center text-xs font-bold">{p.golsVisitante ?? ""}</span>
                           )}
                         </div>
-                        <div className={`flex items-center gap-2 text-[9px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}>
-                          <span>J{num}</span>
-                          <span>{faseTitulo.get(num) ?? ""}</span>
+                        <div className={`flex items-center gap-2 text-[10px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}>
+                          <span className="font-mono">J{num}</span>
+                          <span>{faseNome.get(num) ?? ""}</span>
                           <span>{p.dataHora ? new Date(p.dataHora).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : ""}</span>
-                          {LABELS[num] && <span className="text-zinc-500">{LABELS[num]}</span>}
                         </div>
                       </div>
                     ) : (
