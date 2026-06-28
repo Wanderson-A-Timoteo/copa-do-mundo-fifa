@@ -45,9 +45,9 @@ export const formatoCopa: BracketFormat = {
       label: "Quartas de final",
       partidas: [
         { numero: 97, dataHora: "2026-07-09T16:00:00-03:00", mandante: { tipo: "vencedor", partidaAnterior: 90 }, visitante: { tipo: "vencedor", partidaAnterior: 89 } },
-        { numero: 98, dataHora: "2026-07-10T15:00:00-03:00", mandante: { tipo: "vencedor", partidaAnterior: 92 }, visitante: { tipo: "vencedor", partidaAnterior: 93 } },
-        { numero: 99, dataHora: "2026-07-11T17:00:00-03:00", mandante: { tipo: "vencedor", partidaAnterior: 95 }, visitante: { tipo: "vencedor", partidaAnterior: 94 } },
-        { numero: 100, dataHora: "2026-07-11T21:00:00-03:00", mandante: { tipo: "vencedor", partidaAnterior: 96 }, visitante: { tipo: "vencedor", partidaAnterior: 91 } },
+        { numero: 98, dataHora: "2026-07-10T15:00:00-03:00", mandante: { tipo: "vencedor", partidaAnterior: 93 }, visitante: { tipo: "vencedor", partidaAnterior: 94 } },
+        { numero: 99, dataHora: "2026-07-11T17:00:00-03:00", mandante: { tipo: "vencedor", partidaAnterior: 91 }, visitante: { tipo: "vencedor", partidaAnterior: 92 } },
+        { numero: 100, dataHora: "2026-07-11T21:00:00-03:00", mandante: { tipo: "vencedor", partidaAnterior: 95 }, visitante: { tipo: "vencedor", partidaAnterior: 96 } },
       ],
     },
     {
