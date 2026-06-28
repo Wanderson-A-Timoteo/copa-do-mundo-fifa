@@ -6,7 +6,6 @@ import { FlagIcon } from "@/components/FlagIcon";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { computeBracket, type GrupoStanding, type BracketResult, type PartidaResolvida } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
-import type { PartidaBracket } from "@/lib/bracket-format";
 
 function getAuthHeaders(): Record<string, string> {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
@@ -26,99 +25,59 @@ function getUserId(): number | null {
 
 type PlacaresState = Record<number, { golsMandante: string; golsVisitante: string }>;
 
-const CARD_W = 200;
-const CARD_H = 74;
-const COL_GAP = 40;
+const CARD_W = 190;
+const CARD_H = 72;
+const COL_GAP = 32;
 const PITCH = CARD_W + COL_GAP;
-const ROW_UNIT = 36;
+const ROW_UNIT = 34;
 
-interface Connector {
-  from: { col: number; row: number };
-  to: { col: number; row: number };
-}
+const LAYOUT_DATA = {
+  nodes: [
+    [73, 0, 0], [75, 0, 1], [74, 0, 2], [77, 0, 3],
+    [79, 0, 4], [80, 0, 5], [83, 0, 6], [84, 0, 7],
+    [90, 1, 0.5], [89, 1, 2.5], [92, 1, 4.5], [93, 1, 6.5],
+    [97, 2, 1.5], [98, 2, 5.5],
+    [101, 3, 3.5],
+    [104, 4, 3.5], [103, 4, 7.5],
+    [102, 5, 3.5],
+    [99, 6, 1.5], [100, 6, 5.5],
+    [95, 7, 0.5], [94, 7, 2.5], [96, 7, 4.5], [91, 7, 6.5],
+    [86, 8, 0], [88, 8, 1], [81, 8, 2], [82, 8, 3],
+    [85, 8, 4], [87, 8, 5], [76, 8, 6], [78, 8, 7],
+  ] as [number, number, number][],
+  connections: [
+    [73, 90], [75, 90], [74, 89], [77, 89],
+    [79, 92], [80, 92], [83, 93], [84, 93],
+    [90, 97], [89, 97], [92, 98], [93, 98],
+    [97, 101], [98, 101],
+    [86, 95], [88, 95], [81, 94], [82, 94],
+    [85, 96], [87, 96], [76, 91], [78, 91],
+    [95, 99], [94, 99], [96, 100], [91, 100],
+    [99, 102], [100, 102],
+    [101, 104], [102, 104],
+    [101, 103], [102, 103],
+  ] as [number, number][],
+};
 
-interface LayoutNode {
-  numero: number;
-  col: number;
-  row: number;
-}
+const LABELS: Record<number, string> = {
+  73: "2A×2B", 74: "1E×3º", 75: "1F×2C", 76: "1C×2F",
+  77: "1I×3º", 78: "2E×2I", 79: "1A×3º", 80: "1L×3º",
+  81: "1D×3º", 82: "1G×3º", 83: "2K×2L", 84: "1H×2J",
+  85: "1B×3º", 86: "1J×2H", 87: "1K×3º", 88: "2D×2G",
+};
 
-function buildTree(): { nodes: Map<number, LayoutNode>; connectors: Connector[] } {
-  const fases = formatoCopa.fases;
-  const matchMap = new Map<number, PartidaBracket>();
-  const matchToCol = new Map<number, number>();
-  const fedBy = new Map<number, number[]>();
-
-  let colIdx = 0;
-  for (const fase of fases) {
-    for (const p of fase.partidas) {
-      matchMap.set(p.numero, p);
-      matchToCol.set(p.numero, colIdx);
-    }
-    colIdx++;
-  }
-
-  for (const fase of fases) {
-    for (const p of fase.partidas) {
-      const kids: number[] = [];
-      if (p.mandante.tipo === "vencedor") {
-        kids.push(p.mandante.partidaAnterior);
-      }
-      if (p.visitante.tipo === "vencedor") {
-        kids.push(p.visitante.partidaAnterior);
-      }
-      if (kids.length) fedBy.set(p.numero, kids);
-    }
-  }
-
-  const col0Ordered: number[] = [];
-  const col1 = [...matchMap.values()]
-    .filter((p) => matchToCol.get(p.numero) === 1)
-    .sort((a, b) => a.numero - b.numero);
-
-  for (const c1 of col1) {
-    const kids = fedBy.get(c1.numero);
-    if (kids) col0Ordered.push(...kids.filter((c) => matchToCol.get(c) === 0));
-  }
-
-  const rows = new Map<number, number>();
-  col0Ordered.forEach((n, i) => rows.set(n, i));
-
-  for (let col = 1; col <= 4; col++) {
-    const ms = [...matchMap.values()]
-      .filter((p) => matchToCol.get(p.numero) === col)
-      .sort((a, b) => a.numero - b.numero);
-    for (const m of ms) {
-      const kids = fedBy.get(m.numero);
-      if (kids && kids.length >= 2) {
-        rows.set(m.numero, ((rows.get(kids[0]) ?? 0) + (rows.get(kids[1]) ?? 0)) / 2);
-      }
-    }
-  }
-
-  const connectors: Connector[] = [];
-  for (const [parent, kids] of fedBy) {
-    for (const kid of kids) {
-      connectors.push({
-        from: { col: matchToCol.get(kid)!, row: rows.get(kid)! },
-        to: { col: matchToCol.get(parent)!, row: rows.get(parent)! },
-      });
-    }
-  }
-
-  const nodes = new Map<number, LayoutNode>();
-  for (const [num] of matchMap) {
-    nodes.set(num, { numero: num, col: matchToCol.get(num)!, row: rows.get(num) ?? 0 });
-  }
-
-  return { nodes, connectors };
-}
-
-function connectorPath(from: { col: number; row: number }, to: { col: number; row: number }): string {
-  const x1 = from.col * PITCH + CARD_W;
+function connectorPath(
+  from: { col: number; row: number },
+  to: { col: number; row: number }
+): string {
   const y1 = from.row * ROW_UNIT + ROW_UNIT / 2;
-  const x2 = to.col * PITCH;
   const y2 = to.row * ROW_UNIT + ROW_UNIT / 2;
+  const x1 = to.col > from.col
+    ? from.col * PITCH + CARD_W
+    : from.col * PITCH;
+  const x2 = to.col > from.col
+    ? to.col * PITCH
+    : to.col * PITCH + CARD_W;
   const mx = (x1 + x2) / 2;
   return `M ${x1} ${y1} L ${mx} ${y1} L ${mx} ${y2} L ${x2} ${y2}`;
 }
@@ -129,11 +88,16 @@ export default function TabelaMataMataPage() {
   const [salvando, setSalvando] = useState<Set<number>>(new Set());
   const timers = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
 
-  const tree = useMemo(() => buildTree(), []);
-  const maxCol = Math.max(...[...tree.nodes.values()].map((n) => n.col), 5);
-  const maxRow = Math.max(...[...tree.nodes.values()].map((n) => n.row), 16);
-  const svgW = PITCH * maxCol + CARD_W + 80;
-  const svgH = maxRow * ROW_UNIT + CARD_H + 40;
+  const layoutNodes = useMemo(() => {
+    const map = new Map<number, { col: number; row: number }>();
+    for (const [num, col, row] of LAYOUT_DATA.nodes) map.set(num, { col, row });
+    return map;
+  }, []);
+
+  const maxCol = Math.max(...LAYOUT_DATA.nodes.map((n) => n[1]));
+  const maxRow = Math.max(...LAYOUT_DATA.nodes.map((n) => n[2]));
+  const svgW = (maxCol + 1) * PITCH + CARD_W;
+  const svgH = (maxRow + 1) * ROW_UNIT + CARD_H;
 
   const carregar = useCallback(async () => {
     const usuarioId = getUserId();
@@ -218,7 +182,7 @@ export default function TabelaMataMataPage() {
     return m;
   }, [resultado]);
 
-  const faseLabels = useMemo(() => {
+  const faseTitulo = useMemo(() => {
     if (!resultado) return new Map<number, string>();
     const m = new Map<number, string>();
     for (const fase of resultado.fases) {
@@ -260,43 +224,52 @@ export default function TabelaMataMataPage() {
                 className="pointer-events-none absolute inset-0"
                 style={{ zIndex: 0 }}
               >
-                {tree.connectors.map((c, i) => (
-                  <path
-                    key={i}
-                    d={connectorPath(c.from, c.to)}
-                    fill="none"
-                    strokeWidth="1.5"
-                    className="stroke-zinc-300 dark:stroke-zinc-600"
-                  />
-                ))}
+                {LAYOUT_DATA.connections.map(([fromNum, toNum], i) => {
+                  const from = layoutNodes.get(fromNum);
+                  const to = layoutNodes.get(toNum);
+                  if (!from || !to) return null;
+                  return (
+                    <path
+                      key={i}
+                      d={connectorPath(from, to)}
+                      fill="none"
+                      strokeWidth="1.5"
+                      className="stroke-zinc-300 dark:stroke-zinc-600"
+                    />
+                  );
+                })}
               </svg>
 
-              {[...tree.nodes.values()].map((node) => {
-                const p = partidasPorNumero.get(node.numero);
+              {LAYOUT_DATA.nodes.map(([num, col, row]) => {
+                const p = partidasPorNumero.get(num);
                 if (!p) return null;
                 const placar = placares[p.numero] || { golsMandante: "", golsVisitante: "" };
-                const x = node.col * PITCH;
-                const y = node.row * ROW_UNIT;
+                const x = col * PITCH;
+                const y = row * ROW_UNIT;
                 const podeEditar = !!p.mandante && !!p.visitante;
                 const salvandoAgora = salvando.has(p.numero);
+                const isRight = col >= 5;
 
                 return (
                   <div
-                    key={node.numero}
-                    className="absolute rounded-lg border border-zinc-200 bg-white p-2.5 dark:border-zinc-800 dark:bg-zinc-900"
+                    key={num}
+                    className="absolute rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-800 dark:bg-zinc-900"
                     style={{ left: x, top: y, width: CARD_W, height: CARD_H, zIndex: 1 }}
                   >
                     {p.mandante && p.visitante ? (
-                      <div className="flex h-full flex-col justify-between text-[13px]">
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-1.5 truncate">
-                            <FlagIcon codigo={p.mandante.codigoPais} className="h-3.5 w-auto shrink-0 rounded-sm" />
+                      <div className="flex h-full flex-col justify-between text-[12px]">
+                        <div className={`flex items-center gap-1 ${isRight ? "flex-row-reverse" : ""}`}>
+                          <div className="flex min-w-0 flex-1 items-center gap-1">
+                            <FlagIcon
+                              codigo={p.mandante.codigoPais}
+                              className="h-3.5 w-auto shrink-0 rounded-sm"
+                            />
                             <span
                               className={`truncate ${p.vencedor?.id === p.mandante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}
                             >
                               {p.mandante.nome}
                             </span>
-                          </span>
+                          </div>
                           {podeEditar ? (
                             <input
                               type="text"
@@ -304,23 +277,26 @@ export default function TabelaMataMataPage() {
                               maxLength={2}
                               value={placar.golsMandante}
                               onChange={(e) => handleChange(p.numero, "golsMandante", e.target.value)}
-                              className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${
+                              className={`w-6 shrink-0 rounded border px-0.5 py-0 text-center text-xs ${
                                 salvandoAgora ? "opacity-50" : ""
                               } dark:border-zinc-700 dark:bg-zinc-800`}
                             />
                           ) : (
-                            <span className="w-7 text-center text-xs font-bold">{p.golsMandante ?? ""}</span>
+                            <span className="w-6 shrink-0 text-center text-xs font-bold">{p.golsMandante ?? ""}</span>
                           )}
                         </div>
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-1.5 truncate">
-                            <FlagIcon codigo={p.visitante.codigoPais} className="h-3.5 w-auto shrink-0 rounded-sm" />
+                        <div className={`flex items-center gap-1 ${isRight ? "flex-row-reverse" : ""}`}>
+                          <div className="flex min-w-0 flex-1 items-center gap-1">
+                            <FlagIcon
+                              codigo={p.visitante.codigoPais}
+                              className="h-3.5 w-auto shrink-0 rounded-sm"
+                            />
                             <span
                               className={`truncate ${p.vencedor?.id === p.visitante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}
                             >
                               {p.visitante.nome}
                             </span>
-                          </span>
+                          </div>
                           {podeEditar ? (
                             <input
                               type="text"
@@ -328,17 +304,19 @@ export default function TabelaMataMataPage() {
                               maxLength={2}
                               value={placar.golsVisitante}
                               onChange={(e) => handleChange(p.numero, "golsVisitante", e.target.value)}
-                              className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${
+                              className={`w-6 shrink-0 rounded border px-0.5 py-0 text-center text-xs ${
                                 salvandoAgora ? "opacity-50" : ""
                               } dark:border-zinc-700 dark:bg-zinc-800`}
                             />
                           ) : (
-                            <span className="w-7 text-center text-xs font-bold">{p.golsVisitante ?? ""}</span>
+                            <span className="w-6 shrink-0 text-center text-xs font-bold">{p.golsVisitante ?? ""}</span>
                           )}
                         </div>
-                        <div className="flex items-center justify-between text-[10px] text-zinc-400">
-                          <span>J{node.numero}</span>
+                        <div className={`flex items-center gap-2 text-[9px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}>
+                          <span>J{num}</span>
+                          <span>{faseTitulo.get(num) ?? ""}</span>
                           <span>{p.dataHora ? new Date(p.dataHora).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : ""}</span>
+                          {LABELS[num] && <span className="text-zinc-500">{LABELS[num]}</span>}
                         </div>
                       </div>
                     ) : (
