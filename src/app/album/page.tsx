@@ -37,7 +37,7 @@ export default function AlbumPage() {
     setToken(localStorage.getItem("token"));
   }, []);
 
-  const getAuthHeaders = () => {
+  const getAuthHeaders = (): Record<string, string> => {
     const t = localStorage.getItem("token");
     return t ? { Authorization: `Bearer ${t}` } : {};
   };
