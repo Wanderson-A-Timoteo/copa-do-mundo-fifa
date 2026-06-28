@@ -1,4 +1,5 @@
 import { BracketFormat, FonteTime } from "@/lib/bracket-format";
+import { lookupTerceiros } from "@/data/terceiros-annex-c";
 
 export interface SelecaoStanding {
   id: number;
@@ -110,22 +111,12 @@ export function computeBracket(
   );
 
   const terceirosAssignados = new Map<number, SelecaoStanding>();
-  const disponiveis = [...melhoresTerceiros];
-
-  for (const partida of todasPartidas) {
-    if (partida.mandante.tipo === "melhoresTerceiros") {
-      const idx = disponiveis.findIndex((t) => partida.mandante.grupos.includes(t.grupoId));
-      if (idx !== -1) {
-        terceirosAssignados.set(partida.numero, disponiveis[idx]);
-        disponiveis.splice(idx, 1);
-      }
-    }
-    if (partida.visitante.tipo === "melhoresTerceiros") {
-      const idx = disponiveis.findIndex((t) => partida.visitante.grupos.includes(t.grupoId));
-      if (idx !== -1) {
-        terceirosAssignados.set(partida.numero, disponiveis[idx]);
-        disponiveis.splice(idx, 1);
-      }
+  const gruposTerceiros = melhoresTerceiros.map((t) => t.grupoId);
+  const assign = lookupTerceiros(gruposTerceiros);
+  if (assign) {
+    for (const [matchNum, grupoId] of assign) {
+      const selecao = melhoresTerceiros.find((t) => t.grupoId === grupoId);
+      if (selecao) terceirosAssignados.set(matchNum, selecao);
     }
   }
 
