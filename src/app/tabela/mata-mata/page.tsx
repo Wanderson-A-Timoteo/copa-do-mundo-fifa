@@ -32,6 +32,19 @@ const CARD_H = 78;
 const COL_GAP = 48;
 const PITCH = CARD_W + COL_GAP;
 const ROW_UNIT = 100;
+const TOP_OFFSET = 48;
+
+const LABELS: { col: number; label: string }[] = [
+  { col: 0, label: "Segundas de final" },
+  { col: 1, label: "Oitavas de final" },
+  { col: 2, label: "Quartas de final" },
+  { col: 3, label: "Semifinal" },
+  { col: 4, label: "Decisão 3º lugar / Final" },
+  { col: 5, label: "Semifinal" },
+  { col: 6, label: "Quartas de final" },
+  { col: 7, label: "Oitavas de final" },
+  { col: 8, label: "Segundas de final" },
+];
 
 const LAYOUT_DATA = {
   nodes: [
@@ -62,8 +75,8 @@ const LAYOUT_DATA = {
 };
 
 function connectorPath(from: { col: number; row: number }, to: { col: number; row: number }): string {
-  const y1 = from.row * ROW_UNIT + CARD_H / 2;
-  const y2 = to.row * ROW_UNIT + CARD_H / 2;
+  const y1 = TOP_OFFSET + from.row * ROW_UNIT + CARD_H / 2;
+  const y2 = TOP_OFFSET + to.row * ROW_UNIT + CARD_H / 2;
   const x1 = to.col > from.col
     ? from.col * PITCH + CARD_W
     : from.col * PITCH;
@@ -90,7 +103,7 @@ export default function TabelaMataMataPage() {
   const maxCol = Math.max(...LAYOUT_DATA.nodes.map((n) => n[1]));
   const maxRow = Math.max(...LAYOUT_DATA.nodes.map((n) => n[2]));
   const svgW = (maxCol + 1) * PITCH + CARD_W;
-  const svgH = (maxRow + 1) * ROW_UNIT + CARD_H;
+  const svgH = TOP_OFFSET + (maxRow + 1) * ROW_UNIT + CARD_H;
 
   const carregar = useCallback(async () => {
     const usuarioId = getUserId();
@@ -238,6 +251,28 @@ export default function TabelaMataMataPage() {
                     />
                   );
                 })}
+                {LABELS.map(({ col, label }) => {
+                  const cx = col * PITCH + CARD_W / 2;
+                  return (
+                    <text
+                      key={col}
+                      x={cx}
+                      y={TOP_OFFSET / 2}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="fill-zinc-500 text-[11px] font-semibold dark:fill-zinc-400"
+                    >
+                      {col === 4 ? (
+                        <>
+                          <tspan x={cx} dy="-7">Decisão 3º lugar</tspan>
+                          <tspan x={cx} dy="14">/ Final</tspan>
+                        </>
+                      ) : (
+                        label
+                      )}
+                    </text>
+                  );
+                })}
               </svg>
 
               {LAYOUT_DATA.nodes.map(([num, col, row]) => {
@@ -245,7 +280,7 @@ export default function TabelaMataMataPage() {
                 if (!p) return null;
                 const placar = placares[p.numero] || { golsMandante: "", golsVisitante: "" };
                 const x = col * PITCH;
-                const y = row * ROW_UNIT;
+                const y = TOP_OFFSET + row * ROW_UNIT;
                 const podeEditar = !!p.mandante && !!p.visitante;
                 const salvandoAgora = salvando.has(p.numero);
                 const isRight = col >= 5;
