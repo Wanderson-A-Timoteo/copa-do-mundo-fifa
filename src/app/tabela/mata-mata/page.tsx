@@ -93,6 +93,7 @@ export default function TabelaMataMataPage() {
   const [placares, setPlacares] = useState<PlacaresState>({});
   const [salvando, setSalvando] = useState<Set<number>>(new Set());
   const timers = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
+  const gruposRef = useRef<GrupoStanding[]>([]);
 
   const layoutNodes = useMemo(() => {
     const map = new Map<number, { col: number; row: number }>();
@@ -118,6 +119,7 @@ export default function TabelaMataMataPage() {
     const dataPalpites = await resPalpites.json();
 
     const grupos: GrupoStanding[] = dataGrupos.grupos;
+    gruposRef.current = grupos;
     const palpites = dataPalpites.palpites.map(
       (p: { partidaId: number; golsMandante: number | null; golsVisitante: number | null }) => ({
         partidaId: p.partidaId,
@@ -161,22 +163,34 @@ export default function TabelaMataMataPage() {
   };
 
   const handleChange = (partidaId: number, campo: "golsMandante" | "golsVisitante", value: string) => {
-    setPlacares((prev) => ({
-      ...prev,
-      [partidaId]: { ...prev[partidaId], [campo]: value },
-    }));
+    const updated = { ...placares, [partidaId]: { ...placares[partidaId], [campo]: value } };
+    setPlacares(updated);
 
     if (timers.current[partidaId]) clearTimeout(timers.current[partidaId]);
-    timers.current[partidaId] = setTimeout(() => {
-      const placar = { ...placares[partidaId], [campo]: value };
-      const gM = placar.golsMandante === "" ? null : Number(placar.golsMandante);
-      const gV = placar.golsVisitante === "" ? null : Number(placar.golsVisitante);
-      if (gM === null && gV === null) {
-        salvarPalpite(partidaId, null, null);
-      } else if (gM !== null && gV !== null && !isNaN(gM) && !isNaN(gV)) {
+
+    const placar = updated[partidaId];
+    const gM = placar.golsMandante === "" ? null : Number(placar.golsMandante);
+    const gV = placar.golsVisitante === "" ? null : Number(placar.golsVisitante);
+    const completo = gM !== null && gV !== null && !isNaN(gM) && !isNaN(gV);
+    const vazio = gM === null && gV === null;
+
+    if (completo || vazio) {
+      timers.current[partidaId] = setTimeout(() => {
         salvarPalpite(partidaId, gM, gV);
+      }, 800);
+
+      if (gruposRef.current.length > 0 && completo) {
+        const palpitesInput = Object.entries(updated)
+          .filter(([, v]) => v.golsMandante !== "" && v.golsVisitante !== "")
+          .map(([id, v]) => ({
+            partidaId: Number(id),
+            golsMandante: Number(v.golsMandante),
+            golsVisitante: Number(v.golsVisitante),
+          }));
+        const r = computeBracket(formatoCopa, gruposRef.current, palpitesInput);
+        setResultado(r);
       }
-    }, 800);
+    }
   };
 
   const partidasPorNumero = useMemo(() => {
@@ -291,27 +305,26 @@ export default function TabelaMataMataPage() {
                     className="absolute rounded-lg border border-zinc-200 bg-white p-2.5 dark:border-zinc-800 dark:bg-zinc-900"
                     style={{ left: x, top: y, width: CARD_W, height: CARD_H, zIndex: 1 }}
                   >
-                    {p.mandante && p.visitante ? (
+                    {p.mandante || p.visitante ? (
                       <div className="flex h-full flex-col gap-0.5 text-[13px]">
                         <div className={`flex items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
                           <div className={`flex min-w-0 flex-1 items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
-                            <FlagIcon codigo={p.mandante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />
-                            <span
-                              className={`truncate ${p.vencedor?.id === p.mandante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}
-                            >
-                              {p.mandante.nome}
-                            </span>
+                            {p.mandante ? (
+                              <>
+                                <FlagIcon codigo={p.mandante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />
+                                <span className={`truncate ${p.vencedor?.id === p.mandante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}>
+                                  {p.mandante.nome}
+                                </span>
+                              </>
+                            ) : (
+                              <span className="text-zinc-400 italic text-[11px]">A definir</span>
+                            )}
                           </div>
                           {podeEditar ? (
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              maxLength={2}
+                            <input type="text" inputMode="numeric" maxLength={2}
                               value={placar.golsMandante}
                               onChange={(e) => handleChange(p.numero, "golsMandante", e.target.value)}
-                              className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${
-                                salvandoAgora ? "opacity-50" : ""
-                              } dark:border-zinc-700 dark:bg-zinc-800`}
+                              className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                             />
                           ) : (
                             <span className="w-7 text-center text-xs font-bold">{p.golsMandante ?? ""}</span>
@@ -319,23 +332,22 @@ export default function TabelaMataMataPage() {
                         </div>
                         <div className={`flex items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
                           <div className={`flex min-w-0 flex-1 items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
-                            <FlagIcon codigo={p.visitante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />
-                            <span
-                              className={`truncate ${p.vencedor?.id === p.visitante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}
-                            >
-                              {p.visitante.nome}
-                            </span>
+                            {p.visitante ? (
+                              <>
+                                <FlagIcon codigo={p.visitante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />
+                                <span className={`truncate ${p.vencedor?.id === p.visitante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}>
+                                  {p.visitante.nome}
+                                </span>
+                              </>
+                            ) : (
+                              <span className="text-zinc-400 italic text-[11px]">A definir</span>
+                            )}
                           </div>
                           {podeEditar ? (
-                            <input
-                              type="text"
-                              inputMode="numeric"
-                              maxLength={2}
+                            <input type="text" inputMode="numeric" maxLength={2}
                               value={placar.golsVisitante}
                               onChange={(e) => handleChange(p.numero, "golsVisitante", e.target.value)}
-                              className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${
-                                salvandoAgora ? "opacity-50" : ""
-                              } dark:border-zinc-700 dark:bg-zinc-800`}
+                              className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                             />
                           ) : (
                             <span className="w-7 text-center text-xs font-bold">{p.golsVisitante ?? ""}</span>
