@@ -7,12 +7,20 @@ import UserMenu from "./UserMenu";
 import ActiveLink from "./ActiveLink";
 import { IconTrophy } from "./Icons";
 
-export default function NavHeader() {
+export default function NavHeader({ transparent }: { transparent?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const headerClass = transparent
+    ? "absolute inset-x-0 top-0 z-30 flex items-center justify-between bg-transparent px-6 py-4 text-white"
+    : "sticky top-0 z-[110] flex items-center justify-between border-b border-zinc-200 bg-white/80 px-6 py-4 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80";
+
+  const btnHoverClass = transparent
+    ? "hover:bg-white/10"
+    : "hover:bg-zinc-100 dark:hover:bg-zinc-800";
 
   return (
     <>
-      <header className="sticky top-0 z-[110] flex items-center justify-between border-b border-zinc-200 bg-white/80 px-6 py-4 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80">
+      <header className={headerClass}>
         <Link href="/" className="inline-flex items-center gap-1.5 text-lg font-bold">
           <IconTrophy className="h-5 w-5" /> Copa 2026
         </Link>
@@ -30,7 +38,7 @@ export default function NavHeader() {
           <UserMenu />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="cursor-pointer rounded-lg p-2 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+            className={`cursor-pointer rounded-lg p-2 transition-colors ${btnHoverClass}`}
             aria-label="Abrir menu"
           >
             {mobileOpen ? (
