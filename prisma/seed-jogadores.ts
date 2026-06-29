@@ -1,7 +1,7 @@
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import "dotenv/config";
-import { JOGADORES_POR_SELECAO } from "./dados-jogadores";
+import { JOGADORES_POR_SELECAO, TECNICOS_POR_SELECAO } from "./dados-jogadores";
 
 const url = process.env.DATABASE_URL!;
 const adapter = new PrismaPg({ connectionString: url });
@@ -101,6 +101,21 @@ async function main() {
 
     totalJogadores += criados.length;
     totalFigurinhas += figurinhasData.length;
+  }
+
+  // 4. Atualizar técnico de cada seleção
+  for (const selecao of todasSelecoes) {
+    const nomeCorrigido = RENOMEAR_SELECOES[selecao.nome] ?? selecao.nome;
+    const tecnico = TECNICOS_POR_SELECAO[nomeCorrigido];
+    if (tecnico) {
+      await prisma.selecao.update({
+        where: { id: selecao.id },
+        data: { tecnico },
+      });
+      console.log(`  ${nomeCorrigido}: técnico "${tecnico}"`);
+    } else {
+      console.log(`  Aviso: Nenhum técnico encontrado para "${nomeCorrigido}"`);
+    }
   }
 
   console.log(`\nSeed concluído!`);
