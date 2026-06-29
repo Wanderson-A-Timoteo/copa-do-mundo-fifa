@@ -2,15 +2,16 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, MouseEvent } from "react";
 
-export default function ActiveLink({ href, children }: { href: string; children: ReactNode }) {
+export default function ActiveLink({ href, children, onClick }: { href: string; children: ReactNode; onClick?: (e: MouseEvent) => void }) {
   const pathname = usePathname();
   const isActive = pathname === href;
 
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={`group relative transition-all ${
         isActive ? "opacity-100 font-semibold" : "opacity-50 hover:opacity-100"
       }`}
