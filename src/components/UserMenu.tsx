@@ -66,7 +66,7 @@ export default function UserMenu() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-white/30 dark:border-zinc-600 dark:hover:bg-zinc-700/50"
+        className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-200/70 dark:border-zinc-600 dark:hover:bg-zinc-700/50"
       >
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-zinc-300 bg-white/20 text-xs font-bold dark:border-zinc-600 dark:bg-white/10">
           {initial}
