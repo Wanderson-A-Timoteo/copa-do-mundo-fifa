@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconStar } from "@/components/Icons";
-import Link from "next/link";
 import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface Figurinha {
@@ -111,6 +110,17 @@ export default function AlbumPage() {
     return "";
   };
 
+  const selecoesAgrupadas = useMemo(() => {
+    const map = new Map<number, { selecao: Figurinha['selecao']; figurinhas: Figurinha[] }>();
+    for (const fig of figurinhas) {
+      if (!map.has(fig.selecao.id)) {
+        map.set(fig.selecao.id, { selecao: fig.selecao, figurinhas: [] });
+      }
+      map.get(fig.selecao.id)!.figurinhas.push(fig);
+    }
+    return Array.from(map.values());
+  }, [figurinhas]);
+
   const progresso = figurinhas.length > 0
     ? Math.round((album.size / figurinhas.length) * 100)
     : 0;
@@ -166,48 +176,71 @@ export default function AlbumPage() {
             Carregando álbum...
           </div>
         ) : (
-          <div className="mt-6 grid grid-cols-4 gap-3 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10">
-            {figurinhas
-              .filter((f) => {
-                const status = statusFigurinha(f.id);
-                if (filtroStatus === "tenho" && status !== "tenho") return false;
-                if (filtroStatus === "faltando" && status !== "faltando") return false;
-                if (filtroStatus === "repetida" && status !== "repetida") return false;
-                return true;
+          <div className="mt-6 space-y-6">
+            {selecoesAgrupadas
+              .filter(({ figurinhas }) => {
+                return figurinhas.some(f => {
+                  const status = statusFigurinha(f.id);
+                  if (filtroStatus === "tenho" && status !== "tenho") return false;
+                  if (filtroStatus === "faltando" && status !== "faltando") return false;
+                  if (filtroStatus === "repetida" && status !== "repetida") return false;
+                  return true;
+                });
               })
-              .map((fig) => (
+              .map(({ selecao, figurinhas }) => {
+                const coletadas = figurinhas.filter(f => statusFigurinha(f.id) !== "faltando").length;
+                return (
                   <div
-                    key={fig.id}
-                    className={`relative flex aspect-[3/4] cursor-default flex-col items-center justify-center rounded-lg border p-1 text-center transition-all hover:scale-105 ${getStatusStyle(fig.id)} ${
-                      statusFigurinha(fig.id) === "faltando"
-                        ? "border-zinc-200 dark:border-zinc-800"
-                        : "border-zinc-300 dark:border-zinc-600"
-                    }`}
-                    style={{
-                      backgroundColor: statusFigurinha(fig.id) !== "faltando"
-                        ? (fig.selecao.corPrimaria || "#666") + "20"
-                        : undefined,
-                    }}
+                    key={selecao.id}
+                    className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
                   >
-                    <FlagIcon codigo={fig.selecao.codigoPais} className="mb-1 h-5 w-auto rounded-sm" />
-                  <span className="text-[10px] font-bold leading-tight">
-                    {fig.jogador?.nome || fig.selecao.nome}
-                  </span>
-                  <span className="text-[8px] text-zinc-400">
-                    #{fig.numero}
-                  </span>
-                  {fig.raridade === "rara" && (
-                    <span className="mt-0.5 text-[8px] font-bold text-amber-500">
-                      RARA
-                    </span>
-                  )}
-                  {statusFigurinha(fig.id) === "repetida" && (
-                    <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
-                      {album.get(fig.id)?.quantidade}
-                    </span>
-                  )}
-                </div>
-              ))}
+                    <div className="mb-4 flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <FlagIcon codigo={selecao.codigoPais} className="h-6 w-auto rounded-sm" />
+                        <h2 className="text-lg font-bold">{selecao.nome}</h2>
+                      </div>
+                      <span className="text-sm text-zinc-500">
+                        {coletadas}/{figurinhas.length}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-6">
+                      {figurinhas.map((fig) => {
+                        const status = statusFigurinha(fig.id);
+                        const cardClass = `relative flex aspect-[3/4] cursor-default flex-col items-center justify-center rounded-lg border p-2 text-center transition-all hover:scale-105 ${
+                          status === "faltando"
+                            ? "opacity-30 grayscale border-zinc-200 dark:border-zinc-700"
+                            : fig.raridade === "rara"
+                              ? "bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/30 border-amber-300 dark:border-amber-600"
+                              : "bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600"
+                        } ${status === "repetida" ? "ring-2 ring-amber-400" : ""}`;
+
+                        return (
+                          <div key={fig.id} className={cardClass}>
+                            <FlagIcon codigo={fig.selecao.codigoPais} className="mb-1 h-6 w-auto rounded-sm" />
+                            <span className="text-xs font-bold leading-tight">
+                              {fig.jogador?.nome || fig.selecao.nome}
+                            </span>
+                            <span className="text-[10px] text-zinc-400">
+                              #{fig.numero}
+                            </span>
+                            {fig.raridade === "rara" && (
+                              <span className="mt-0.5 text-[10px] font-bold text-amber-500">
+                                RARA
+                              </span>
+                            )}
+                            {status === "repetida" && (
+                              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
+                                {album.get(fig.id)?.quantidade}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
           </div>
         )}
       </main>
