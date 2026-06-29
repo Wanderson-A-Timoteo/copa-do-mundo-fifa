@@ -298,7 +298,7 @@ export default function TabelaMataMataPage() {
             </div>
           )}
 
-          <div className="overflow-x-auto pb-8">
+          <div className="hidden md:block overflow-x-auto pb-8">
             <div className="relative" style={{ width: svgW, minHeight: svgH }}>
               <svg
                 width={svgW}
@@ -423,6 +423,89 @@ export default function TabelaMataMataPage() {
                 );
               })}
             </div>
+          </div>
+
+          {/* Mobile: lista em coluna por fase */}
+          <div className="block md:hidden space-y-6">
+            {resultado && resultado.fases.map((fase) => (
+              <div key={fase.id}>
+                <h2 className="mb-3 text-lg font-bold">{fase.label}</h2>
+                <div className="space-y-2">
+                  {fase.partidas.map((p) => {
+                    const placar = placares[p.numero] || { golsMandante: "", golsVisitante: "" };
+                    const podeEditar = !!p.mandante && !!p.visitante;
+                    const salvandoAgora = salvando.has(p.numero);
+
+                    return (
+                      <div
+                        key={p.numero}
+                        className="rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900"
+                      >
+                        {p.mandante || p.visitante ? (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                                {p.mandante ? (
+                                  <>
+                                    <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                                    <span className={`truncate text-sm ${p.vencedor?.id === p.mandante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}>
+                                      {p.mandante.nome}
+                                    </span>
+                                  </>
+                                ) : (
+                                  <span className="text-sm italic text-zinc-400">A definir</span>
+                                )}
+                              </div>
+                              {podeEditar ? (
+                                <div className="flex items-center gap-1 shrink-0">
+                                  <input type="text" inputMode="numeric" maxLength={2}
+                                    value={placar.golsMandante}
+                                    onChange={(e) => handleChange(p.numero, "golsMandante", e.target.value)}
+                                    className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                  />
+                                  <span className="text-xs text-zinc-400">&times;</span>
+                                  <input type="text" inputMode="numeric" maxLength={2}
+                                    value={placar.golsVisitante}
+                                    onChange={(e) => handleChange(p.numero, "golsVisitante", e.target.value)}
+                                    className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                  />
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-1 shrink-0 text-sm font-bold">
+                                  <span>{p.golsMandante ?? ""}</span>
+                                  <span className="text-xs text-zinc-400">&times;</span>
+                                  <span>{p.golsVisitante ?? ""}</span>
+                                </div>
+                              )}
+                              <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5">
+                                {p.visitante ? (
+                                  <>
+                                    <span className={`truncate text-sm ${p.vencedor?.id === p.visitante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}>
+                                      {p.visitante.nome}
+                                    </span>
+                                    <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                                  </>
+                                ) : (
+                                  <span className="text-sm italic text-zinc-400">A definir</span>
+                                )}
+                              </div>
+                            </div>
+                            <div className="mt-1 flex items-center gap-2 text-[11px] text-zinc-400">
+                              <span className="font-mono">J{p.numero}</span>
+                              <span>{p.dataHora ? new Date(p.dataHora).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : ""}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="flex items-center justify-center py-2 text-sm text-zinc-400">
+                            A definir
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
         </main>
       </div>
