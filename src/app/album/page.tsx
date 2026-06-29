@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback, useMemo } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconStar } from "@/components/Icons";
@@ -31,6 +32,7 @@ export default function AlbumPage() {
   const [showAnimacao, setShowAnimacao] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [token, setToken] = useState<string | null>(null);
+  const [paginaAtual, setPaginaAtual] = useState(0);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
@@ -121,6 +123,31 @@ export default function AlbumPage() {
     return Array.from(map.values());
   }, [figurinhas]);
 
+  const selecoesFiltradas = useMemo(() => {
+    return selecoesAgrupadas.filter(({ figurinhas }) =>
+      figurinhas.some(f => {
+        const status = statusFigurinha(f.id);
+        if (filtroStatus === "tenho" && status !== "tenho") return false;
+        if (filtroStatus === "faltando" && status !== "faltando") return false;
+        if (filtroStatus === "repetida" && status !== "repetida") return false;
+        return true;
+      })
+    );
+  }, [selecoesAgrupadas, filtroStatus]);
+
+  useEffect(() => {
+    setPaginaAtual(0);
+  }, [filtroStatus]);
+
+  useEffect(() => {
+    function handleKey(e: KeyboardEvent) {
+      if (e.key === "ArrowLeft") setPaginaAtual(p => Math.max(0, p - 1));
+      if (e.key === "ArrowRight") setPaginaAtual(p => Math.min(selecoesFiltradas.length - 1, p + 1));
+    }
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selecoesFiltradas.length]);
+
   const progresso = figurinhas.length > 0
     ? Math.round((album.size / figurinhas.length) * 100)
     : 0;
@@ -175,37 +202,36 @@ export default function AlbumPage() {
           <div className="mt-20 text-center text-zinc-500">
             Carregando álbum...
           </div>
-        ) : (
-          <div className="mt-6 space-y-6">
-            {selecoesAgrupadas
-              .filter(({ figurinhas }) => {
-                return figurinhas.some(f => {
-                  const status = statusFigurinha(f.id);
-                  if (filtroStatus === "tenho" && status !== "tenho") return false;
-                  if (filtroStatus === "faltando" && status !== "faltando") return false;
-                  if (filtroStatus === "repetida" && status !== "repetida") return false;
-                  return true;
-                });
-              })
-              .map(({ selecao, figurinhas }) => {
-                const coletadas = figurinhas.filter(f => statusFigurinha(f.id) !== "faltando").length;
+        ) : selecoesFiltradas.length > 0 ? (
+          <div className="mt-6">
+            <AnimatePresence mode="wait">
+              {(() => {
+                const { selecao, figurinhas } = selecoesFiltradas[paginaAtual];
+                const selecaoAtual = selecao;
+                const figurinhasAtuais = figurinhas;
+                const coletadas = figurinhasAtuais.filter(f => statusFigurinha(f.id) !== "faltando").length;
+
                 return (
-                  <div
-                    key={selecao.id}
+                  <motion.div
+                    key={selecaoAtual.id}
+                    initial={{ opacity: 0, x: 50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -50 }}
+                    transition={{ duration: 0.2 }}
                     className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
                   >
                     <div className="mb-4 flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <FlagIcon codigo={selecao.codigoPais} className="h-6 w-auto rounded-sm" />
-                        <h2 className="text-lg font-bold">{selecao.nome}</h2>
+                        <FlagIcon codigo={selecaoAtual.codigoPais} className="h-6 w-auto rounded-sm" />
+                        <h2 className="text-lg font-bold">{selecaoAtual.nome}</h2>
                       </div>
                       <span className="text-sm text-zinc-500">
-                        {coletadas}/{figurinhas.length}
+                        {coletadas}/{figurinhasAtuais.length}
                       </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-6">
-                      {figurinhas.map((fig) => {
+                      {figurinhasAtuais.map((fig) => {
                         const status = statusFigurinha(fig.id);
                         const cardClass = `relative flex aspect-[3/4] cursor-default flex-col items-center justify-center rounded-lg border p-2 text-center transition-all hover:scale-105 ${
                           status === "faltando"
@@ -238,9 +264,34 @@ export default function AlbumPage() {
                         );
                       })}
                     </div>
-                  </div>
+                  </motion.div>
                 );
-              })}
+              })()}
+            </AnimatePresence>
+
+            <div className="mt-6 flex items-center justify-between">
+              <button
+                onClick={() => setPaginaAtual(p => Math.max(0, p - 1))}
+                disabled={paginaAtual === 0}
+                className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              >
+                ◀ Anterior
+              </button>
+              <span className="text-sm text-zinc-500">
+                Página {paginaAtual + 1} de {selecoesFiltradas.length}
+              </span>
+              <button
+                onClick={() => setPaginaAtual(p => Math.min(selecoesFiltradas.length - 1, p + 1))}
+                disabled={paginaAtual === selecoesFiltradas.length - 1}
+                className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              >
+                Próxima ▶
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-20 text-center text-zinc-500">
+            Nenhuma seleção encontrada
           </div>
         )}
       </main>
