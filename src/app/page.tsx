@@ -1,10 +1,7 @@
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
-import UserMenu from "@/components/UserMenu";
 import HeroCarousel from "@/components/HeroCarousel";
-import ActiveLink from "@/components/ActiveLink";
+import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
-import { IconTrophy } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
 
 export default function Home() {
@@ -12,22 +9,9 @@ export default function Home() {
     <PaginaAnimada>
       <div className="relative flex min-h-screen flex-col">
       <HeroCarousel />
-      <header className="relative z-20 flex items-center justify-between px-6 py-4">
-        <h1 className="inline-flex items-center gap-1.5 text-lg font-bold text-white">
-          <IconTrophy className="h-5 w-5" /> Copa 2026
-        </h1>
-        <nav className="flex items-center gap-4 text-sm text-white">
-          <ActiveLink href="/">Início</ActiveLink>
-          <ActiveLink href="/selecoes">Seleções</ActiveLink>
-          <ActiveLink href="/tabela">Tabela</ActiveLink>
-          <ActiveLink href="/album">Álbum</ActiveLink>
-          <ActiveLink href="/estadios">Estádios</ActiveLink>
-          <ThemeToggle />
-          <UserMenu />
-        </nav>
-      </header>
+      <NavHeader transparent />
 
-      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 text-center">
+      <main className="relative z-20 flex flex-1 flex-col items-center justify-center px-6 pt-16 text-center">
         <div>
           <h2 className="max-w-2xl text-4xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
             Copa do Mundo FIFA 2026
