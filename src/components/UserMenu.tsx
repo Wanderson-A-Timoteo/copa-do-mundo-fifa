@@ -66,7 +66,7 @@ export default function UserMenu() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-white/30 dark:border-zinc-600 dark:hover:bg-zinc-700/50"
+        className="flex cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-white/30 dark:border-zinc-600 dark:hover:bg-zinc-700/50"
       >
         <span className="flex h-7 w-7 items-center justify-center rounded-full border border-zinc-300 bg-white/20 text-xs font-bold dark:border-zinc-600 dark:bg-white/10">
           {initial}
@@ -75,7 +75,7 @@ export default function UserMenu() {
       </button>
 
       {open && (
-        <div className="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-zinc-200 bg-white py-2 text-zinc-800 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
+        <div className="absolute right-0 z-[120] mt-2 w-64 rounded-xl border border-zinc-200 bg-white py-2 text-zinc-800 shadow-lg dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200">
           <div className="border-b border-zinc-100 px-4 pb-3 dark:border-zinc-800">
             <div className="flex items-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-200 text-lg font-bold text-zinc-800 dark:bg-zinc-700 dark:text-zinc-200">
@@ -130,7 +130,7 @@ export default function UserMenu() {
 
             <button
               onClick={() => setShowSairModal(true)}
-              className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="flex w-full cursor-pointer items-center gap-3 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
             >
               <IconLogout className="h-4 w-4 text-red-400" />
               Sair
