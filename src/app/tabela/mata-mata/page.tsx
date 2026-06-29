@@ -428,7 +428,7 @@ export default function TabelaMataMataPage() {
           {/* Mobile: lista em coluna por fase */}
           <div className="block md:hidden space-y-6">
             {resultado && resultado.fases.map((fase) => (
-              <div key={fase.id}>
+              <div key={fase.key}>
                 <h2 className="mb-3 text-lg font-bold">{fase.label}</h2>
                 <div className="space-y-2">
                   {fase.partidas.map((p) => {
