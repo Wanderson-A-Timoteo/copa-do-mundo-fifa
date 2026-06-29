@@ -95,7 +95,7 @@ export default function PlacarPage() {
       .then((r) => r.json())
       .then((d) => {
         setPartidas(d.partidas);
-        fetch("/api/palpite", { headers })
+        fetch(`/api/palpite?usuarioId=${user.id}`, { headers })
           .then((r) => r.json())
           .then((palData) => {
             const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
