@@ -66,38 +66,38 @@ export default function TabelaPage() {
       <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-7xl px-6 py-8">
-        <div className="mb-6 flex items-center gap-4">
+        <div className="mb-6 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
           <h1 className="text-3xl font-bold">Tabela de Jogos</h1>
           <div className="flex gap-2">
             <button
               onClick={() => router.push("/tabela")}
-              className={`rounded-lg px-4 py-1.5 text-sm transition-colors ${
+              className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm transition-colors ${
                 pathname === "/tabela"
                   ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "border border-zinc-300 dark:border-zinc-700"
+                  : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
               }`}
             >
               Grupos
             </button>
             <button
-              onClick={() => router.push("/tabela/mata-mata")}
-              className={`rounded-lg px-4 py-1.5 text-sm transition-colors ${
-                pathname === "/tabela/mata-mata"
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "border border-zinc-300 dark:border-zinc-700"
-              }`}
-            >
-              Mata-Mata
-            </button>
-            <button
               onClick={() => router.push("/tabela/placar")}
-              className={`rounded-lg px-4 py-1.5 text-sm transition-colors ${
+              className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm transition-colors ${
                 pathname === "/tabela/placar"
                   ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "border border-zinc-300 dark:border-zinc-700"
+                  : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
               }`}
             >
               Placar
+            </button>
+            <button
+              onClick={() => router.push("/tabela/mata-mata")}
+              className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm transition-colors ${
+                pathname === "/tabela/mata-mata"
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              }`}
+            >
+              Mata-Mata
             </button>
           </div>
         </div>
