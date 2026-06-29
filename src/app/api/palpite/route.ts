@@ -13,12 +13,14 @@ function getUserId(request: Request): number | null {
 }
 
 export async function GET(request: Request) {
-  const usuarioId = getUserId(request);
+  const { searchParams } = new URL(request.url);
+  const queryUsuarioId = searchParams.get("usuarioId");
+  const usuarioId = queryUsuarioId ? Number(queryUsuarioId) : getUserId(request);
+
   if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
 
-  const { searchParams } = new URL(request.url);
   const partidaId = searchParams.get("partidaId");
 
   const where: Record<string, unknown> = { usuarioId };
