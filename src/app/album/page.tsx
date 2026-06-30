@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback, useMemo } from "react";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
-import { IconStar } from "@/components/Icons";
+import { IconStar, IconUser } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface Figurinha {
@@ -32,10 +33,17 @@ export default function AlbumPage() {
   const [showAnimacao, setShowAnimacao] = useState(false);
   const [carregando, setCarregando] = useState(true);
   const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<{ id: number; nome: string } | null>(null);
   const [paginaAtual, setPaginaAtual] = useState(0);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
+  }, []);
+
+  useEffect(() => {
+    const raw = localStorage.getItem("user");
+    const cached = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
+    if (cached) setUser(cached);
   }, []);
 
   const getAuthHeaders = (): Record<string, string> => {
@@ -164,13 +172,23 @@ export default function AlbumPage() {
               {album.size} de {figurinhas.length} figurinhas ({progresso}%)
             </p>
           </div>
-          <button
-            onClick={abrirPacote}
-            disabled={abrindo}
-            className="rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-          >
-            {abrindo ? "Abrindo..." : "🎁 Abrir Pacotinho"}
-          </button>
+          {user ? (
+            <button
+              onClick={abrirPacote}
+              disabled={abrindo}
+              className="rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+            >
+              {abrindo ? "Abrindo..." : "🎁 Abrir Pacotinho"}
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 rounded-lg border border-zinc-300 px-6 py-3 text-sm font-medium transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            >
+              <IconUser className="h-4 w-4 text-zinc-400" />
+              Faça login para abrir pacotinhos
+            </Link>
+          )}
         </div>
 
         <div className="mt-4 h-3 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
