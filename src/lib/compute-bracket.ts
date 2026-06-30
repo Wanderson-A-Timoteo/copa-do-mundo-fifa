@@ -85,6 +85,8 @@ export function computeBracket(
   const terceiro = new Map<string, SelecaoStanding>();
 
   for (const grupo of grupos) {
+    const temJogos = grupo.selecoes.some((s) => s.j > 0);
+    if (!temJogos) continue;
     const [p1, p2, p3] = grupo.selecoes;
     if (p1) primeiro.set(grupo.id, p1);
     if (p2) segundo.set(grupo.id, p2);
