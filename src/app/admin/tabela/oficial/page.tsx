@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 
-import { IconClock, IconMapPin } from "@/components/Icons";
+import { IconShield, IconClock, IconMapPin } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { computeBracket, type GrupoStanding, type BracketResult } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
@@ -37,7 +38,8 @@ function formatarDataAgrupamento(iso: string) {
   return d.toLocaleDateString("pt-BR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "long" });
 }
 
-export default function OficialPage() {
+export default function AdminOficialPage() {
+  const router = useRouter();
   const [partidas, setPartidas] = useState<Partida[]>([]);
   const [placares, setPlacares] = useState<Record<number, { golsMandante: string; golsVisitante: string }>>({});
   const [role, setRole] = useState<string | null>(null);
@@ -48,13 +50,25 @@ export default function OficialPage() {
   const [salvandoKnockout, setSalvandoKnockout] = useState<Set<number>>(new Set());
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
     fetch("/api/auth/me", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.ok ? r.json() : { user: null })
-      .then((d) => setRole(d.user?.role ?? null))
-      .catch(() => setRole(null));
-  }, []);
+      .then((d) => {
+        const r = d.user?.role ?? null;
+        setRole(r);
+        if (r !== "ADMIN") router.replace("/login");
+      })
+      .catch(() => {
+        setRole(null);
+        router.replace("/login");
+      });
+  }, [router]);
 
   useEffect(() => {
     fetch("/api/partidas?fase=GRUPOS")
@@ -209,20 +223,43 @@ export default function OficialPage() {
     return acc;
   }, {});
 
+  if (!role) {
+    return (
+      <div className="min-h-screen">
+        <NavHeader />
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen">
+        <NavHeader />
+        <main className="mx-auto flex max-w-3xl flex-col items-center px-6 py-20 text-center">
+          <IconShield className="h-12 w-12 text-zinc-300 dark:text-zinc-700" />
+          <h2 className="mt-4 text-2xl font-bold">Acesso restrito</h2>
+          <p className="mt-2 text-zinc-500">
+            Apenas administradores podem acessar esta página.
+          </p>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <PaginaAnimada>
       <div className="min-h-screen">
       <NavHeader />
       <main className="mx-auto max-w-3xl px-6 py-8">
         <a
-          href="/tabela"
+          href="/admin"
           className="inline-block text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
         >
           ← Voltar
         </a>
         <h1 className="mt-2 text-3xl font-bold">Resultados Oficiais</h1>
         <p className="mt-1 text-zinc-500">
-           {isAdmin ? "Cadastre os resultados reais das partidas" : "Resultados oficiais — grupos e mata‑mata"}
+          Cadastre os resultados reais das partidas
         </p>
 
         <div className="mt-8 space-y-8">
