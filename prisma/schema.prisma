@@ -74,11 +74,14 @@ model Jogador {
 
 model Estadio {
   id          Int      @id @default(autoincrement())
+  slug        String   @unique
   nome        String
   cidade      String
   pais        String
   capacidade  Int
   fotoUrl     String?
+  descricao   String?
+  historia    String?
   latitude    Float?
   longitude   Float?
   partidas    Partida[]
