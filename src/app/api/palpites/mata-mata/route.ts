@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
 
-  const { partidaId, golsMandante, golsVisitante } = await request.json();
+  const { partidaId, golsMandante, golsVisitante, penaltisMandante, penaltisVisitante } = await request.json();
 
   if (!partidaId || typeof partidaId !== "number") {
     return NextResponse.json({ erro: "partidaId é obrigatório" }, { status: 400 });
@@ -55,10 +55,14 @@ export async function POST(request: Request) {
     );
   }
 
+  const data: Record<string, unknown> = { golsMandante, golsVisitante };
+  if (penaltisMandante !== undefined) data.penaltisMandante = penaltisMandante;
+  if (penaltisVisitante !== undefined) data.penaltisVisitante = penaltisVisitante;
+
   const palpite = await prisma.palpiteMataMata.upsert({
     where: { usuarioId_partidaId: { usuarioId, partidaId } },
-    create: { usuarioId, partidaId, golsMandante, golsVisitante },
-    update: { golsMandante, golsVisitante },
+    create: { usuarioId, partidaId, ...data } as never,
+    update: data,
   });
 
   return NextResponse.json({ palpite });
