@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { IconUser, IconShield, IconLogout } from "./Icons";
+import { IconUser, IconShield, IconTrophy, IconLogout } from "./Icons";
 import ModalConfirm from "./ModalConfirm";
 
 interface User {
@@ -118,14 +118,24 @@ export default function UserMenu() {
             </Link>
 
             {isAdmin && (
-              <Link
-                href="/admin"
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
-              >
-                <IconShield className="h-4 w-4 text-zinc-400" />
-                Admin
-              </Link>
+              <>
+                <Link
+                  href="/admin"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                >
+                  <IconShield className="h-4 w-4 text-zinc-400" />
+                  Admin
+                </Link>
+                <Link
+                  href="/admin/tabela/oficial"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                >
+                  <IconTrophy className="h-4 w-4 text-zinc-400" />
+                  Oficial
+                </Link>
+              </>
             )}
 
             <button

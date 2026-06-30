@@ -11,10 +11,16 @@ export async function PATCH(
   if (!auth?.startsWith("Bearer ")) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
+  let payload;
   try {
-    verificarToken(auth.slice(7));
+    payload = verificarToken(auth.slice(7));
   } catch {
     return NextResponse.json({ erro: "Token inválido" }, { status: 401 });
+  }
+
+  const user = await prisma.user.findUnique({ where: { id: payload.userId } });
+  if (!user || user.role !== "ADMIN") {
+    return NextResponse.json({ erro: "Não autorizado" }, { status: 403 });
   }
 
   const { golsMandante, golsVisitante } = await _request.json();
