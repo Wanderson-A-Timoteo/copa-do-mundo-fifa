@@ -6,6 +6,7 @@ import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 
 import { IconTrophy } from "@/components/Icons";
+import ModalLogin from "@/components/ModalLogin";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { computeBracket, type GrupoStanding, type BracketResult, type PartidaResolvida } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
@@ -113,8 +114,14 @@ export default function TabelaMataMataPage() {
   const [resultado, setResultado] = useState<BracketResult | null>(null);
   const [placares, setPlacares] = useState<PlacaresState>({});
   const [salvando, setSalvando] = useState<Set<number>>(new Set());
+  const [token, setToken] = useState<string | null>(null);
+  const [showModalLogin, setShowModalLogin] = useState(false);
   const timers = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
   const gruposRef = useRef<GrupoStanding[]>([]);
+
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, []);
 
   const layoutNodes = useMemo(() => {
     const map = new Map<number, { col: number; row: number }>();
@@ -277,18 +284,26 @@ export default function TabelaMataMataPage() {
       <div className="min-h-screen">
         <NavHeader />
         <main className="mx-auto max-w-7xl px-6 py-8">
-          <div className="mb-6 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
-            <a
-              href="/tabela"
-              className="inline-block text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
-            >
-              ← Voltar
-            </a>
-            <h1 className="text-3xl font-bold">Mata-Mata</h1>
-            <span className="text-sm text-zinc-500">Chaveamento eliminatório</span>
-          </div>
+          <a
+            href="/tabela"
+            className="inline-block text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+          >
+            ← Voltar
+          </a>
+          <h1 className="mt-2 text-3xl font-bold">Mata-Mata</h1>
+          <p className="mt-1 text-zinc-500">Chaveamento eliminatório</p>
 
-          {!resultado ? (
+          {!token ? (
+            <div className="py-16 text-center">
+              <p className="text-lg text-zinc-500">Faça login para palpitar nos jogos</p>
+              <button
+                onClick={() => setShowModalLogin(true)}
+                className="mt-4 rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              >
+                Fazer Login
+              </button>
+            </div>
+          ) : !resultado ? (
             <div className="flex items-center justify-center py-20">
               <p className="text-zinc-500">Carregando chaveamento...</p>
             </div>
@@ -530,6 +545,10 @@ export default function TabelaMataMataPage() {
           </div>
           </>)}
         </main>
+
+        {showModalLogin && (
+          <ModalLogin onClose={() => setShowModalLogin(false)} />
+        )}
       </div>
     </PaginaAnimada>
   );
