@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
-import { IconArrowLeft } from "@/components/Icons";
+
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { computeBracket, type GrupoStanding, type BracketResult, type PartidaResolvida } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
@@ -271,14 +271,13 @@ export default function TabelaMataMataPage() {
       <div className="min-h-screen">
         <NavHeader />
         <main className="mx-auto max-w-7xl px-6 py-8">
-          <div className="mb-6 flex items-center gap-4">
-            <button
-              onClick={() => router.back()}
-              className="flex items-center gap-1.5 rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          <div className="mb-6 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
+            <a
+              href="/tabela"
+              className="inline-block text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
             >
-              <IconArrowLeft className="h-4 w-4" />
-              Voltar
-            </button>
+              ← Voltar
+            </a>
             <h1 className="text-3xl font-bold">Mata-Mata</h1>
             <span className="text-sm text-zinc-500">Chaveamento eliminatório</span>
           </div>
