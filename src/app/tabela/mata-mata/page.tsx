@@ -529,7 +529,6 @@ export default function TabelaMataMataPage() {
             ))}
           </div>
           </>)}
-          </div>
         </main>
       </div>
     </PaginaAnimada>
