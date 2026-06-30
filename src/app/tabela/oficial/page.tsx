@@ -387,9 +387,10 @@ export default function OficialPage() {
                                   />
                                 </div>
                                 {placarEmpatado && (
-                                  <div className="mt-0.5 flex items-center gap-2 text-xs sm:gap-2.5">
-                                    <span className="text-zinc-400">Penáltis</span>
-                                    <input
+                                  <div className="mt-1 flex flex-col items-center gap-0.5">
+                                    <span className="text-xs text-zinc-400">Penáltis</span>
+                                    <div className="flex items-center gap-2 sm:gap-2.5">
+                                      <input
                                       type="number"
                                       min="0"
                                       max="99"
@@ -419,7 +420,8 @@ export default function OficialPage() {
                                       className={`w-10 rounded border border-zinc-300 px-1.5 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-12 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
                                     />
                                   </div>
-                                )}
+                                </div>
+                              )}
                               </div>
                             ) : (
                               <div className="flex flex-col items-center gap-0.5">
