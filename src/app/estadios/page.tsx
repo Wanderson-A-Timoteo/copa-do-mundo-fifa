@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface Estadio {
   id: number;
+  slug: string;
   nome: string;
   cidade: string;
   pais: string;
@@ -40,9 +42,10 @@ export default function EstadiosPage() {
               <h2 className="mb-4 text-xl font-bold">{pais}</h2>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {estadiosDoPais.map((e) => (
-                  <div
+                  <Link
                     key={e.id}
-                    className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800"
+                    href={`/estadios/${e.slug}`}
+                    className="block overflow-hidden rounded-xl border border-zinc-200 transition-shadow hover:shadow-md dark:border-zinc-800"
                   >
                     {e.fotoUrl && (
                       <img
@@ -63,7 +66,7 @@ export default function EstadiosPage() {
                         lugares
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </section>
