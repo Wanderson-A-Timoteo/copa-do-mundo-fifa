@@ -27,7 +27,7 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
         <nav className="hidden items-center gap-4 text-sm md:flex">
           <ActiveLink href="/">Início</ActiveLink>
           <ActiveLink href="/selecoes">Seleções</ActiveLink>
-          <ActiveLink href="/tabela">Tabela</ActiveLink>
+          <ActiveLink href="/tabela">Classificação</ActiveLink>
           <ActiveLink href="/album">Álbum</ActiveLink>
           <ActiveLink href="/estadios">Estádios</ActiveLink>
           <ThemeToggle />
