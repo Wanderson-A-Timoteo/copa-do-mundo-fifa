@@ -15,6 +15,7 @@ export const PAISES_ISO: Record<string, string> = {
   "Costa do Marfim": "ci",
   Croácia: "hr",
   "Curaçau": "cw",
+  "Curaçao": "cw",
   Egito: "eg",
   Equador: "ec",
   Escócia: "gb-sct",
