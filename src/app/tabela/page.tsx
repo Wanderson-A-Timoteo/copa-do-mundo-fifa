@@ -63,7 +63,7 @@ export default function TabelaPage() {
                   : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
               }`}
             >
-              Placar
+              Adicionar Placar
             </button>
             <button
               onClick={() => router.push("/tabela/mata-mata")}
@@ -73,7 +73,7 @@ export default function TabelaPage() {
                   : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
               }`}
             >
-              Mata-Mata
+              Adicionar Mata-Mata
             </button>
 
           </div>

@@ -299,7 +299,7 @@ export default function TabelaMataMataPage() {
                 Chaveamento ainda não disponível
               </h2>
               <p className="mt-2 max-w-md text-sm text-zinc-400">
-                O mata-mata é preenchido automaticamente conforme você registra os resultados na página <a href="/tabela/placar" className="underline hover:text-zinc-600 dark:hover:text-zinc-300">Placar</a>.
+                O mata-mata é preenchido automaticamente conforme você registra os resultados na página <a href="/tabela/placar" className="underline hover:text-zinc-600 dark:hover:text-zinc-300">Adicionar Placar</a>.
               </p>
             </div>
           ) : (
