@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 
 import { IconClock, IconMapPin } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { computeBracket, type GrupoStanding, type BracketResult } from "@/lib/compute-bracket";
+import { formatoCopa } from "@/data/formato-copa";
 
 interface Partida {
   id: number;
@@ -40,6 +42,8 @@ export default function OficialPage() {
   const [placares, setPlacares] = useState<Record<number, { golsMandante: string; golsVisitante: string }>>({});
   const [role, setRole] = useState<string | null>(null);
   const [salvando, setSalvando] = useState<Set<number>>(new Set());
+  const [resultadoMataMata, setResultadoMataMata] = useState<BracketResult | null>(null);
+  const [loadingKnockout, setLoadingKnockout] = useState(true);
 
   useEffect(() => {
     fetch("/api/auth/me", {
@@ -68,6 +72,20 @@ export default function OficialPage() {
         setPlacares(p);
       });
   }, []);
+
+  const recalcularMataMata = useCallback(() => {
+    setLoadingKnockout(true);
+    fetch("/api/grupos")
+      .then((r) => r.json())
+      .then((d) => {
+        const grupos: GrupoStanding[] = d.grupos ?? [];
+        const r = computeBracket(formatoCopa, grupos, []);
+        setResultadoMataMata(r);
+      })
+      .finally(() => setLoadingKnockout(false));
+  }, []);
+
+  useEffect(() => { recalcularMataMata(); }, [recalcularMataMata]);
 
   const isAdmin = role === "ADMIN";
 
@@ -102,6 +120,7 @@ export default function OficialPage() {
             : pa
         )
       );
+      recalcularMataMata();
     } catch {
       // ignore
     } finally {
@@ -133,7 +152,7 @@ export default function OficialPage() {
         </a>
         <h1 className="mt-2 text-3xl font-bold">Resultados Oficiais</h1>
         <p className="mt-1 text-zinc-500">
-          {isAdmin ? "Cadastre os resultados reais das partidas" : "Resultados oficiais da fase de grupos"}
+           {isAdmin ? "Cadastre os resultados reais das partidas" : "Resultados oficiais — grupos e mata‑mata"}
         </p>
 
         <div className="mt-8 space-y-8">
@@ -228,6 +247,79 @@ export default function OficialPage() {
             </section>
           ))}
         </div>
+
+        {/* Mata‑mata */}
+        {loadingKnockout ? (
+          <div className="mt-12 text-center text-sm text-zinc-500">Carregando chaveamento...</div>
+        ) : resultadoMataMata ? (
+          <div className="mt-12 space-y-10">
+            <h2 className="text-2xl font-bold">Fase Eliminatória</h2>
+            {resultadoMataMata.fases.map((fase) => {
+              const todasNulas = fase.partidas.every((p) => !p.mandante && !p.visitante);
+              if (todasNulas) return null;
+              return (
+                <section key={fase.key}>
+                  <h3 className="mb-4 text-lg font-bold">{fase.label}</h3>
+                  <div className="space-y-3">
+                    {fase.partidas.map((p) => {
+                      if (!p.mandante && !p.visitante) return null;
+                      return (
+                        <div
+                          key={p.numero}
+                          className="rounded-xl border border-zinc-200 bg-white p-4 transition-shadow dark:border-zinc-800 dark:bg-zinc-900 sm:p-6"
+                        >
+                          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                            <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+                              {p.mandante ? (
+                                <>
+                                  <FlagIcon codigo={p.mandante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                                  <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
+                                </>
+                              ) : (
+                                <span className="text-sm italic text-zinc-400">A definir</span>
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-2 sm:gap-3">
+                              <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
+                                {p.golsMandante !== null ? p.golsMandante : "-"}
+                              </span>
+                              <span className="text-sm text-zinc-400 sm:text-base">x</span>
+                              <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
+                                {p.golsVisitante !== null ? p.golsVisitante : "-"}
+                              </span>
+                            </div>
+
+                            <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
+                              {p.visitante ? (
+                                <>
+                                  <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
+                                  <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                                </>
+                              ) : (
+                                <span className="text-sm italic text-zinc-400">A definir</span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
+                            <span className="inline-flex items-center gap-1">
+                              <IconClock className="h-3.5 w-3.5" />
+                              {new Date(p.dataHora).toLocaleTimeString("pt-BR", { timeZone: "UTC", hour: "2-digit", minute: "2-digit" })}
+                            </span>
+                            <span className="text-zinc-400">
+                              J{p.numero} &middot; {new Date(p.dataHora).toLocaleDateString("pt-BR", { timeZone: "UTC", day: "2-digit", month: "2-digit" })}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
+        ) : null}
       </main>
       </div>
     </PaginaAnimada>
