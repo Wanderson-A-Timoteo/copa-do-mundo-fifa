@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 
+import { IconTrophy } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { computeBracket, type GrupoStanding, type BracketResult, type PartidaResolvida } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
@@ -266,6 +267,11 @@ export default function TabelaMataMataPage() {
     return m;
   }, [resultado]);
 
+  const temConteudo = useMemo(() => {
+    if (!resultado) return false;
+    return resultado.fases.some(f => f.partidas.some(p => p.mandante || p.visitante));
+  }, [resultado]);
+
   return (
     <PaginaAnimada>
       <div className="min-h-screen">
@@ -282,7 +288,23 @@ export default function TabelaMataMataPage() {
             <span className="text-sm text-zinc-500">Chaveamento eliminatório</span>
           </div>
 
-          {resultado && resultado.classificadosTerceiros.length > 0 && (
+          {!resultado ? (
+            <div className="flex items-center justify-center py-20">
+              <p className="text-zinc-500">Carregando chaveamento...</p>
+            </div>
+          ) : !temConteudo ? (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+              <IconTrophy className="h-16 w-16 text-zinc-200 dark:text-zinc-700" />
+              <h2 className="mt-4 text-xl font-semibold text-zinc-500">
+                Chaveamento ainda não disponível
+              </h2>
+              <p className="mt-2 max-w-md text-sm text-zinc-400">
+                O mata-mata é preenchido automaticamente conforme você registra os resultados na página <a href="/tabela/placar" className="underline hover:text-zinc-600 dark:hover:text-zinc-300">Placar</a>.
+              </p>
+            </div>
+          ) : (
+            <>
+          {resultado.classificadosTerceiros.length > 0 && (
             <div className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900">
               <h3 className="mb-2 text-sm font-semibold">8 melhores 3º colocados</h3>
               <div className="flex flex-wrap gap-2">
@@ -426,7 +448,7 @@ export default function TabelaMataMataPage() {
 
           {/* Mobile: lista em coluna por fase */}
           <div className="block md:hidden space-y-6">
-            {resultado && resultado.fases.map((fase) => (
+            {resultado.fases.map((fase) => (
               <div key={fase.key}>
                 <h2 className="mb-3 text-lg font-bold">{fase.label}</h2>
                 <div className="space-y-2">
@@ -505,6 +527,8 @@ export default function TabelaMataMataPage() {
                 </div>
               </div>
             ))}
+          </div>
+          </>)}
           </div>
         </main>
       </div>
