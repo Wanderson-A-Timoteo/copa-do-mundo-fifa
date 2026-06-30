@@ -44,7 +44,7 @@ export default function OficialPage() {
   const [salvando, setSalvando] = useState<Set<number>>(new Set());
   const [resultadoMataMata, setResultadoMataMata] = useState<BracketResult | null>(null);
   const [loadingKnockout, setLoadingKnockout] = useState(true);
-  const [knockoutPlacares, setKnockoutPlacares] = useState<Record<number, { golsMandante: string; golsVisitante: string }>>({});
+  const [knockoutPlacares, setKnockoutPlacares] = useState<Record<number, { golsMandante: string; golsVisitante: string; penaltisMandante: string; penaltisVisitante: string }>>({});
   const [salvandoKnockout, setSalvandoKnockout] = useState<Set<number>>(new Set());
 
   useEffect(() => {
@@ -89,21 +89,25 @@ export default function OficialPage() {
       .then(([dataGrupos, dataPalpites]) => {
         const grupos: GrupoStanding[] = dataGrupos.grupos ?? [];
         const palpites = (dataPalpites.palpites ?? []).map(
-          (p: { partidaId: number; golsMandante: number | null; golsVisitante: number | null }) => ({
+          (p: { partidaId: number; golsMandante: number | null; golsVisitante: number | null; penaltisMandante: number | null; penaltisVisitante: number | null }) => ({
             partidaId: p.partidaId,
             golsMandante: p.golsMandante,
             golsVisitante: p.golsVisitante,
+            penaltisMandante: p.penaltisMandante,
+            penaltisVisitante: p.penaltisVisitante,
           })
         );
         const r = computeBracket(formatoCopa, grupos, palpites);
         setResultadoMataMata(r);
 
-        const ps: Record<number, { golsMandante: string; golsVisitante: string }> = {};
+        const ps: Record<number, { golsMandante: string; golsVisitante: string; penaltisMandante: string; penaltisVisitante: string }> = {};
         for (const fase of r.fases) {
           for (const p of fase.partidas) {
             ps[p.numero] = {
               golsMandante: p.golsMandante !== null ? String(p.golsMandante) : "",
               golsVisitante: p.golsVisitante !== null ? String(p.golsVisitante) : "",
+              penaltisMandante: p.penaltisMandante !== null ? String(p.penaltisMandante) : "",
+              penaltisVisitante: p.penaltisVisitante !== null ? String(p.penaltisVisitante) : "",
             };
           }
         }
@@ -169,15 +173,22 @@ export default function OficialPage() {
       const isLimpar = isNaN(golsMandante) && isNaN(golsVisitante);
       if (!isLimpar && (isNaN(golsMandante) || isNaN(golsVisitante))) return;
 
+      const penaltisMandante = p.penaltisMandante !== "" ? parseInt(p.penaltisMandante) : null;
+      const penaltisVisitante = p.penaltisVisitante !== "" ? parseInt(p.penaltisVisitante) : null;
+
+      const body: Record<string, unknown> = {
+        partidaId,
+        golsMandante: isLimpar ? null : golsMandante,
+        golsVisitante: isLimpar ? null : golsVisitante,
+      };
+      if (penaltisMandante !== null) body.penaltisMandante = penaltisMandante;
+      if (penaltisVisitante !== null) body.penaltisVisitante = penaltisVisitante;
+
       const token = localStorage.getItem("token");
       await fetch("/api/palpites/mata-mata", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          partidaId,
-          golsMandante: isLimpar ? null : golsMandante,
-          golsVisitante: isLimpar ? null : golsVisitante,
-        }),
+        body: JSON.stringify(body),
       });
       recalcularMataMata();
     } catch {
@@ -322,6 +333,9 @@ export default function OficialPage() {
                   <div className="space-y-3">
                     {fase.partidas.map((p) => {
                       if (!p.mandante && !p.visitante) return null;
+                      const golsM = knockoutPlacares[p.numero]?.golsMandante;
+                      const golsV = knockoutPlacares[p.numero]?.golsVisitante;
+                      const placarEmpatado = isAdmin && p.mandante && p.visitante && golsM !== "" && golsV !== "" && !isNaN(Number(golsM)) && !isNaN(Number(golsV)) && Number(golsM) === Number(golsV);
                       return (
                         <div
                           key={p.numero}
@@ -340,46 +354,89 @@ export default function OficialPage() {
                             </div>
 
                             {isAdmin && p.mandante && p.visitante ? (
-                              <div className="flex items-center gap-2 sm:gap-3">
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="99"
-                                  value={knockoutPlacares[p.numero]?.golsMandante ?? ""}
-                                  onChange={(e) =>
-                                    setKnockoutPlacares((prev) => ({
-                                      ...prev,
-                                      [p.numero]: { golsMandante: e.target.value, golsVisitante: prev[p.numero]?.golsVisitante ?? "" },
-                                    }))
-                                  }
-                                  onBlur={() => salvarKnockout(p.numero)}
-                                  className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
-                                />
-                                <span className="text-sm text-zinc-400 sm:text-base">x</span>
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="99"
-                                  value={knockoutPlacares[p.numero]?.golsVisitante ?? ""}
-                                  onChange={(e) =>
-                                    setKnockoutPlacares((prev) => ({
-                                      ...prev,
-                                      [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: e.target.value },
-                                    }))
-                                  }
-                                  onBlur={() => salvarKnockout(p.numero)}
-                                  className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
-                                />
+                              <div className="flex flex-col items-center gap-1">
+                                <div className="flex items-center gap-2 sm:gap-3">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    value={knockoutPlacares[p.numero]?.golsMandante ?? ""}
+                                    onChange={(e) =>
+                                      setKnockoutPlacares((prev) => ({
+                                        ...prev,
+                                        [p.numero]: { golsMandante: e.target.value, golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
+                                      }))
+                                    }
+                                    onBlur={() => salvarKnockout(p.numero)}
+                                    className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                  />
+                                  <span className="text-sm text-zinc-400 sm:text-base">x</span>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    max="99"
+                                    value={knockoutPlacares[p.numero]?.golsVisitante ?? ""}
+                                    onChange={(e) =>
+                                      setKnockoutPlacares((prev) => ({
+                                        ...prev,
+                                        [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: e.target.value, penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
+                                      }))
+                                    }
+                                    onBlur={() => salvarKnockout(p.numero)}
+                                    className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                  />
+                                </div>
+                                {placarEmpatado && (
+                                  <div className="mt-0.5 flex items-center gap-2 text-xs sm:gap-2.5">
+                                    <span className="text-zinc-400">Penáltis</span>
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      max="99"
+                                      value={knockoutPlacares[p.numero]?.penaltisMandante ?? ""}
+                                      onChange={(e) =>
+                                        setKnockoutPlacares((prev) => ({
+                                          ...prev,
+                                          [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: e.target.value, penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
+                                        }))
+                                      }
+                                      onBlur={() => salvarKnockout(p.numero)}
+                                      className={`w-10 rounded border border-zinc-300 px-1.5 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-12 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                    />
+                                    <span className="text-zinc-400">x</span>
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      max="99"
+                                      value={knockoutPlacares[p.numero]?.penaltisVisitante ?? ""}
+                                      onChange={(e) =>
+                                        setKnockoutPlacares((prev) => ({
+                                          ...prev,
+                                          [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: e.target.value },
+                                        }))
+                                      }
+                                      onBlur={() => salvarKnockout(p.numero)}
+                                      className={`w-10 rounded border border-zinc-300 px-1.5 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-12 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                    />
+                                  </div>
+                                )}
                               </div>
                             ) : (
-                              <div className="flex items-center gap-2 sm:gap-3">
-                                <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
-                                  {p.golsMandante !== null ? p.golsMandante : "-"}
-                                </span>
-                                <span className="text-sm text-zinc-400 sm:text-base">x</span>
-                                <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
-                                  {p.golsVisitante !== null ? p.golsVisitante : "-"}
-                                </span>
+                              <div className="flex flex-col items-center gap-0.5">
+                                <div className="flex items-center gap-2 sm:gap-3">
+                                  <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
+                                    {p.golsMandante !== null ? p.golsMandante : "-"}
+                                  </span>
+                                  <span className="text-sm text-zinc-400 sm:text-base">x</span>
+                                  <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
+                                    {p.golsVisitante !== null ? p.golsVisitante : "-"}
+                                  </span>
+                                </div>
+                                {p.penaltisMandante !== null && p.penaltisVisitante !== null && (
+                                  <span className="text-xs text-zinc-400">
+                                    Penáltis: {p.penaltisMandante} x {p.penaltisVisitante}
+                                  </span>
+                                )}
                               </div>
                             )}
 

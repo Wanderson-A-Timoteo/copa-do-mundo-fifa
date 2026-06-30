@@ -174,8 +174,10 @@ model PalpiteMataMata {
   usuarioId     Int
   usuario       User     @relation(fields: [usuarioId], references: [id])
   partidaId     Int
-  golsMandante  Int?
-  golsVisitante Int?
+  golsMandante      Int?
+  golsVisitante     Int?
+  penaltisMandante  Int?
+  penaltisVisitante Int?
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 

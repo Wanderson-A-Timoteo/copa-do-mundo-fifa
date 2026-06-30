@@ -26,6 +26,8 @@ export interface PalpiteMataMataInput {
   partidaId: number;
   golsMandante: number | null;
   golsVisitante: number | null;
+  penaltisMandante?: number | null;
+  penaltisVisitante?: number | null;
 }
 
 export interface PartidaResolvida {
@@ -37,6 +39,8 @@ export interface PartidaResolvida {
   visitante: SelecaoStanding | null;
   golsMandante: number | null;
   golsVisitante: number | null;
+  penaltisMandante: number | null;
+  penaltisVisitante: number | null;
   vencedor: SelecaoStanding | null;
   perdedor: SelecaoStanding | null;
   resolvida: boolean;
@@ -101,10 +105,10 @@ export function computeBracket(
 
   const melhoresTerceiros = todosTerceiros.slice(0, format.vagas.melhoresTerceiros);
 
-  const palpitesPorPartida = new Map<number, { golsMandante: number; golsVisitante: number }>();
+  const palpitesPorPartida = new Map<number, { golsMandante: number; golsVisitante: number; penaltisMandante: number | null; penaltisVisitante: number | null }>();
   for (const p of palpites) {
     if (p.golsMandante !== null && p.golsVisitante !== null) {
-      palpitesPorPartida.set(p.partidaId, { golsMandante: p.golsMandante, golsVisitante: p.golsVisitante });
+      palpitesPorPartida.set(p.partidaId, { golsMandante: p.golsMandante, golsVisitante: p.golsVisitante, penaltisMandante: p.penaltisMandante ?? null, penaltisVisitante: p.penaltisVisitante ?? null });
     }
   }
 
@@ -138,6 +142,14 @@ export function computeBracket(
       } else if (palpite.golsMandante < palpite.golsVisitante) {
         vencedores.set(partida.numero, visitante);
         perdedores.set(partida.numero, mandante);
+      } else if (palpite.penaltisMandante !== null && palpite.penaltisVisitante !== null) {
+        if (palpite.penaltisMandante > palpite.penaltisVisitante) {
+          vencedores.set(partida.numero, mandante);
+          perdedores.set(partida.numero, visitante);
+        } else {
+          vencedores.set(partida.numero, visitante);
+          perdedores.set(partida.numero, mandante);
+        }
       }
     }
   }
@@ -159,9 +171,11 @@ export function computeBracket(
         visitante,
         golsMandante: palpite?.golsMandante ?? null,
         golsVisitante: palpite?.golsVisitante ?? null,
+        penaltisMandante: palpite?.penaltisMandante ?? null,
+        penaltisVisitante: palpite?.penaltisVisitante ?? null,
         vencedor: vencedores.get(p.numero) ?? null,
         perdedor: perdedores.get(p.numero) ?? null,
-        resolvida: !!palpite && !!mandante && !!visitante,
+        resolvida: !!palpite && !!mandante && !!visitante && (palpite.golsMandante !== palpite.golsVisitante || (palpite.penaltisMandante !== null && palpite.penaltisVisitante !== null)),
       };
     }),
   }));
