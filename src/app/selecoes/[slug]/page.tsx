@@ -82,16 +82,16 @@ export default function DetalheSelecaoPage() {
       : null;
 
     return (
-      <div className="flex flex-col items-center rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex flex-col items-center rounded-xl border border-zinc-200 bg-white p-5 pt-6 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
         {jogador.fotoUrl ? (
           <img
             src={jogador.fotoUrl}
             alt={jogador.nome}
-            className="mb-3 h-20 w-20 rounded-full object-cover"
+            className="mb-3 h-32 w-24 rounded-lg object-cover"
           />
         ) : (
           <div
-            className="mb-3 flex h-20 w-20 items-center justify-center rounded-full text-lg font-bold text-white"
+            className="mb-3 flex h-32 w-24 items-center justify-center rounded-lg text-base font-bold text-white"
             style={{ backgroundColor: corPrimaria || "#52525b" }}
           >
             {iniciais}
