@@ -71,7 +71,16 @@ export default function DetalheSelecaoPage() {
 
   const posicoes = ["Goleiro", "Defensor", "Meia", "Atacante"];
 
-  function PlayerCard({ jogador, corPrimaria }: { jogador: Jogador; corPrimaria: string | null }) {
+  function calcIdade(dataNasc: string): number {
+    const hoje = new Date();
+    const nasc = new Date(dataNasc);
+    let idade = hoje.getFullYear() - nasc.getFullYear();
+    const m = hoje.getMonth() - nasc.getMonth();
+    if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+    return idade;
+  }
+
+  function PlayerCard({ jogador, corPrimaria, codigoPais }: { jogador: Jogador; corPrimaria: string | null; codigoPais: string | null }) {
     const iniciais = jogador.nome
       .split(" ")
       .map((w) => w[0])
@@ -79,22 +88,31 @@ export default function DetalheSelecaoPage() {
       .slice(0, 2)
       .toUpperCase();
 
+    const idade = jogador.dataNascimento ? calcIdade(jogador.dataNascimento) : null;
+
     return (
       <div className="flex flex-col items-center rounded-xl border border-zinc-200 bg-white px-5 pb-5 pt-6 shadow-sm transition-all hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
-        {jogador.fotoUrl ? (
-          <img
-            src={jogador.fotoUrl}
-            alt={jogador.nome}
-            className="mb-3 h-28 w-20 rounded-lg object-cover transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24"
-          />
-        ) : (
-          <div
-            className="mb-3 flex h-28 w-20 items-center justify-center rounded-lg text-sm font-bold text-white transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24 sm:text-base"
-            style={{ backgroundColor: corPrimaria || "#52525b" }}
-          >
-            {iniciais}
-          </div>
-        )}
+        <div className="relative mb-3">
+          {jogador.fotoUrl ? (
+            <img
+              src={jogador.fotoUrl}
+              alt={jogador.nome}
+              className="h-28 w-20 rounded-lg object-cover transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24"
+            />
+          ) : (
+            <div
+              className="flex h-28 w-20 items-center justify-center rounded-lg text-sm font-bold text-white transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24 sm:text-base"
+              style={{ backgroundColor: corPrimaria || "#52525b" }}
+            >
+              {iniciais}
+            </div>
+          )}
+          {codigoPais && (
+            <div className="absolute -right-1 -top-1 overflow-hidden rounded-sm shadow-md">
+              <FlagIcon codigo={codigoPais} className="h-4 w-auto sm:h-5" />
+            </div>
+          )}
+        </div>
 
         <span className="text-xs font-bold text-zinc-400">#{jogador.numeroCamisa ?? "—"}</span>
         <span className="mt-0.5 text-center text-sm font-semibold leading-tight">{jogador.nome}</span>
@@ -104,6 +122,11 @@ export default function DetalheSelecaoPage() {
         {jogador.figurinha?.raridade === "rara" && (
           <span className="mt-1 flex items-center gap-0.5 text-[10px] font-bold text-amber-500">
             <IconStar className="h-3 w-3" /> RARA
+          </span>
+        )}
+        {idade && (
+          <span className="mt-1 text-[10px] text-zinc-400">
+            {idade} anos
           </span>
         )}
       </div>
@@ -144,7 +167,7 @@ export default function DetalheSelecaoPage() {
                   <h3 className="mb-3 text-sm font-medium text-zinc-500">{pos}s</h3>
                   <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                     {jogadores.map((j) => (
-                      <PlayerCard key={j.id} jogador={j} corPrimaria={selecao.corPrimaria} />
+                      <PlayerCard key={j.id} jogador={j} corPrimaria={selecao.corPrimaria} codigoPais={selecao.codigoPais} />
                     ))}
                   </div>
                 </div>
