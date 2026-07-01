@@ -118,7 +118,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
   function PartidaCard({ p }: { p: PartidaResumida }) {
     const ehFutura = new Date(p.dataHora) > agora;
     return (
-      <div className="flex items-center gap-3 rounded-lg border border-zinc-200 p-3 dark:border-zinc-800 sm:gap-4 sm:p-4">
+      <div className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-white p-3 transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 sm:gap-4 sm:p-4">
         <div className="flex flex-1 items-center justify-end gap-2">
           <span className="truncate text-right font-medium">{p.mandante.nome}</span>
           <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto rounded-sm" />
