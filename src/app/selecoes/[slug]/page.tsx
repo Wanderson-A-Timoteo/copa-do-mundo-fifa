@@ -12,6 +12,8 @@ interface Jogador {
   nome: string;
   numeroCamisa: number | null;
   posicao: string;
+  fotoUrl: string | null;
+  dataNascimento: string | null;
 }
 
 interface Partida {
@@ -35,6 +37,7 @@ interface Selecao {
   rankingFifa: number | null;
   titulos: number;
   tecnico: string | null;
+  corPrimaria: string | null;
   grupo: { id: string; nome: string };
   jogadores: Jogador[];
   partidasCasa: Partida[];
@@ -66,6 +69,49 @@ export default function DetalheSelecaoPage() {
 
   const posicoes = ["Goleiro", "Defensor", "Meia", "Atacante"];
 
+  function PlayerCard({ jogador, corPrimaria }: { jogador: Jogador; corPrimaria: string | null }) {
+    const iniciais = jogador.nome
+      .split(" ")
+      .map((w) => w[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+
+    const anoNasc = jogador.dataNascimento
+      ? new Date(jogador.dataNascimento).getFullYear()
+      : null;
+
+    return (
+      <div className="flex flex-col items-center rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+        {jogador.fotoUrl ? (
+          <img
+            src={jogador.fotoUrl}
+            alt={jogador.nome}
+            className="mb-3 h-20 w-20 rounded-full object-cover"
+          />
+        ) : (
+          <div
+            className="mb-3 flex h-20 w-20 items-center justify-center rounded-full text-lg font-bold text-white"
+            style={{ backgroundColor: corPrimaria || "#52525b" }}
+          >
+            {iniciais}
+          </div>
+        )}
+
+        <span className="text-xs font-bold text-zinc-400">#{jogador.numeroCamisa ?? "—"}</span>
+        <span className="mt-0.5 text-center text-sm font-semibold leading-tight">{jogador.nome}</span>
+        <span className="mt-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
+          {jogador.posicao}
+        </span>
+        {anoNasc && (
+          <span className="mt-1 text-[10px] text-zinc-400">
+            {anoNasc}
+          </span>
+        )}
+      </div>
+    );
+  }
+
   return (
     <PaginaAnimada>
       <div className="min-h-screen">
@@ -91,26 +137,16 @@ export default function DetalheSelecaoPage() {
 
         <section className="mt-10">
           <h2 className="text-xl font-bold">Elenco</h2>
-          <div className="mt-4 space-y-4">
+          <div className="mt-4 space-y-6">
             {posicoes.map((pos) => {
               const jogadores = selecao.jogadores.filter((j) => j.posicao === pos);
               if (jogadores.length === 0) return null;
               return (
                 <div key={pos}>
-                  <h3 className="mb-2 text-sm font-medium text-zinc-500">{pos}s</h3>
-                  <div className="flex flex-wrap gap-2">
+                  <h3 className="mb-3 text-sm font-medium text-zinc-500">{pos}s</h3>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                     {jogadores.map((j) => (
-                      <div
-                        key={j.id}
-                        className="rounded-lg border border-zinc-200 px-3 py-2 text-sm dark:border-zinc-800"
-                      >
-                        {j.numeroCamisa && (
-                          <span className="mr-1.5 font-bold text-zinc-400">
-                            {j.numeroCamisa}
-                          </span>
-                        )}
-                        {j.nome}
-                      </div>
+                      <PlayerCard key={j.id} jogador={j} corPrimaria={selecao.corPrimaria} />
                     ))}
                   </div>
                 </div>

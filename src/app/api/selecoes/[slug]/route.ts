@@ -24,7 +24,7 @@ export async function GET(
         where: { id },
         include: {
           grupo: true,
-          jogadores: { orderBy: { posicao: "asc" } },
+      jogadores: { orderBy: { posicao: "asc" }, select: { id: true, nome: true, numeroCamisa: true, posicao: true, fotoUrl: true, dataNascimento: true, selecaoId: true } },
           partidasCasa: { include: { estadio: true, mandante: true, visitante: true } },
           partidasFora: { include: { estadio: true, mandante: true, visitante: true } },
         },
