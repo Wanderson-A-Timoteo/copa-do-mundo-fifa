@@ -12,22 +12,35 @@ function getUsuarioId(request: Request): number | null {
   }
 }
 
+const LIMITE_DIARIO = 10;
+
 export async function GET(request: Request) {
   const usuarioId = getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
   }
 
-  const album = await prisma.albumFigurinha.findMany({
-    where: { usuarioId },
-    include: {
-      figurinha: {
-        include: { selecao: true, jogador: true },
+  const [album, usuario] = await Promise.all([
+    prisma.albumFigurinha.findMany({
+      where: { usuarioId },
+      include: {
+        figurinha: {
+          include: { selecao: true, jogador: true },
+        },
       },
-    },
-  });
+    }),
+    prisma.user.findUnique({ where: { id: usuarioId }, select: { ultimoDiaAbertura: true, pacotesAbertosHoje: true } }),
+  ]);
 
-  return NextResponse.json({ album });
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  let pacotesRestantesHoje = LIMITE_DIARIO;
+  if (usuario?.ultimoDiaAbertura && new Date(usuario.ultimoDiaAbertura) >= hoje) {
+    pacotesRestantesHoje = Math.max(0, LIMITE_DIARIO - usuario.pacotesAbertosHoje);
+  }
+
+  return NextResponse.json({ album, pacotesRestantesHoje, limiteDiario: LIMITE_DIARIO });
 }
 
 export async function POST(request: Request) {

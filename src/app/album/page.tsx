@@ -34,6 +34,8 @@ export default function AlbumPage() {
   const [carregando, setCarregando] = useState(true);
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<{ id: number; nome: string } | null>(null);
+  const [pacotesRestantesHoje, setPacotesRestantesHoje] = useState(10);
+  const [limiteDiario, setLimiteDiario] = useState(10);
   const [paginaAtual, setPaginaAtual] = useState(0);
 
   useEffect(() => {
@@ -70,6 +72,8 @@ export default function AlbumPage() {
       }
     }
     setAlbum(albumMap);
+    setPacotesRestantesHoje(albumData.pacotesRestantesHoje ?? 10);
+    setLimiteDiario(albumData.limiteDiario ?? 10);
     setCarregando(false);
   }, [filtroSelecao]);
 
@@ -80,28 +84,23 @@ export default function AlbumPage() {
   const abrirPacote = async () => {
     setAbrindo(true);
 
-    const todas = [...figurinhas];
-    const pacote: Figurinha[] = [];
-    for (let i = 0; i < 7; i++) {
-      const idx = Math.floor(Math.random() * todas.length);
-      pacote.push(todas[idx]);
+    const res = await fetch("/api/album/abrir-pacote", {
+      method: "POST",
+      headers: { ...getAuthHeaders() },
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setAbrindo(false);
+      setPacotesRestantesHoje(data.pacotesRestantesHoje ?? 0);
+      return;
     }
 
-    setNovasFigurinhas(pacote);
+    setNovasFigurinhas(data.figurinhas);
+    setPacotesRestantesHoje(data.pacotesRestantesHoje);
     setShowAnimacao(true);
     setAbrindo(false);
-
-    const authHeaders = getAuthHeaders();
-    for (const fig of pacote) {
-      await fetch("/api/album", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...authHeaders,
-        },
-        body: JSON.stringify({ figurinhaId: fig.id }),
-      });
-    }
 
     await carregarDados();
   };
@@ -173,13 +172,18 @@ export default function AlbumPage() {
             </p>
           </div>
           {user ? (
-            <button
-              onClick={abrirPacote}
-              disabled={abrindo}
-              className="rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-            >
-              {abrindo ? "Abrindo..." : "🎁 Abrir Pacotinho"}
-            </button>
+            <div className="flex flex-col items-end gap-1">
+              <button
+                onClick={abrirPacote}
+                disabled={abrindo || pacotesRestantesHoje === 0}
+                className="rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+              >
+                {abrindo ? "Abrindo..." : pacotesRestantesHoje === 0 ? "Limite diário atingido" : "🎁 Abrir Pacotinho"}
+              </button>
+              <span className="text-xs text-zinc-400">
+                {pacotesRestantesHoje}/{limiteDiario} pacotes hoje
+              </span>
+            </div>
           ) : (
             <Link
               href="/login"
