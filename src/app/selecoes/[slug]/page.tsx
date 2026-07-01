@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
+import { IconStar } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface Jogador {
@@ -14,6 +15,7 @@ interface Jogador {
   posicao: string;
   fotoUrl: string | null;
   dataNascimento: string | null;
+  figurinha: { raridade: string } | null;
 }
 
 interface Partida {
@@ -69,6 +71,15 @@ export default function DetalheSelecaoPage() {
 
   const posicoes = ["Goleiro", "Defensor", "Meia", "Atacante"];
 
+  function calcIdade(dataNasc: string): number {
+    const hoje = new Date();
+    const nasc = new Date(dataNasc);
+    let idade = hoje.getFullYear() - nasc.getFullYear();
+    const m = hoje.getMonth() - nasc.getMonth();
+    if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
+    return idade;
+  }
+
   function PlayerCard({ jogador, corPrimaria }: { jogador: Jogador; corPrimaria: string | null }) {
     const iniciais = jogador.nome
       .split(" ")
@@ -77,21 +88,19 @@ export default function DetalheSelecaoPage() {
       .slice(0, 2)
       .toUpperCase();
 
-    const anoNasc = jogador.dataNascimento
-      ? new Date(jogador.dataNascimento).getFullYear()
-      : null;
+    const idade = jogador.dataNascimento ? calcIdade(jogador.dataNascimento) : null;
 
     return (
-      <div className="flex flex-col items-center rounded-xl border border-zinc-200 bg-white p-5 pt-6 shadow-sm transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex flex-col items-center rounded-xl border border-zinc-200 bg-white px-5 pb-5 pt-6 shadow-sm transition-all hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
         {jogador.fotoUrl ? (
           <img
             src={jogador.fotoUrl}
             alt={jogador.nome}
-            className="mb-3 h-32 w-24 rounded-lg object-cover"
+            className="mb-3 h-28 w-20 rounded-lg object-cover transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24"
           />
         ) : (
           <div
-            className="mb-3 flex h-32 w-24 items-center justify-center rounded-lg text-base font-bold text-white"
+            className="mb-3 flex h-28 w-20 items-center justify-center rounded-lg text-sm font-bold text-white transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24 sm:text-base"
             style={{ backgroundColor: corPrimaria || "#52525b" }}
           >
             {iniciais}
@@ -103,9 +112,14 @@ export default function DetalheSelecaoPage() {
         <span className="mt-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
           {jogador.posicao}
         </span>
-        {anoNasc && (
+        {jogador.figurinha?.raridade === "rara" && (
+          <span className="mt-1 flex items-center gap-0.5 text-[10px] font-bold text-amber-500">
+            <IconStar className="h-3 w-3" /> RARA
+          </span>
+        )}
+        {idade && (
           <span className="mt-1 text-[10px] text-zinc-400">
-            {anoNasc}
+            {idade} anos
           </span>
         )}
       </div>
