@@ -71,15 +71,6 @@ export default function DetalheSelecaoPage() {
 
   const posicoes = ["Goleiro", "Defensor", "Meia", "Atacante"];
 
-  function calcIdade(dataNasc: string): number {
-    const hoje = new Date();
-    const nasc = new Date(dataNasc);
-    let idade = hoje.getFullYear() - nasc.getFullYear();
-    const m = hoje.getMonth() - nasc.getMonth();
-    if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) idade--;
-    return idade;
-  }
-
   function PlayerCard({ jogador, corPrimaria }: { jogador: Jogador; corPrimaria: string | null }) {
     const iniciais = jogador.nome
       .split(" ")
@@ -87,8 +78,6 @@ export default function DetalheSelecaoPage() {
       .join("")
       .slice(0, 2)
       .toUpperCase();
-
-    const idade = jogador.dataNascimento ? calcIdade(jogador.dataNascimento) : null;
 
     return (
       <div className="flex flex-col items-center rounded-xl border border-zinc-200 bg-white px-5 pb-5 pt-6 shadow-sm transition-all hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
@@ -115,11 +104,6 @@ export default function DetalheSelecaoPage() {
         {jogador.figurinha?.raridade === "rara" && (
           <span className="mt-1 flex items-center gap-0.5 text-[10px] font-bold text-amber-500">
             <IconStar className="h-3 w-3" /> RARA
-          </span>
-        )}
-        {idade && (
-          <span className="mt-1 text-[10px] text-zinc-400">
-            {idade} anos
           </span>
         )}
       </div>
