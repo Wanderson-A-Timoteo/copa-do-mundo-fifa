@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
@@ -131,6 +131,13 @@ export default function AdminOficialPage() {
 
   const isAdmin = role === "ADMIN";
 
+  const fasesVisiveis = useMemo(() => {
+    if (!resultadoMataMata) return [];
+    return resultadoMataMata.fases.filter((f) =>
+      f.partidas.some((p) => p.mandante || p.visitante)
+    );
+  }, [resultadoMataMata]);
+
   async function autoSalvar(partidaId: number) {
     setSalvando((prev) => new Set(prev).add(partidaId));
     try {
@@ -259,6 +266,22 @@ export default function AdminOficialPage() {
           Cadastre os resultados reais das partidas
         </p>
 
+        {fasesVisiveis.length > 0 && (
+          <div className="mt-6 flex flex-wrap gap-2">
+            {fasesVisiveis.map((fase) => (
+              <button
+                key={fase.key}
+                onClick={() => {
+                  document.getElementById(`fase-${fase.key}`)?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              >
+                {fase.label}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="mt-8 space-y-8">
           {Object.entries(partidasPorDia).map(([data, jogos]) => (
             <section key={data}>
@@ -362,7 +385,7 @@ export default function AdminOficialPage() {
               const todasNulas = fase.partidas.every((p) => !p.mandante && !p.visitante);
               if (todasNulas) return null;
               return (
-                <section key={fase.key}>
+                <section key={fase.key} id={`fase-${fase.key}`}>
                   <h3 className="mb-4 text-lg font-bold">{fase.label}</h3>
                   <div className="space-y-3">
                     {fase.partidas.map((p) => {
