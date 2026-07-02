@@ -174,17 +174,6 @@ model Palpite {
   @@map("palpites")
 }
 
-model ResultadoOficial {
-  id                Int   @id @default(autoincrement())
-  partidaId         Int   @unique
-  golsMandante      Int?
-  golsVisitante     Int?
-  penaltisMandante  Int?
-  penaltisVisitante Int?
-
-  @@map("resultados_oficiais")
-}
-
 model PalpiteMataMata {
   id            Int      @id @default(autoincrement())
   usuarioId     Int
