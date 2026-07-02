@@ -176,11 +176,11 @@ model Palpite {
 
 model ResultadoOficial {
   id                Int   @id @default(autoincrement())
-  partidaId         Int   @unique
-  golsMandante      Int?
-  golsVisitante     Int?
-  penaltisMandante  Int?
-  penaltisVisitante Int?
+  partidaId         Int   @unique @map("partida_id")
+  golsMandante      Int?  @map("gols_mandante")
+  golsVisitante     Int?  @map("gols_visitante")
+  penaltisMandante  Int?  @map("penaltis_mandante")
+  penaltisVisitante Int?  @map("penaltis_visitante")
 
   @@map("resultados_oficiais")
 }
