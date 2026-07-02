@@ -30,7 +30,7 @@ function getUserId(): number | null {
 type PlacaresState = Record<number, { golsMandante: string; golsVisitante: string; penaltisMandante: string; penaltisVisitante: string }>;
 
 const CARD_W = 200;
-const CARD_H = 96;
+const CARD_H = 112;
 const COL_GAP = 48;
 const PITCH = CARD_W + COL_GAP;
 const ROW_UNIT = 120;
@@ -513,7 +513,7 @@ export default function TabelaMataMataPage() {
                       >
                         {p.mandante || p.visitante ? (
                           <>
-                            <div className="flex items-center justify-between gap-2">
+                            <div className="mb-1 flex items-center justify-between gap-2">
                               <div className="flex items-center gap-1.5">
                                 {p.mandante ? (
                                   <>
