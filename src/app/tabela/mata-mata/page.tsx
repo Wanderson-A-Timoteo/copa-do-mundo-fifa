@@ -459,20 +459,24 @@ export default function TabelaMataMataPage() {
                           )}
                         </div>
                         {podeEditar && placar.golsMandante !== "" && placar.golsVisitante !== "" && Number(placar.golsMandante) === Number(placar.golsVisitante) && (
-                          <div className={`flex items-center gap-1 ${isRight ? "flex-row-reverse" : ""}`}>
-                            <span className="text-[10px] text-zinc-400">Pen.</span>
-                            <input type="text" inputMode="numeric" maxLength={2}
-                              value={placar.penaltisMandante}
-                              onChange={(e) => handleChange(p.numero, "penaltisMandante", e.target.value)}
-                              className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
-                            />
-                            <span className="text-[10px] text-zinc-400">x</span>
-                            <input type="text" inputMode="numeric" maxLength={2}
-                              value={placar.penaltisVisitante}
-                              onChange={(e) => handleChange(p.numero, "penaltisVisitante", e.target.value)}
-                              className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
-                            />
-                          </div>
+                          <>
+                            <div className="text-center text-[10px] text-zinc-400">Penaltis</div>
+                            <div className={`flex items-center justify-center gap-1 ${isRight ? "flex-row-reverse" : ""}`}>
+                              {p.mandante && <FlagIcon codigo={p.mandante.codigoPais} className="h-3 w-auto shrink-0 rounded-sm" />}
+                              <input type="text" inputMode="numeric" maxLength={2}
+                                value={placar.penaltisMandante}
+                                onChange={(e) => handleChange(p.numero, "penaltisMandante", e.target.value)}
+                                className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                              />
+                              <span className="text-[10px] text-zinc-400">x</span>
+                              <input type="text" inputMode="numeric" maxLength={2}
+                                value={placar.penaltisVisitante}
+                                onChange={(e) => handleChange(p.numero, "penaltisVisitante", e.target.value)}
+                                className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                              />
+                              {p.visitante && <FlagIcon codigo={p.visitante.codigoPais} className="h-3 w-auto shrink-0 rounded-sm" />}
+                            </div>
+                          </>
                         )}
                         <div className={`flex items-center gap-2 text-[10px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}>
                           <span className="font-mono">J{num}</span>
@@ -509,8 +513,8 @@ export default function TabelaMataMataPage() {
                       >
                         {p.mandante || p.visitante ? (
                           <>
-                            <div className="flex items-center gap-2">
-                              <div className="flex min-w-0 flex-1 items-center gap-1.5">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5">
                                 {p.mandante ? (
                                   <>
                                     <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
@@ -523,54 +527,57 @@ export default function TabelaMataMataPage() {
                                 )}
                               </div>
                               {podeEditar ? (
-                                <div className="flex items-center gap-1 shrink-0">
-                                  <input type="text" inputMode="numeric" maxLength={2}
-                                    value={placar.golsMandante}
-                                    onChange={(e) => handleChange(p.numero, "golsMandante", e.target.value)}
-                                    className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
-                                  />
-                                  <span className="text-xs text-zinc-400">&times;</span>
-                                  <input type="text" inputMode="numeric" maxLength={2}
-                                    value={placar.golsVisitante}
-                                    onChange={(e) => handleChange(p.numero, "golsVisitante", e.target.value)}
-                                    className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
-                                  />
-                                </div>
+                                <input type="text" inputMode="numeric" maxLength={2}
+                                  value={placar.golsMandante}
+                                  onChange={(e) => handleChange(p.numero, "golsMandante", e.target.value)}
+                                  className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                />
                               ) : (
-                                <div className="flex items-center gap-1 shrink-0 text-sm font-bold">
-                                  <span>{p.golsMandante ?? ""}</span>
-                                  <span className="text-xs text-zinc-400">&times;</span>
-                                  <span>{p.golsVisitante ?? ""}</span>
-                                </div>
+                                <span className="text-sm font-bold">{p.golsMandante ?? ""}</span>
                               )}
-                              <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5">
+                            </div>
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5">
                                 {p.visitante ? (
                                   <>
+                                    <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
                                     <span className={`truncate text-sm ${p.vencedor?.id === p.visitante.id ? "font-bold text-emerald-600 dark:text-emerald-400" : ""}`}>
                                       {p.visitante.nome}
                                     </span>
-                                    <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
                                   </>
                                 ) : (
                                   <span className="text-sm italic text-zinc-400">A definir</span>
                                 )}
                               </div>
+                              {podeEditar ? (
+                                <input type="text" inputMode="numeric" maxLength={2}
+                                  value={placar.golsVisitante}
+                                  onChange={(e) => handleChange(p.numero, "golsVisitante", e.target.value)}
+                                  className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                />
+                              ) : (
+                                <span className="text-sm font-bold">{p.golsVisitante ?? ""}</span>
+                              )}
                             </div>
                             {podeEditar && placar.golsMandante !== "" && placar.golsVisitante !== "" && Number(placar.golsMandante) === Number(placar.golsVisitante) && (
-                              <div className="mt-1 flex items-center justify-center gap-1.5">
-                                <span className="text-[11px] text-zinc-400">Pen.</span>
-                                <input type="text" inputMode="numeric" maxLength={2}
-                                  value={placar.penaltisMandante}
-                                  onChange={(e) => handleChange(p.numero, "penaltisMandante", e.target.value)}
-                                  className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
-                                />
-                                <span className="text-xs text-zinc-400">x</span>
-                                <input type="text" inputMode="numeric" maxLength={2}
-                                  value={placar.penaltisVisitante}
-                                  onChange={(e) => handleChange(p.numero, "penaltisVisitante", e.target.value)}
-                                  className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
-                                />
-                              </div>
+                              <>
+                                <div className="mt-1 text-center text-[11px] text-zinc-400">Penaltis</div>
+                                <div className="flex items-center justify-center gap-1.5">
+                                  {p.mandante && <FlagIcon codigo={p.mandante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />}
+                                  <input type="text" inputMode="numeric" maxLength={2}
+                                    value={placar.penaltisMandante}
+                                    onChange={(e) => handleChange(p.numero, "penaltisMandante", e.target.value)}
+                                    className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                  />
+                                  <span className="text-xs text-zinc-400">x</span>
+                                  <input type="text" inputMode="numeric" maxLength={2}
+                                    value={placar.penaltisVisitante}
+                                    onChange={(e) => handleChange(p.numero, "penaltisVisitante", e.target.value)}
+                                    className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                  />
+                                  {p.visitante && <FlagIcon codigo={p.visitante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />}
+                                </div>
+                              </>
                             )}
                             <div className="mt-1 flex items-center gap-2 text-[11px] text-zinc-400">
                               <span className="font-mono">J{p.numero}</span>
