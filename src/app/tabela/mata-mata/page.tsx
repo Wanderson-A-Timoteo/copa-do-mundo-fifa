@@ -27,13 +27,13 @@ function getUserId(): number | null {
   }
 }
 
-type PlacaresState = Record<number, { golsMandante: string; golsVisitante: string }>;
+type PlacaresState = Record<number, { golsMandante: string; golsVisitante: string; penaltisMandante: string; penaltisVisitante: string }>;
 
 const CARD_W = 200;
-const CARD_H = 78;
+const CARD_H = 96;
 const COL_GAP = 48;
 const PITCH = CARD_W + COL_GAP;
-const ROW_UNIT = 100;
+const ROW_UNIT = 120;
 const TOP_OFFSET = 48;
 
 const LABELS: { col: number; label: string }[] = [
@@ -149,10 +149,12 @@ export default function TabelaMataMataPage() {
     const grupos: GrupoStanding[] = dataGrupos.grupos;
     gruposRef.current = grupos;
     const palpites = dataPalpites.palpites.map(
-      (p: { partidaId: number; golsMandante: number | null; golsVisitante: number | null }) => ({
+      (p: { partidaId: number; golsMandante: number | null; golsVisitante: number | null; penaltisMandante: number | null; penaltisVisitante: number | null }) => ({
         partidaId: p.partidaId,
         golsMandante: p.golsMandante,
         golsVisitante: p.golsVisitante,
+        penaltisMandante: p.penaltisMandante,
+        penaltisVisitante: p.penaltisVisitante,
       })
     );
 
@@ -163,7 +165,12 @@ export default function TabelaMataMataPage() {
     for (const fase of r.fases) {
       for (const p of fase.partidas) {
         if (p.golsMandante !== null && p.golsVisitante !== null) {
-          ps[p.numero] = { golsMandante: String(p.golsMandante), golsVisitante: String(p.golsVisitante) };
+          ps[p.numero] = {
+            golsMandante: String(p.golsMandante),
+            golsVisitante: String(p.golsVisitante),
+            penaltisMandante: p.penaltisMandante !== null ? String(p.penaltisMandante) : "",
+            penaltisVisitante: p.penaltisVisitante !== null ? String(p.penaltisVisitante) : "",
+          };
         }
       }
     }
@@ -172,13 +179,16 @@ export default function TabelaMataMataPage() {
 
   useEffect(() => { carregar(); }, [carregar]);
 
-  const salvarPalpite = async (partidaId: number, golsMandante: number | null, golsVisitante: number | null) => {
+  const salvarPalpite = async (partidaId: number, golsMandante: number | null, golsVisitante: number | null, penaltisMandante: number | null = null, penaltisVisitante: number | null = null) => {
     setSalvando((prev) => new Set(prev).add(partidaId));
     try {
+      const body: Record<string, unknown> = { partidaId, golsMandante, golsVisitante };
+      if (penaltisMandante !== null) body.penaltisMandante = penaltisMandante;
+      if (penaltisVisitante !== null) body.penaltisVisitante = penaltisVisitante;
       await fetch("/api/palpites/mata-mata", {
         method: "POST",
         headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
-        body: JSON.stringify({ partidaId, golsMandante, golsVisitante }),
+        body: JSON.stringify(body),
       });
     } finally {
       setSalvando((prev) => {
@@ -197,12 +207,14 @@ export default function TabelaMataMataPage() {
         partidaId: Number(id),
         golsMandante: Number(v.golsMandante),
         golsVisitante: Number(v.golsVisitante),
+        penaltisMandante: v.penaltisMandante !== "" ? Number(v.penaltisMandante) : undefined,
+        penaltisVisitante: v.penaltisVisitante !== "" ? Number(v.penaltisVisitante) : undefined,
       }));
     return computeBracket(formatoCopa, gruposRef.current, palpitesInput);
   }
 
-  const handleChange = (partidaId: number, campo: "golsMandante" | "golsVisitante", value: string) => {
-    const updated = { ...placares, [partidaId]: { ...placares[partidaId], [campo]: value } };
+  const handleChange = (partidaId: number, campo: "golsMandante" | "golsVisitante" | "penaltisMandante" | "penaltisVisitante", value: string) => {
+    const updated = { ...placares, [partidaId]: { ...placares[partidaId] ?? { golsMandante: "", golsVisitante: "", penaltisMandante: "", penaltisVisitante: "" }, [campo]: value } };
     setPlacares(updated);
 
     if (timers.current[partidaId]) clearTimeout(timers.current[partidaId]);
@@ -214,8 +226,10 @@ export default function TabelaMataMataPage() {
     const vazio = gM === null && gV === null;
 
     if (completo) {
+      const pM = placar.penaltisMandante !== "" ? Number(placar.penaltisMandante) : null;
+      const pV = placar.penaltisVisitante !== "" ? Number(placar.penaltisVisitante) : null;
       timers.current[partidaId] = setTimeout(() => {
-        salvarPalpite(partidaId, gM, gV);
+        salvarPalpite(partidaId, gM, gV, pM, pV);
       }, 800);
 
       const r = bracketFromPlacares(updated);
@@ -444,6 +458,22 @@ export default function TabelaMataMataPage() {
                             <span className="w-7 text-center text-xs font-bold">{p.golsVisitante ?? ""}</span>
                           )}
                         </div>
+                        {podeEditar && placar.golsMandante !== "" && placar.golsVisitante !== "" && Number(placar.golsMandante) === Number(placar.golsVisitante) && (
+                          <div className={`flex items-center gap-1 ${isRight ? "flex-row-reverse" : ""}`}>
+                            <span className="text-[10px] text-zinc-400">Pen.</span>
+                            <input type="text" inputMode="numeric" maxLength={2}
+                              value={placar.penaltisMandante}
+                              onChange={(e) => handleChange(p.numero, "penaltisMandante", e.target.value)}
+                              className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                            />
+                            <span className="text-[10px] text-zinc-400">x</span>
+                            <input type="text" inputMode="numeric" maxLength={2}
+                              value={placar.penaltisVisitante}
+                              onChange={(e) => handleChange(p.numero, "penaltisVisitante", e.target.value)}
+                              className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                            />
+                          </div>
+                        )}
                         <div className={`flex items-center gap-2 text-[10px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}>
                           <span className="font-mono">J{num}</span>
                           <span>{faseNome.get(num) ?? ""}</span>
@@ -468,7 +498,7 @@ export default function TabelaMataMataPage() {
                 <h2 className="mb-3 text-lg font-bold">{fase.label}</h2>
                 <div className="space-y-2">
                   {fase.partidas.map((p) => {
-                    const placar = placares[p.numero] || { golsMandante: "", golsVisitante: "" };
+                const placar = placares[p.numero] || { golsMandante: "", golsVisitante: "", penaltisMandante: "", penaltisVisitante: "" };
                     const podeEditar = !!p.mandante && !!p.visitante;
                     const salvandoAgora = salvando.has(p.numero);
 
@@ -526,6 +556,22 @@ export default function TabelaMataMataPage() {
                                 )}
                               </div>
                             </div>
+                            {podeEditar && placar.golsMandante !== "" && placar.golsVisitante !== "" && Number(placar.golsMandante) === Number(placar.golsVisitante) && (
+                              <div className="mt-1 flex items-center justify-center gap-1.5">
+                                <span className="text-[11px] text-zinc-400">Pen.</span>
+                                <input type="text" inputMode="numeric" maxLength={2}
+                                  value={placar.penaltisMandante}
+                                  onChange={(e) => handleChange(p.numero, "penaltisMandante", e.target.value)}
+                                  className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                />
+                                <span className="text-xs text-zinc-400">x</span>
+                                <input type="text" inputMode="numeric" maxLength={2}
+                                  value={placar.penaltisVisitante}
+                                  onChange={(e) => handleChange(p.numero, "penaltisVisitante", e.target.value)}
+                                  className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                />
+                              </div>
+                            )}
                             <div className="mt-1 flex items-center gap-2 text-[11px] text-zinc-400">
                               <span className="font-mono">J{p.numero}</span>
                               <span>{p.dataHora ? new Date(p.dataHora).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : ""}</span>
