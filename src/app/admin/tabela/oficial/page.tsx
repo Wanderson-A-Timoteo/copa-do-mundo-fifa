@@ -91,18 +91,15 @@ export default function AdminOficialPage() {
 
   const recalcularMataMata = useCallback(() => {
     setLoadingKnockout(true);
-    const token = localStorage.getItem("token");
-    const headers: Record<string, string> = {};
-    if (token) headers["Authorization"] = `Bearer ${token}`;
 
     Promise.all([
       fetch("/api/grupos"),
-      fetch("/api/palpites/mata-mata", { headers }),
+      fetch("/api/resultados-oficiais"),
     ])
-      .then(([rGrupos, rPalpites]) => Promise.all([rGrupos.json(), rPalpites.json()]))
-      .then(([dataGrupos, dataPalpites]) => {
+      .then(([rGrupos, rResultados]) => Promise.all([rGrupos.json(), rResultados.json()]))
+      .then(([dataGrupos, dataResultados]) => {
         const grupos: GrupoStanding[] = dataGrupos.grupos ?? [];
-        const palpites = (dataPalpites.palpites ?? []).map(
+        const palpites = (dataResultados.resultados ?? []).map(
           (p: { partidaId: number; golsMandante: number | null; golsVisitante: number | null; penaltisMandante: number | null; penaltisVisitante: number | null }) => ({
             partidaId: p.partidaId,
             golsMandante: p.golsMandante,
@@ -199,7 +196,7 @@ export default function AdminOficialPage() {
       if (penaltisVisitante !== null) body.penaltisVisitante = penaltisVisitante;
 
       const token = localStorage.getItem("token");
-      await fetch("/api/palpites/mata-mata", {
+      await fetch("/api/resultados-oficiais", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(body),
