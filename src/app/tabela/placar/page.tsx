@@ -5,7 +5,7 @@ import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import ModalLogin from "@/components/ModalLogin";
 
-import { IconCalendar, IconClock, IconMapPin } from "@/components/Icons";
+import { IconClock, IconMapPin } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
 
 interface ClassificacaoSelecao {
@@ -291,13 +291,92 @@ export default function PlacarPage() {
                     key={p.id}
                     className="rounded-xl border border-zinc-200 bg-white p-4 hover:shadow-md transition-shadow dark:border-zinc-800 dark:bg-zinc-900 sm:p-6"
                   >
-                    <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-                        <FlagIcon codigo={p.mandante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8 lg:h-10" />
-                        <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
+                    <div className="hidden md:block">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+                          <FlagIcon codigo={p.mandante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                          <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
+                        </div>
+
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="relative">
+                            {!token && (
+                              <div
+                                className="absolute inset-0 z-10 cursor-pointer"
+                                onClick={() => setShowModalLogin(true)}
+                              />
+                            )}
+                            <input
+                              type="number"
+                              min="0"
+                              max="99"
+                              disabled={!token}
+                              value={golsM}
+                              onChange={(e) =>
+                                setPlacares((prev) => ({
+                                  ...prev,
+                                  [p.id]: { golsMandante: e.target.value, golsVisitante: prev[p.id]?.golsVisitante ?? "" },
+                                }))
+                              }
+                              onBlur={() => autoSalvar(p.id)}
+                              className="w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg"
+                            />
+                          </div>
+                          <span className="text-sm text-zinc-400 sm:text-base">x</span>
+                          <div className="relative">
+                            {!token && (
+                              <div
+                                className="absolute inset-0 z-10 cursor-pointer"
+                                onClick={() => setShowModalLogin(true)}
+                              />
+                            )}
+                            <input
+                              type="number"
+                              min="0"
+                              max="99"
+                              disabled={!token}
+                              value={golsV}
+                              onChange={(e) =>
+                                setPlacares((prev) => ({
+                                  ...prev,
+                                  [p.id]: { golsMandante: prev[p.id]?.golsMandante ?? "", golsVisitante: e.target.value },
+                                }))
+                              }
+                              onBlur={() => autoSalvar(p.id)}
+                              className="w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
+                          <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
+                          <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="mt-4 border-t border-zinc-300/30 dark:border-zinc-700/30" />
+                      <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
+                        <span className="font-mono">J{p.id}</span>
+                        <span className="text-zinc-300">|</span>
+                        <span>{formatarData(p.dataHora)}</span>
+                        <span className="inline-flex items-center gap-1">
+                          <IconClock className="h-3.5 w-3.5" />
+                          {formatarHora(p.dataHora)}
+                        </span>
+                        <span className="text-zinc-300">|</span>
+                        <span className="inline-flex items-center gap-1">
+                          <IconMapPin className="h-3.5 w-3.5" />
+                          {p.estadio.nome}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="md:hidden">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5">
+                          <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                          <span className="truncate text-sm font-medium">{p.mandante.nome}</span>
+                        </div>
                         <div className="relative">
                           {!token && (
                             <div
@@ -318,10 +397,15 @@ export default function PlacarPage() {
                               }))
                             }
                             onBlur={() => autoSalvar(p.id)}
-                            className="w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg"
+                            className="w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800"
                           />
                         </div>
-                        <span className="text-sm text-zinc-400 sm:text-base">x</span>
+                      </div>
+                      <div className="mt-1 flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-1.5">
+                          <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                          <span className="truncate text-sm font-medium">{p.visitante.nome}</span>
+                        </div>
                         <div className="relative">
                           {!token && (
                             <div
@@ -342,30 +426,23 @@ export default function PlacarPage() {
                               }))
                             }
                             onBlur={() => autoSalvar(p.id)}
-                            className="w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg"
+                            className="w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800"
                           />
                         </div>
                       </div>
-
-                      <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
-                        <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
-                        <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8 lg:h-10" />
-                      </div>
-
-                    </div>
-
-                    <div className="mt-3 border-t border-zinc-100 pt-3 sm:mt-4 sm:pt-4">
-                      <div className="flex flex-col items-center justify-center gap-1 text-xs text-zinc-500 sm:flex-row sm:gap-3 sm:text-sm">
+                      <div className="my-2 border-t border-zinc-300/30 dark:border-zinc-700/30" />
+                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
+                        <span className="font-mono">J{p.id}</span>
+                        <span className="text-zinc-300">|</span>
+                        <span>{formatarData(p.dataHora)}</span>
                         <span className="inline-flex items-center gap-1">
-                          <IconCalendar className="h-3.5 w-3.5" />
-                          {formatarData(p.dataHora)}
-                          <IconClock className="ml-1 h-3.5 w-3.5" />
+                          <IconClock className="h-3 w-3" />
                           {formatarHora(p.dataHora)}
                         </span>
-                        <span className="hidden sm:inline">—</span>
+                        <span className="text-zinc-300">|</span>
                         <span className="inline-flex items-center gap-1">
-                          <IconMapPin className="h-3.5 w-3.5" />
-                          {p.estadio.nome} ({p.estadio.cidade})
+                          <IconMapPin className="h-3 w-3" />
+                          {p.estadio.nome}
                         </span>
                       </div>
                     </div>
