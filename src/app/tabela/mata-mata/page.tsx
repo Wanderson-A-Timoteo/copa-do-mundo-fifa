@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 
-import { IconTrophy } from "@/components/Icons";
+import { IconTrophy, IconClock, IconMapPin } from "@/components/Icons";
 import ModalLogin from "@/components/ModalLogin";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { computeBracket, type GrupoStanding, type BracketResult, type PartidaResolvida } from "@/lib/compute-bracket";
@@ -27,10 +27,19 @@ function getUserId(): number | null {
   }
 }
 
+function formatarData(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleDateString("pt-BR", { timeZone: "UTC", day: "2-digit", month: "2-digit" });
+}
+function formatarHora(iso: string) {
+  const d = new Date(iso);
+  return d.toLocaleTimeString("pt-BR", { timeZone: "UTC", hour: "2-digit", minute: "2-digit" });
+}
+
 type PlacaresState = Record<number, { golsMandante: string; golsVisitante: string; penaltisMandante: string; penaltisVisitante: string }>;
 
 const CARD_W = 200;
-const CARD_H = 112;
+const CARD_H = 134;
 const COL_GAP = 48;
 const PITCH = CARD_W + COL_GAP;
 const ROW_UNIT = 120;
@@ -478,10 +487,19 @@ export default function TabelaMataMataPage() {
                             </div>
                           </>
                         )}
+                        <div className="border-t border-zinc-300/30 dark:border-zinc-700/30" />
                         <div className={`flex items-center gap-2 text-[10px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}>
                           <span className="font-mono">J{num}</span>
                           <span>{faseNome.get(num) ?? ""}</span>
-                          <span>{p.dataHora ? new Date(p.dataHora).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : ""}</span>
+                        </div>
+                        <div className={`flex items-center gap-2 text-[10px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}>
+                          {p.dataHora && <span>{formatarData(p.dataHora)} {formatarHora(p.dataHora)}</span>}
+                          {p.estadio && (
+                            <>
+                              <IconMapPin className="h-3 w-3" />
+                              <span className="truncate">{p.estadio.nome}</span>
+                            </>
+                          )}
                         </div>
                       </div>
                     ) : (
@@ -579,9 +597,24 @@ export default function TabelaMataMataPage() {
                                 </div>
                               </>
                             )}
-                            <div className="mt-1 flex items-center gap-2 text-[11px] text-zinc-400">
+                            <div className="mt-1 border-t border-zinc-300/30 dark:border-zinc-700/30" />
+                            <div className="flex items-center gap-2 text-[11px] text-zinc-400">
                               <span className="font-mono">J{p.numero}</span>
-                              <span>{p.dataHora ? new Date(p.dataHora).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) : ""}</span>
+                              <span>{faseNome.get(p.numero) ?? ""}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-[11px] text-zinc-400">
+                              {p.dataHora && (
+                                <>
+                                  <IconClock className="h-3 w-3" />
+                                  <span>{formatarData(p.dataHora)} {formatarHora(p.dataHora)}</span>
+                                </>
+                              )}
+                              {p.estadio && (
+                                <>
+                                  <IconMapPin className="h-3 w-3" />
+                                  <span className="truncate">{p.estadio.nome}</span>
+                                </>
+                              )}
                             </div>
                           </>
                         ) : (

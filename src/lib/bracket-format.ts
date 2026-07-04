@@ -7,6 +7,7 @@ export type FonteTime =
 export interface PartidaBracket {
   numero: number;
   dataHora: string;
+  estadio: { nome: string; cidade: string };
   mandante: FonteTime;
   visitante: FonteTime;
 }

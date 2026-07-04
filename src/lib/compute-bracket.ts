@@ -33,6 +33,7 @@ export interface PalpiteMataMataInput {
 export interface PartidaResolvida {
   numero: number;
   dataHora: string;
+  estadio: { nome: string; cidade: string } | null;
   fase: string;
   faseLabel: string;
   mandante: SelecaoStanding | null;
@@ -165,6 +166,7 @@ export function computeBracket(
       return {
         numero: p.numero,
         dataHora: p.dataHora,
+        estadio: p.estadio,
         fase: fase.key,
         faseLabel: fase.label,
         mandante,
