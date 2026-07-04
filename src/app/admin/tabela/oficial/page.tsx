@@ -296,18 +296,94 @@ export default function AdminOficialPage() {
                       key={p.id}
                       className="rounded-xl border border-zinc-200 bg-white p-4 transition-shadow dark:border-zinc-800 dark:bg-zinc-900 sm:p-6"
                     >
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-                          <FlagIcon codigo={p.mandante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
-                          <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
+                      <div className="hidden md:block">
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                          <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+                            <FlagIcon codigo={p.mandante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                            <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
+                          </div>
+
+                          {isAdmin ? (
+                            <div className="flex items-center gap-2 sm:gap-3">
+                              <input
+                                type="number"
+                                min="0"
+                                max="99"
+                                value={golsM}
+                                onChange={(e) =>
+                                  setPlacares((prev) => ({
+                                    ...prev,
+                                    [p.id]: { golsMandante: e.target.value, golsVisitante: prev[p.id]?.golsVisitante ?? "" },
+                                  }))
+                                }
+                                onBlur={() => autoSalvar(p.id)}
+                                className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvando.has(p.id) ? "opacity-50" : ""}`}
+                              />
+                              <span className="text-sm text-zinc-400 sm:text-base">x</span>
+                              <input
+                                type="number"
+                                min="0"
+                                max="99"
+                                value={golsV}
+                                onChange={(e) =>
+                                  setPlacares((prev) => ({
+                                    ...prev,
+                                    [p.id]: { golsMandante: prev[p.id]?.golsMandante ?? "", golsVisitante: e.target.value },
+                                  }))
+                                }
+                                onBlur={() => autoSalvar(p.id)}
+                                className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvando.has(p.id) ? "opacity-50" : ""}`}
+                              />
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 sm:gap-3">
+                              <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
+                                {p.golsMandante !== null ? p.golsMandante : "-"}
+                              </span>
+                              <span className="text-sm text-zinc-400 sm:text-base">x</span>
+                              <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
+                                {p.golsVisitante !== null ? p.golsVisitante : "-"}
+                              </span>
+                            </div>
+                          )}
+
+                          <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
+                            <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
+                            <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                          </div>
                         </div>
 
-                        {isAdmin ? (
-                          <div className="flex items-center gap-2 sm:gap-3">
-                            <input
-                              type="number"
-                              min="0"
-                              max="99"
+                        <div className="mt-4 border-t border-zinc-300/30 dark:border-zinc-700/30" />
+                        <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
+                          <span className="font-mono">J{p.id}</span>
+                          <span className="text-zinc-300">|</span>
+                          <span>{formatarData(p.dataHora)}</span>
+                          <span className="inline-flex items-center gap-1">
+                            <IconClock className="h-3.5 w-3.5" />
+                            {formatarHora(p.dataHora)}
+                          </span>
+                          <span className="text-zinc-300">|</span>
+                          <span className="inline-flex items-center gap-1">
+                            <IconMapPin className="h-3.5 w-3.5" />
+                            {p.estadio.nome}
+                          </span>
+                          <span className="text-zinc-400">Grupo {p.grupoId}</span>
+                          {p.encerrada && (
+                            <span className="rounded bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                              Encerrada
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="md:hidden">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5">
+                            <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                            <span className="truncate text-sm font-medium">{p.mandante.nome}</span>
+                          </div>
+                          {isAdmin ? (
+                            <input type="number" min="0" max="99"
                               value={golsM}
                               onChange={(e) =>
                                 setPlacares((prev) => ({
@@ -316,13 +392,19 @@ export default function AdminOficialPage() {
                                 }))
                               }
                               onBlur={() => autoSalvar(p.id)}
-                              className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvando.has(p.id) ? "opacity-50" : ""}`}
+                              className={`w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 ${salvando.has(p.id) ? "opacity-50" : ""}`}
                             />
-                            <span className="text-sm text-zinc-400 sm:text-base">x</span>
-                            <input
-                              type="number"
-                              min="0"
-                              max="99"
+                          ) : (
+                            <span className="text-sm font-bold">{p.golsMandante ?? "-"}</span>
+                          )}
+                        </div>
+                        <div className="mt-1 flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1.5">
+                            <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                            <span className="truncate text-sm font-medium">{p.visitante.nome}</span>
+                          </div>
+                          {isAdmin ? (
+                            <input type="number" min="0" max="99"
                               value={golsV}
                               onChange={(e) =>
                                 setPlacares((prev) => ({
@@ -331,47 +413,33 @@ export default function AdminOficialPage() {
                                 }))
                               }
                               onBlur={() => autoSalvar(p.id)}
-                              className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvando.has(p.id) ? "opacity-50" : ""}`}
+                              className={`w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 ${salvando.has(p.id) ? "opacity-50" : ""}`}
                             />
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-2 sm:gap-3">
-                            <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
-                              {p.golsMandante !== null ? p.golsMandante : "-"}
-                            </span>
-                            <span className="text-sm text-zinc-400 sm:text-base">x</span>
-                            <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
-                              {p.golsVisitante !== null ? p.golsVisitante : "-"}
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
-                          <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
-                          <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                          ) : (
+                            <span className="text-sm font-bold">{p.golsVisitante ?? "-"}</span>
+                          )}
                         </div>
-                      </div>
-
-                      <div className="mt-4 border-t border-zinc-300/30 dark:border-zinc-700/30" />
-                      <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
-                        <span className="font-mono">J{p.id}</span>
-                        <span className="text-zinc-300">|</span>
-                        <span>{formatarData(p.dataHora)}</span>
-                        <span className="inline-flex items-center gap-1">
-                          <IconClock className="h-3.5 w-3.5" />
-                          {formatarHora(p.dataHora)}
-                        </span>
-                        <span className="text-zinc-300">|</span>
-                        <span className="inline-flex items-center gap-1">
-                          <IconMapPin className="h-3.5 w-3.5" />
-                          {p.estadio.nome}
-                        </span>
-                        <span className="text-zinc-400">Grupo {p.grupoId}</span>
-                        {p.encerrada && (
-                          <span className="rounded bg-emerald-100 px-2 py-0.5 text-[11px] text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
-                            Encerrada
+                        <div className="my-2 border-t border-zinc-300/30 dark:border-zinc-700/30" />
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
+                          <span className="font-mono">J{p.id}</span>
+                          <span className="text-zinc-300">|</span>
+                          <span>{formatarData(p.dataHora)}</span>
+                          <span className="inline-flex items-center gap-1">
+                            <IconClock className="h-3 w-3" />
+                            {formatarHora(p.dataHora)}
                           </span>
-                        )}
+                          <span className="text-zinc-300">|</span>
+                          <span className="inline-flex items-center gap-1">
+                            <IconMapPin className="h-3 w-3" />
+                            {p.estadio.nome}
+                          </span>
+                          <span className="text-zinc-400">Grupo {p.grupoId}</span>
+                          {p.encerrada && (
+                            <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                              Encerrada
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   );
@@ -404,137 +472,250 @@ export default function AdminOficialPage() {
                           key={p.numero}
                           className="rounded-xl border border-zinc-200 bg-white p-4 transition-shadow dark:border-zinc-800 dark:bg-zinc-900 sm:p-6"
                         >
-                          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                            <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-                              {p.mandante ? (
-                                <>
-                                  <FlagIcon codigo={p.mandante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
-                                  <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
-                                </>
-                              ) : (
-                                <span className="text-sm italic text-zinc-400">A definir</span>
-                              )}
-                            </div>
+                          <div className="hidden md:block">
+                            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                              <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+                                {p.mandante ? (
+                                  <>
+                                    <FlagIcon codigo={p.mandante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                                    <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
+                                  </>
+                                ) : (
+                                  <span className="text-sm italic text-zinc-400">A definir</span>
+                                )}
+                              </div>
 
-                            {isAdmin && p.mandante && p.visitante ? (
-                              <div className="flex flex-col items-center gap-1">
-                                <div className="flex items-center gap-2 sm:gap-3">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    max="99"
-                                    value={knockoutPlacares[p.numero]?.golsMandante ?? ""}
-                                    onChange={(e) =>
-                                      setKnockoutPlacares((prev) => ({
-                                        ...prev,
-                                        [p.numero]: { golsMandante: e.target.value, golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
-                                      }))
-                                    }
-                                    onBlur={() => salvarKnockout(p.numero)}
-                                    className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
-                                  />
-                                  <span className="text-sm text-zinc-400 sm:text-base">x</span>
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    max="99"
-                                    value={knockoutPlacares[p.numero]?.golsVisitante ?? ""}
-                                    onChange={(e) =>
-                                      setKnockoutPlacares((prev) => ({
-                                        ...prev,
-                                        [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: e.target.value, penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
-                                      }))
-                                    }
-                                    onBlur={() => salvarKnockout(p.numero)}
-                                    className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
-                                  />
-                                </div>
-                                {placarEmpatado && (
-                                  <div className="mt-1 flex flex-col items-center gap-0.5">
-                                    <span className="text-xs text-zinc-400">Penáltis</span>
-                                    <div className="flex items-center gap-2 sm:gap-2.5">
-                                      <input
-                                      type="number"
-                                      min="0"
-                                      max="99"
-                                      value={knockoutPlacares[p.numero]?.penaltisMandante ?? ""}
-                                      onChange={(e) =>
-                                        setKnockoutPlacares((prev) => ({
-                                          ...prev,
-                                          [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: e.target.value, penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
-                                        }))
-                                      }
-                                      onBlur={() => salvarKnockout(p.numero)}
-                                      className={`w-10 rounded border border-zinc-300 px-1.5 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-12 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
-                                    />
-                                    <span className="text-zinc-400">x</span>
+                              {isAdmin && p.mandante && p.visitante ? (
+                                <div className="flex flex-col items-center gap-1">
+                                  <div className="flex items-center gap-2 sm:gap-3">
                                     <input
                                       type="number"
                                       min="0"
                                       max="99"
-                                      value={knockoutPlacares[p.numero]?.penaltisVisitante ?? ""}
+                                      value={knockoutPlacares[p.numero]?.golsMandante ?? ""}
                                       onChange={(e) =>
                                         setKnockoutPlacares((prev) => ({
                                           ...prev,
-                                          [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: e.target.value },
+                                          [p.numero]: { golsMandante: e.target.value, golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
                                         }))
                                       }
                                       onBlur={() => salvarKnockout(p.numero)}
-                                      className={`w-10 rounded border border-zinc-300 px-1.5 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-12 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                      className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                    />
+                                    <span className="text-sm text-zinc-400 sm:text-base">x</span>
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      max="99"
+                                      value={knockoutPlacares[p.numero]?.golsVisitante ?? ""}
+                                      onChange={(e) =>
+                                        setKnockoutPlacares((prev) => ({
+                                          ...prev,
+                                          [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: e.target.value, penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
+                                        }))
+                                      }
+                                      onBlur={() => salvarKnockout(p.numero)}
+                                      className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
                                     />
                                   </div>
+                                  {placarEmpatado && (
+                                    <div className="mt-1 flex flex-col items-center gap-0.5">
+                                      <span className="text-xs text-zinc-400">Penáltis</span>
+                                      <div className="hidden md:flex items-center gap-2 sm:gap-2.5">
+                                        {p.mandante && <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />}
+                                        <input
+                                        type="number"
+                                        min="0"
+                                        max="99"
+                                        value={knockoutPlacares[p.numero]?.penaltisMandante ?? ""}
+                                        onChange={(e) =>
+                                          setKnockoutPlacares((prev) => ({
+                                            ...prev,
+                                            [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: e.target.value, penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
+                                          }))
+                                        }
+                                        onBlur={() => salvarKnockout(p.numero)}
+                                        className={`w-10 rounded border border-zinc-300 px-1.5 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-12 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                      />
+                                      <span className="text-zinc-400">x</span>
+                                      <input
+                                        type="number"
+                                        min="0"
+                                        max="99"
+                                        value={knockoutPlacares[p.numero]?.penaltisVisitante ?? ""}
+                                        onChange={(e) =>
+                                          setKnockoutPlacares((prev) => ({
+                                            ...prev,
+                                            [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: e.target.value },
+                                          }))
+                                        }
+                                        onBlur={() => salvarKnockout(p.numero)}
+                                        className={`w-10 rounded border border-zinc-300 px-1.5 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-12 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                      />
+                                      {p.visitante && <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />}
+                                      </div>
+                                      <div className="flex md:hidden items-center gap-2">
+                                        {p.mandante && <FlagIcon codigo={p.mandante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />}
+                                        <input
+                                        type="number"
+                                        min="0"
+                                        max="99"
+                                        value={knockoutPlacares[p.numero]?.penaltisMandante ?? ""}
+                                        onChange={(e) =>
+                                          setKnockoutPlacares((prev) => ({
+                                            ...prev,
+                                            [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: e.target.value, penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
+                                          }))
+                                        }
+                                        onBlur={() => salvarKnockout(p.numero)}
+                                        className={`w-8 rounded border border-zinc-300 px-1 py-0.5 text-center text-xs dark:border-zinc-700 dark:bg-zinc-800 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                      />
+                                      <span className="text-zinc-400">x</span>
+                                      <input
+                                        type="number"
+                                        min="0"
+                                        max="99"
+                                        value={knockoutPlacares[p.numero]?.penaltisVisitante ?? ""}
+                                        onChange={(e) =>
+                                          setKnockoutPlacares((prev) => ({
+                                            ...prev,
+                                            [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: e.target.value },
+                                          }))
+                                        }
+                                        onBlur={() => salvarKnockout(p.numero)}
+                                        className={`w-8 rounded border border-zinc-300 px-1 py-0.5 text-center text-xs dark:border-zinc-700 dark:bg-zinc-800 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                      />
+                                      {p.visitante && <FlagIcon codigo={p.visitante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <div className="flex flex-col items-center gap-0.5">
+                                  <div className="flex items-center gap-2 sm:gap-3">
+                                    <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
+                                      {p.golsMandante !== null ? p.golsMandante : "-"}
+                                    </span>
+                                    <span className="text-sm text-zinc-400 sm:text-base">x</span>
+                                    <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
+                                      {p.golsVisitante !== null ? p.golsVisitante : "-"}
+                                    </span>
+                                  </div>
+                                  {p.penaltisMandante !== null && p.penaltisVisitante !== null && (
+                                    <span className="text-xs text-zinc-400">
+                                      Penáltis: {p.penaltisMandante} x {p.penaltisVisitante}
+                                    </span>
+                                  )}
                                 </div>
                               )}
-                              </div>
-                            ) : (
-                              <div className="flex flex-col items-center gap-0.5">
-                                <div className="flex items-center gap-2 sm:gap-3">
-                                  <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
-                                    {p.golsMandante !== null ? p.golsMandante : "-"}
-                                  </span>
-                                  <span className="text-sm text-zinc-400 sm:text-base">x</span>
-                                  <span className="min-w-[3.5rem] text-center text-lg font-bold sm:min-w-[4rem] sm:text-xl">
-                                    {p.golsVisitante !== null ? p.golsVisitante : "-"}
-                                  </span>
-                                </div>
-                                {p.penaltisMandante !== null && p.penaltisVisitante !== null && (
-                                  <span className="text-xs text-zinc-400">
-                                    Penáltis: {p.penaltisMandante} x {p.penaltisVisitante}
-                                  </span>
+
+                              <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
+                                {p.visitante ? (
+                                  <>
+                                    <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
+                                    <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                                  </>
+                                ) : (
+                                  <span className="text-sm italic text-zinc-400">A definir</span>
                                 )}
                               </div>
-                            )}
+                            </div>
 
-                            <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
-                              {p.visitante ? (
+                            <div className="mt-4 border-t border-zinc-300/30 dark:border-zinc-700/30" />
+                            <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
+                              <span className="font-mono">J{p.numero}</span>
+                              <span className="text-zinc-300">|</span>
+                              <span>{formatarData(p.dataHora)}</span>
+                              <span className="inline-flex items-center gap-1">
+                                <IconClock className="h-3.5 w-3.5" />
+                                {formatarHora(p.dataHora)}
+                              </span>
+                              {p.estadio && (
                                 <>
-                                  <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
-                                  <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                                  <span className="text-zinc-300">|</span>
+                                  <span className="inline-flex items-center gap-1">
+                                    <IconMapPin className="h-3.5 w-3.5" />
+                                    {p.estadio.nome}
+                                  </span>
                                 </>
-                              ) : (
-                                <span className="text-sm italic text-zinc-400">A definir</span>
                               )}
                             </div>
                           </div>
 
-                          <div className="mt-4 border-t border-zinc-300/30 dark:border-zinc-700/30" />
-                          <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
-                            <span className="font-mono">J{p.numero}</span>
-                            <span className="text-zinc-300">|</span>
-                            <span>{formatarData(p.dataHora)}</span>
-                            <span className="inline-flex items-center gap-1">
-                              <IconClock className="h-3.5 w-3.5" />
-                              {formatarHora(p.dataHora)}
-                            </span>
-                            {p.estadio && (
-                              <>
-                                <span className="text-zinc-300">|</span>
-                                <span className="inline-flex items-center gap-1">
-                                  <IconMapPin className="h-3.5 w-3.5" />
-                                  {p.estadio.nome}
-                                </span>
-                              </>
-                            )}
+                          <div className="md:hidden">
+                            <div className="flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5">
+                                {p.mandante ? (
+                                  <>
+                                    <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                                    <span className="truncate text-sm font-medium">{p.mandante.nome}</span>
+                                  </>
+                                ) : (
+                                  <span className="text-sm italic text-zinc-400">A definir</span>
+                                )}
+                              </div>
+                              {isAdmin && p.mandante && p.visitante ? (
+                                <input type="number" min="0" max="99"
+                                  value={knockoutPlacares[p.numero]?.golsMandante ?? ""}
+                                  onChange={(e) =>
+                                    setKnockoutPlacares((prev) => ({
+                                      ...prev,
+                                      [p.numero]: { golsMandante: e.target.value, golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
+                                    }))
+                                  }
+                                  onBlur={() => salvarKnockout(p.numero)}
+                                  className={`w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                />
+                              ) : (
+                                <span className="text-sm font-bold">{p.golsMandante !== null ? p.golsMandante : "-"}</span>
+                              )}
+                            </div>
+                            <div className="mt-1 flex items-center justify-between gap-2">
+                              <div className="flex items-center gap-1.5">
+                                {p.visitante ? (
+                                  <>
+                                    <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                                    <span className="truncate text-sm font-medium">{p.visitante.nome}</span>
+                                  </>
+                                ) : (
+                                  <span className="text-sm italic text-zinc-400">A definir</span>
+                                )}
+                              </div>
+                              {isAdmin && p.mandante && p.visitante ? (
+                                <input type="number" min="0" max="99"
+                                  value={knockoutPlacares[p.numero]?.golsVisitante ?? ""}
+                                  onChange={(e) =>
+                                    setKnockoutPlacares((prev) => ({
+                                      ...prev,
+                                      [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: e.target.value, penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
+                                    }))
+                                  }
+                                  onBlur={() => salvarKnockout(p.numero)}
+                                  className={`w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                />
+                              ) : (
+                                <span className="text-sm font-bold">{p.golsVisitante !== null ? p.golsVisitante : "-"}</span>
+                              )}
+                            </div>
+                            <div className="my-2 border-t border-zinc-300/30 dark:border-zinc-700/30" />
+                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
+                              <span className="font-mono">J{p.numero}</span>
+                              <span className="text-zinc-300">|</span>
+                              <span>{formatarData(p.dataHora)}</span>
+                              <span className="inline-flex items-center gap-1">
+                                <IconClock className="h-3 w-3" />
+                                {formatarHora(p.dataHora)}
+                              </span>
+                              {p.estadio && (
+                                <>
+                                  <span className="text-zinc-300">|</span>
+                                  <span className="inline-flex items-center gap-1">
+                                    <IconMapPin className="h-3 w-3" />
+                                    {p.estadio.nome}
+                                  </span>
+                                </>
+                              )}
+                            </div>
                           </div>
                         </div>
                       );
