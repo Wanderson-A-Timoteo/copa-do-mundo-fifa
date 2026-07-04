@@ -42,7 +42,7 @@ const CARD_W = 200;
 const CARD_H = 134;
 const COL_GAP = 48;
 const PITCH = CARD_W + COL_GAP;
-const ROW_UNIT = 120;
+const ROW_UNIT = 158;
 const TOP_OFFSET = 48;
 
 const LABELS: { col: number; label: string }[] = [
