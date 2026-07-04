@@ -282,7 +282,8 @@ export default function AdminOficialPage() {
           </div>
         )}
 
-        <div className="mt-8 space-y-8">
+        <h2 className="mt-10 text-2xl font-bold">Fases de Grupos</h2>
+        <div className="mt-6 space-y-8">
           {Object.entries(partidasPorDia).map(([data, jogos]) => (
             <section key={data}>
               <h2 className="mb-4 text-lg font-bold capitalize">{formatarDataAgrupamento(jogos[0].dataHora)}</h2>
@@ -351,11 +352,16 @@ export default function AdminOficialPage() {
                         </div>
                       </div>
 
+                      <div className="mt-4 border-t border-zinc-300/30 dark:border-zinc-700/30" />
                       <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
+                        <span className="font-mono">J{p.id}</span>
+                        <span className="text-zinc-300">|</span>
+                        <span>{formatarData(p.dataHora)}</span>
                         <span className="inline-flex items-center gap-1">
                           <IconClock className="h-3.5 w-3.5" />
                           {formatarHora(p.dataHora)}
                         </span>
+                        <span className="text-zinc-300">|</span>
                         <span className="inline-flex items-center gap-1">
                           <IconMapPin className="h-3.5 w-3.5" />
                           {p.estadio.nome}
@@ -511,14 +517,24 @@ export default function AdminOficialPage() {
                             </div>
                           </div>
 
+                          <div className="mt-4 border-t border-zinc-300/30 dark:border-zinc-700/30" />
                           <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
+                            <span className="font-mono">J{p.numero}</span>
+                            <span className="text-zinc-300">|</span>
+                            <span>{formatarData(p.dataHora)}</span>
                             <span className="inline-flex items-center gap-1">
                               <IconClock className="h-3.5 w-3.5" />
-                              {new Date(p.dataHora).toLocaleTimeString("pt-BR", { timeZone: "UTC", hour: "2-digit", minute: "2-digit" })}
+                              {formatarHora(p.dataHora)}
                             </span>
-                            <span className="text-zinc-400">
-                              J{p.numero} &middot; {new Date(p.dataHora).toLocaleDateString("pt-BR", { timeZone: "UTC", day: "2-digit", month: "2-digit" })}
-                            </span>
+                            {p.estadio && (
+                              <>
+                                <span className="text-zinc-300">|</span>
+                                <span className="inline-flex items-center gap-1">
+                                  <IconMapPin className="h-3.5 w-3.5" />
+                                  {p.estadio.nome}
+                                </span>
+                              </>
+                            )}
                           </div>
                         </div>
                       );
