@@ -412,6 +412,7 @@ export default function TabelaMataMataPage() {
                 const podeEditar = !!p.mandante && !!p.visitante;
                 const salvandoAgora = salvando.has(p.numero);
                 const isRight = col >= 5;
+                const empate = podeEditar && placar.golsMandante !== "" && placar.golsVisitante !== "" && Number(placar.golsMandante) === Number(placar.golsVisitante);
 
                 return (
                   <div
@@ -420,7 +421,7 @@ export default function TabelaMataMataPage() {
                     style={{ left: x, top: y, width: CARD_W, height: CARD_H, zIndex: 1 }}
                   >
                     {p.mandante || p.visitante ? (
-                      <div className="flex h-full flex-col gap-0.5 text-[13px]">
+                      <div className={`flex h-full flex-col gap-0.5 text-[13px] ${empate ? "" : "justify-center"}`}>
                         <div className={`flex items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
                           <div className={`flex min-w-0 flex-1 items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
                             {p.mandante ? (
@@ -487,7 +488,7 @@ export default function TabelaMataMataPage() {
                             </div>
                           </>
                         )}
-                        <div className="border-t border-zinc-300/30 dark:border-zinc-700/30" />
+                        <div className="my-1 border-t border-zinc-300/30 dark:border-zinc-700/30" />
                         <div className={`flex items-center gap-2 text-[10px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}>
                           <span className="font-mono">J{num}</span>
                           <span>{faseNome.get(num) ?? ""}</span>
@@ -523,6 +524,7 @@ export default function TabelaMataMataPage() {
                 const placar = placares[p.numero] || { golsMandante: "", golsVisitante: "", penaltisMandante: "", penaltisVisitante: "" };
                     const podeEditar = !!p.mandante && !!p.visitante;
                     const salvandoAgora = salvando.has(p.numero);
+                    const empate = podeEditar && placar.golsMandante !== "" && placar.golsVisitante !== "" && Number(placar.golsMandante) === Number(placar.golsVisitante);
 
                     return (
                       <div
@@ -577,7 +579,7 @@ export default function TabelaMataMataPage() {
                                 <span className="text-sm font-bold">{p.golsVisitante ?? ""}</span>
                               )}
                             </div>
-                            {podeEditar && placar.golsMandante !== "" && placar.golsVisitante !== "" && Number(placar.golsMandante) === Number(placar.golsVisitante) && (
+                        {empate && (
                               <>
                                 <div className="mt-1 text-center text-[11px] text-zinc-400">Penaltis</div>
                                 <div className="flex items-center justify-center gap-1.5">
