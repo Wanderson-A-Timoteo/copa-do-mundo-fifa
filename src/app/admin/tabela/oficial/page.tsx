@@ -697,6 +697,38 @@ export default function AdminOficialPage() {
                                 <span className="text-sm font-bold">{p.golsVisitante !== null ? p.golsVisitante : "-"}</span>
                               )}
                             </div>
+                            {isAdmin && p.mandante && p.visitante && placarEmpatado && (
+                              <div className="mt-2 flex flex-col items-center gap-1">
+                                <span className="text-xs text-zinc-400">Penáltis</span>
+                                <div className="flex items-center gap-2">
+                                  <FlagIcon codigo={p.mandante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />
+                                  <input type="number" min="0" max="99"
+                                    value={knockoutPlacares[p.numero]?.penaltisMandante ?? ""}
+                                    onChange={(e) =>
+                                      setKnockoutPlacares((prev) => ({
+                                        ...prev,
+                                        [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: e.target.value, penaltisVisitante: prev[p.numero]?.penaltisVisitante ?? "" },
+                                      }))
+                                    }
+                                    onBlur={() => salvarKnockout(p.numero)}
+                                    className={`w-8 rounded border border-zinc-300 px-1 py-0.5 text-center text-xs dark:border-zinc-700 dark:bg-zinc-800 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                  />
+                                  <span className="text-zinc-400">x</span>
+                                  <input type="number" min="0" max="99"
+                                    value={knockoutPlacares[p.numero]?.penaltisVisitante ?? ""}
+                                    onChange={(e) =>
+                                      setKnockoutPlacares((prev) => ({
+                                        ...prev,
+                                        [p.numero]: { golsMandante: prev[p.numero]?.golsMandante ?? "", golsVisitante: prev[p.numero]?.golsVisitante ?? "", penaltisMandante: prev[p.numero]?.penaltisMandante ?? "", penaltisVisitante: e.target.value },
+                                      }))
+                                    }
+                                    onBlur={() => salvarKnockout(p.numero)}
+                                    className={`w-8 rounded border border-zinc-300 px-1 py-0.5 text-center text-xs dark:border-zinc-700 dark:bg-zinc-800 ${salvandoKnockout.has(p.numero) ? "opacity-50" : ""}`}
+                                  />
+                                  <FlagIcon codigo={p.visitante.codigoPais} className="h-4 w-auto shrink-0 rounded-sm" />
+                                </div>
+                              </div>
+                            )}
                             <div className="my-2 border-t border-zinc-300/30 dark:border-zinc-700/30" />
                             <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
                               <span className="font-mono">J{p.numero}</span>
