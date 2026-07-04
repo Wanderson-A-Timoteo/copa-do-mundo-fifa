@@ -599,7 +599,7 @@ export default function TabelaMataMataPage() {
                                 </div>
                               </>
                             )}
-                            <div className="mt-1 border-t border-zinc-300/30 dark:border-zinc-700/30" />
+                            <div className="my-1 border-t border-zinc-300/30 dark:border-zinc-700/30" />
                             <div className="flex items-center gap-2 text-[11px] text-zinc-400">
                               <span className="font-mono">J{p.numero}</span>
                               <span>{faseNome.get(p.numero) ?? ""}</span>

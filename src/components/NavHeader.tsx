@@ -64,9 +64,18 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
           mobileOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="absolute top-4 right-4 cursor-pointer rounded-lg p-2 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+          aria-label="Fechar menu"
+        >
+          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
         <ActiveLink href="/" onClick={() => setMobileOpen(false)}>Início</ActiveLink>
         <ActiveLink href="/selecoes" onClick={() => setMobileOpen(false)}>Seleções</ActiveLink>
-        <ActiveLink href="/tabela" onClick={() => setMobileOpen(false)}>Tabela</ActiveLink>
+        <ActiveLink href="/tabela" onClick={() => setMobileOpen(false)}>Classificação</ActiveLink>
         <ActiveLink href="/album" onClick={() => setMobileOpen(false)}>Álbum</ActiveLink>
         <ActiveLink href="/estadios" onClick={() => setMobileOpen(false)}>Estádios</ActiveLink>
       </nav>
