@@ -350,7 +350,7 @@ export default function AlbumPage() {
 
       {showAnimacao && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm py-8"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 backdrop-blur-sm py-8"
           onClick={() => setShowAnimacao(false)}
         >
           <div className="w-full max-w-2xl px-4 text-center" onClick={(e) => e.stopPropagation()}>
@@ -359,7 +359,7 @@ export default function AlbumPage() {
               Suas novas figurinhas!
             </h2>
             <div className="mx-auto grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {novasFigurinhas.map((fig, i) => (
+              {novasFigurinhas.slice(0, 4).map((fig, i) => (
                 <div
                   key={i}
                   className="animate-bounce mx-auto w-full max-w-[200px] shadow-xl shadow-black/30"
