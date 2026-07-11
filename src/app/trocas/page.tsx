@@ -6,6 +6,7 @@ import NavHeader from "@/components/NavHeader";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconRepeat, IconBook, IconUser, IconShield } from "@/components/Icons";
+import PlayerCard from "@/components/PlayerCard";
 import { Skeleton } from "@/components/Skeleton";
 
 interface FigurinhaResumo {
@@ -232,43 +233,30 @@ export default function TrocasPage() {
                   </p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                   {repetidasFiltradas.map((grupo) => (
                     <Link
                       key={grupo.figurinha.id}
                       href={`/perfil/${grupo.usuarios[0].id}`}
-                      className="group rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition-all hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+                      className="group relative"
                     >
-                      <div className="relative mx-auto mb-3 max-w-[120px]">
-                        {grupo.figurinha.jogador ? (
-                          <div className="flex flex-col items-center">
-                            {grupo.figurinha.jogador.fotoUrl ? (
-                              <img src={grupo.figurinha.jogador.fotoUrl} alt="" className="h-20 w-14 rounded-lg object-cover" />
-                            ) : (
-                              <div
-                                className="flex h-20 w-14 items-center justify-center rounded-lg text-sm font-bold text-white"
-                                style={{ backgroundColor: grupo.figurinha.selecao.corPrimaria || "#52525b" }}
-                              >
-                                {grupo.figurinha.jogador.nome.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
-                              </div>
-                            )}
-                            {grupo.figurinha.selecao.codigoPais && (
-                              <FlagIcon codigo={grupo.figurinha.selecao.codigoPais} className="mt-1 h-3 w-auto rounded-sm" />
-                            )}
-                          </div>
-                        ) : (
-                          <div className="flex flex-col items-center gap-1 py-4">
-                            <FlagIcon codigo={grupo.figurinha.selecao.codigoPais} className="h-8 w-auto rounded-sm" />
-                            <span className="text-xs font-bold text-center">{grupo.figurinha.selecao.nome}</span>
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-center text-xs font-semibold truncate">
-                        {grupo.figurinha.jogador?.nome || grupo.figurinha.selecao.nome}
-                      </p>
-                      <p className="text-center text-[10px] text-zinc-400">
+                      {grupo.figurinha.jogador ? (
+                        <PlayerCard
+                          jogador={grupo.figurinha.jogador}
+                          raridade={grupo.figurinha.raridade}
+                          corPrimaria={grupo.figurinha.selecao.corPrimaria}
+                          codigoPais={grupo.figurinha.selecao.codigoPais}
+                        />
+                      ) : (
+                        <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
+                          <FlagIcon codigo={grupo.figurinha.selecao.codigoPais} className="mb-2 h-10 w-auto rounded-sm" />
+                          <span className="text-center text-xs font-bold">{grupo.figurinha.selecao.nome}</span>
+                          <span className="text-[10px] text-zinc-400">#{grupo.figurinha.numero}</span>
+                        </div>
+                      )}
+                      <span className="mt-1 block text-center text-[10px] text-zinc-400">
                         {grupo.totalUsuarios} {grupo.totalUsuarios === 1 ? "pessoa tem" : "pessoas têm"}
-                      </p>
+                      </span>
                     </Link>
                   ))}
                 </div>
