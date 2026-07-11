@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
-import { IconStar, IconUser, IconTrophy } from "@/components/Icons";
+import { IconStar, IconUser, IconTrophy, IconRepeat } from "@/components/Icons";
 import PlayerCard from "@/components/PlayerCard";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { SkeletonAlbum } from "@/components/Skeleton";
@@ -183,14 +183,23 @@ export default function AlbumPage() {
             </p>
           </div>
           {user ? (
-            <div className="flex flex-col items-end gap-1">
-              <button
-                onClick={abrirPacote}
-                disabled={abrindo || pacotesRestantesHoje === 0}
-                className="rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-              >
-                {abrindo ? "Abrindo..." : pacotesRestantesHoje === 0 ? "Limite diário atingido" : "🎁 Abrir Pacotinho"}
-              </button>
+            <div className="flex flex-col items-end gap-2">
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/trocas"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                >
+                  <IconRepeat className="h-4 w-4" />
+                  Minhas Trocas
+                </Link>
+                <button
+                  onClick={abrirPacote}
+                  disabled={abrindo || pacotesRestantesHoje === 0}
+                  className="rounded-lg bg-zinc-900 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                >
+                  {abrindo ? "Abrindo..." : pacotesRestantesHoje === 0 ? "Limite diário atingido" : "Abrir Pacotinho"}
+                </button>
+              </div>
               <span className="text-xs text-zinc-400">
                 {pacotesRestantesHoje}/{limiteDiario} pacotes hoje
               </span>
@@ -308,9 +317,18 @@ export default function AlbumPage() {
                               </div>
                             )}
                             {repetidaQtd && (
-                              <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
-                                {repetidaQtd}
-                              </span>
+                              <>
+                                <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
+                                  {repetidaQtd}
+                                </span>
+                                <Link
+                                  href="/trocas"
+                                  className="mt-1 flex w-full items-center justify-center gap-1 rounded-md bg-amber-100 py-1 text-[10px] font-medium text-amber-700 transition-colors hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60"
+                                >
+                                  <IconRepeat className="h-3 w-3" />
+                                  Trocar
+                                </Link>
+                              </>
                             )}
                           </div>
                         );
