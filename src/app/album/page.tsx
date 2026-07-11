@@ -321,13 +321,7 @@ export default function AlbumPage() {
                                 <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
                                   {repetidaQtd}
                                 </span>
-                                <Link
-                                  href="/trocas"
-                                  className="mt-1 flex w-full items-center justify-center gap-1 rounded-md bg-amber-100 py-1 text-[10px] font-medium text-amber-700 transition-colors hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:hover:bg-amber-900/60"
-                                >
-                                  <IconRepeat className="h-3 w-3" />
-                                  Trocar
-                                </Link>
+
                               </>
                             )}
                           </div>
