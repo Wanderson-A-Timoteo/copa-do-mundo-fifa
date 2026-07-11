@@ -157,38 +157,6 @@ export default function PerfilPublicoPage() {
             </div>
           ) : (
             <>
-              {totalPaginas > 1 && (
-                <div className="mt-4 flex items-center justify-center gap-1">
-                  <button
-                    onClick={() => setPaginaAtual(p => Math.max(0, p - 1))}
-                    disabled={paginaSegura === 0}
-                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                  >
-                    Anterior
-                  </button>
-                  {numerosPagina.map(n => (
-                    <button
-                      key={n}
-                      onClick={() => setPaginaAtual(n)}
-                      className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
-                        n === paginaSegura
-                          ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                          : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                      }`}
-                    >
-                      {n + 1}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => setPaginaAtual(p => Math.min(totalPaginas - 1, p + 1))}
-                    disabled={paginaSegura >= totalPaginas - 1}
-                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                  >
-                    Próximo
-                  </button>
-                </div>
-              )}
-
               <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {paginaItens.map((item) => (
                   <div key={item.figurinha.id} className="relative">
@@ -222,21 +190,31 @@ export default function PerfilPublicoPage() {
               </div>
 
               {totalPaginas > 1 && (
-                <div className="mt-6 flex items-center justify-between">
+                <div className="mt-6 flex items-center justify-center gap-1">
                   <button
                     onClick={() => setPaginaAtual(p => Math.max(0, p - 1))}
                     disabled={paginaSegura === 0}
-                    className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
                   >
                     Anterior
                   </button>
-                  <span className="text-sm text-zinc-500">
-                    Página {paginaSegura + 1} de {totalPaginas}
-                  </span>
+                  {numerosPagina.map(n => (
+                    <button
+                      key={n}
+                      onClick={() => setPaginaAtual(n)}
+                      className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                        n === paginaSegura
+                          ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                          : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                      }`}
+                    >
+                      {n + 1}
+                    </button>
+                  ))}
                   <button
                     onClick={() => setPaginaAtual(p => Math.min(totalPaginas - 1, p + 1))}
                     disabled={paginaSegura >= totalPaginas - 1}
-                    className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
                   >
                     Próximo
                   </button>
