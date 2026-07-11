@@ -294,9 +294,6 @@ export default function TrocasPage() {
                           <span className="text-[10px] text-zinc-400">#{grupo.figurinha.numero}</span>
                         </div>
                       )}
-                      <span className="mt-1 block text-center text-[10px] text-zinc-400">
-                        {grupo.totalUsuarios} {grupo.totalUsuarios === 1 ? "pessoa tem" : "pessoas têm"}
-                      </span>
                     </Link>
                   ))}
                 </div>
