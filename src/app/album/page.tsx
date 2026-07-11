@@ -350,7 +350,7 @@ export default function AlbumPage() {
 
       {showAnimacao && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 backdrop-blur-sm pt-16 sm:items-center sm:pt-0"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm py-8"
           onClick={() => setShowAnimacao(false)}
         >
           <div className="w-full max-w-2xl px-4 text-center" onClick={(e) => e.stopPropagation()}>
@@ -362,7 +362,7 @@ export default function AlbumPage() {
               {novasFigurinhas.map((fig, i) => (
                 <div
                   key={i}
-                  className="animate-bounce"
+                  className="animate-bounce mx-auto w-full max-w-[200px] shadow-xl shadow-black/30"
                   style={{ animationDelay: `${i * 0.1}s`, animationDuration: "0.5s" }}
                 >
                   {fig.jogador ? (
