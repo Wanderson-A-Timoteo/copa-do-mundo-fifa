@@ -350,7 +350,7 @@ export default function AlbumPage() {
 
       {showAnimacao && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/80 backdrop-blur-sm py-8"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 backdrop-blur-sm pt-[10vh] pb-8"
           onClick={() => setShowAnimacao(false)}
         >
           <div className="w-full max-w-2xl px-4 text-center" onClick={(e) => e.stopPropagation()}>
