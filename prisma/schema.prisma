@@ -126,9 +126,9 @@ model Figurinha {
   raridade  String   @default("comum")
   imagemUrl String?
 
-  albumUsuarios    AlbumFigurinha[]
-  trocasOferecidas Troca[] @relation("oferecida")
-  trocasDesejadas  Troca[] @relation("desejada")
+  albumUsuarios          AlbumFigurinha[]
+  trocasDesejadas        Troca[]                     @relation("desejada")
+  oferecidaEmTrocas      TrocaFigurinhaOferecida[]
 
   @@map("figurinhas")
 }
@@ -146,19 +146,30 @@ model AlbumFigurinha {
 }
 
 model Troca {
-  id                    Int      @id @default(autoincrement())
-  remetenteId           Int
-  remetente             User     @relation("troca_remetente", fields: [remetenteId], references: [id])
-  destinatarioId        Int
-  destinatario          User     @relation("troca_destinatario", fields: [destinatarioId], references: [id])
-  figurinhaOferecidaId  Int
-  figurinhaOferecida    Figurinha @relation("oferecida", fields: [figurinhaOferecidaId], references: [id])
-  figurinhaDesejadaId   Int
-  figurinhaDesejada     Figurinha @relation("desejada", fields: [figurinhaDesejadaId], references: [id])
-  status                String   @default("pendente")
-  createdAt             DateTime @default(now()) @map("created_at")
+  id                  Int      @id @default(autoincrement())
+  remetenteId         Int
+  remetente           User     @relation("troca_remetente", fields: [remetenteId], references: [id])
+  destinatarioId      Int
+  destinatario        User     @relation("troca_destinatario", fields: [destinatarioId], references: [id])
+  figurinhaDesejadaId Int
+  figurinhaDesejada   Figurinha @relation("desejada", fields: [figurinhaDesejadaId], references: [id])
+  status              String   @default("pendente")
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  figurinhasOferecidas TrocaFigurinhaOferecida[]
 
   @@map("trocas")
+}
+
+model TrocaFigurinhaOferecida {
+  id          Int      @id @default(autoincrement())
+  trocaId     Int
+  troca       Troca    @relation(fields: [trocaId], references: [id], onDelete: Cascade)
+  figurinhaId Int
+  figurinha   Figurinha @relation(fields: [figurinhaId], references: [id])
+
+  @@unique([trocaId, figurinhaId])
+  @@map("troca_figurinhas_oferecidas")
 }
 
 model Palpite {

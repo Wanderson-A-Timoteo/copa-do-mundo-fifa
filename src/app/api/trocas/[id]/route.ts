@@ -38,6 +38,7 @@ export async function PATCH(
 
     const troca = await prisma.troca.findUnique({
       where: { id: trocaId },
+      include: { figurinhasOferecidas: true },
     });
 
     if (!troca) {
@@ -61,18 +62,23 @@ export async function PATCH(
       return NextResponse.json({ mensagem: "Troca recusada com sucesso" });
     }
 
-    const [oferecidaRemetente, desejadaDestinatario] = await Promise.all([
-      prisma.albumFigurinha.findUnique({
-        where: { usuarioId_figurinhaId: { usuarioId: troca.remetenteId, figurinhaId: troca.figurinhaOferecidaId } },
+    const oferecidasIds = troca.figurinhasOferecidas.map(o => o.figurinhaId);
+
+    const [oferecidasRemetente, desejadaDestinatario] = await Promise.all([
+      prisma.albumFigurinha.findMany({
+        where: { usuarioId: troca.remetenteId, figurinhaId: { in: oferecidasIds } },
       }),
       prisma.albumFigurinha.findUnique({
         where: { usuarioId_figurinhaId: { usuarioId: troca.destinatarioId, figurinhaId: troca.figurinhaDesejadaId } },
       }),
     ]);
 
-    if (!oferecidaRemetente || oferecidaRemetente.quantidade < 2) {
-      await prisma.troca.update({ where: { id: trocaId }, data: { status: "recusada" } });
-      return NextResponse.json({ erro: "O remetente não tem mais esta figurinha repetida. Troca recusada automaticamente." }, { status: 400 });
+    for (const id of oferecidasIds) {
+      const item = oferecidasRemetente.find(i => i.figurinhaId === id);
+      if (!item || item.quantidade < 2) {
+        await prisma.troca.update({ where: { id: trocaId }, data: { status: "recusada" } });
+        return NextResponse.json({ erro: "O remetente não tem mais todas as figurinhas repetidas. Troca recusada automaticamente." }, { status: 400 });
+      }
     }
 
     if (!desejadaDestinatario || desejadaDestinatario.quantidade < 1) {
@@ -80,9 +86,27 @@ export async function PATCH(
       return NextResponse.json({ erro: "Você não tem a figurinha desejada. Troca recusada automaticamente." }, { status: 400 });
     }
 
-    await prisma.$transaction([
+    const operacoes: any[] = [
+      prisma.troca.update({ where: { id: trocaId }, data: { status: "aceita" } }),
+    ];
+
+    for (const id of oferecidasIds) {
+      operacoes.push(
+        prisma.albumFigurinha.update({
+          where: { usuarioId_figurinhaId: { usuarioId: troca.remetenteId, figurinhaId: id } },
+          data: { quantidade: { decrement: 1 } },
+        }),
+        prisma.albumFigurinha.upsert({
+          where: { usuarioId_figurinhaId: { usuarioId: troca.destinatarioId, figurinhaId: id } },
+          create: { usuarioId: troca.destinatarioId, figurinhaId: id, quantidade: 1 },
+          update: { quantidade: { increment: 1 } },
+        }),
+      );
+    }
+
+    operacoes.push(
       prisma.albumFigurinha.update({
-        where: { usuarioId_figurinhaId: { usuarioId: troca.remetenteId, figurinhaId: troca.figurinhaOferecidaId } },
+        where: { usuarioId_figurinhaId: { usuarioId: troca.destinatarioId, figurinhaId: troca.figurinhaDesejadaId } },
         data: { quantidade: { decrement: 1 } },
       }),
       prisma.albumFigurinha.upsert({
@@ -90,20 +114,9 @@ export async function PATCH(
         create: { usuarioId: troca.remetenteId, figurinhaId: troca.figurinhaDesejadaId, quantidade: 1 },
         update: { quantidade: { increment: 1 } },
       }),
-      prisma.albumFigurinha.update({
-        where: { usuarioId_figurinhaId: { usuarioId: troca.destinatarioId, figurinhaId: troca.figurinhaDesejadaId } },
-        data: { quantidade: { decrement: 1 } },
-      }),
-      prisma.albumFigurinha.upsert({
-        where: { usuarioId_figurinhaId: { usuarioId: troca.destinatarioId, figurinhaId: troca.figurinhaOferecidaId } },
-        create: { usuarioId: troca.destinatarioId, figurinhaId: troca.figurinhaOferecidaId, quantidade: 1 },
-        update: { quantidade: { increment: 1 } },
-      }),
-      prisma.troca.update({
-        where: { id: trocaId },
-        data: { status: "aceita" },
-      }),
-    ]);
+    );
+
+    await prisma.$transaction(operacoes);
 
     return NextResponse.json({ mensagem: "Troca aceita com sucesso!" });
   } catch {

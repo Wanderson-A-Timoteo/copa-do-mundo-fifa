@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verificarToken } from "@/lib/auth";
 
+const figurinhaInclude = {
+  selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
+  jogador: { select: { nome: true, posicao: true, fotoUrl: true, numeroCamisa: true, dataNascimento: true, altura: true, peso: true, figurinha: { select: { raridade: true } } } },
+};
+
 function getUsuarioId(request: Request): number | null {
   const auth = request.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) return null;
@@ -30,17 +35,9 @@ export async function GET(request: Request) {
     include: {
       remetente: { select: { id: true, nome: true } },
       destinatario: { select: { id: true, nome: true } },
-      figurinhaOferecida: {
-        include: {
-          selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
-          jogador: { select: { nome: true, posicao: true, fotoUrl: true, numeroCamisa: true } },
-        },
-      },
-      figurinhaDesejada: {
-        include: {
-          selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
-          jogador: { select: { nome: true, posicao: true, fotoUrl: true, numeroCamisa: true } },
-        },
+      figurinhaDesejada: { include: figurinhaInclude },
+      figurinhasOferecidas: {
+        include: { figurinha: { include: figurinhaInclude } },
       },
     },
     orderBy: { createdAt: "desc" },
@@ -57,19 +54,19 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
-    const { figurinhaOferecidaId, figurinhaDesejadaId, destinatarioId } = body;
+    const { figurinhasOferecidasIds, figurinhaDesejadaId, destinatarioId } = body;
 
-    if (!figurinhaOferecidaId || !figurinhaDesejadaId || !destinatarioId) {
-      return NextResponse.json({ erro: "Campos obrigatórios: figurinhaOferecidaId, figurinhaDesejadaId, destinatarioId" }, { status: 400 });
+    if (!figurinhasOferecidasIds?.length || !figurinhaDesejadaId || !destinatarioId) {
+      return NextResponse.json({ erro: "Campos obrigatorios: figurinhasOferecidasIds (array), figurinhaDesejadaId, destinatarioId" }, { status: 400 });
     }
 
     if (destinatarioId === usuarioId) {
-      return NextResponse.json({ erro: "Você não pode criar uma troca consigo mesmo" }, { status: 400 });
+      return NextResponse.json({ erro: "Voce nao pode criar uma troca consigo mesmo" }, { status: 400 });
     }
 
-    const [oferecidaAlbum, desejadaAlbum, destinatario] = await Promise.all([
-      prisma.albumFigurinha.findUnique({
-        where: { usuarioId_figurinhaId: { usuarioId, figurinhaId: figurinhaOferecidaId } },
+    const [itensAlbum, desejadaAlbum, destinatario] = await Promise.all([
+      prisma.albumFigurinha.findMany({
+        where: { usuarioId, figurinhaId: { in: figurinhasOferecidasIds } },
       }),
       prisma.albumFigurinha.findUnique({
         where: { usuarioId_figurinhaId: { usuarioId, figurinhaId: figurinhaDesejadaId } },
@@ -77,59 +74,42 @@ export async function POST(request: Request) {
       prisma.user.findUnique({ where: { id: destinatarioId } }),
     ]);
 
-    if (!oferecidaAlbum || oferecidaAlbum.quantidade < 2) {
-      return NextResponse.json({ erro: "Você não tem figurinhas repetidas desta para oferecer" }, { status: 400 });
+    for (const id of figurinhasOferecidasIds) {
+      const item = itensAlbum.find(i => i.figurinhaId === id);
+      if (!item || item.quantidade < 2) {
+        return NextResponse.json({ erro: `Voce nao tem a figurinha ${id} repetida para oferecer` }, { status: 400 });
+      }
     }
 
     if (desejadaAlbum) {
-      return NextResponse.json({ erro: "Você já tem esta figurinha no álbum" }, { status: 400 });
+      return NextResponse.json({ erro: "Voce ja tem esta figurinha no album" }, { status: 400 });
     }
 
     if (!destinatario) {
-      return NextResponse.json({ erro: "Destinatário não encontrado" }, { status: 404 });
-    }
-
-    const existente = await prisma.troca.findFirst({
-      where: {
-        remetenteId: usuarioId,
-        figurinhaOferecidaId,
-        figurinhaDesejadaId,
-        status: "pendente",
-      },
-    });
-
-    if (existente) {
-      return NextResponse.json({ erro: "Já existe uma troca pendente com estas figurinhas" }, { status: 400 });
+      return NextResponse.json({ erro: "Destinatario nao encontrado" }, { status: 404 });
     }
 
     const troca = await prisma.troca.create({
       data: {
         remetenteId: usuarioId,
         destinatarioId,
-        figurinhaOferecidaId,
         figurinhaDesejadaId,
-        status: "pendente",
+        figurinhasOferecidas: {
+          create: figurinhasOferecidasIds.map((id: number) => ({ figurinhaId: id })),
+        },
       },
       include: {
         remetente: { select: { id: true, nome: true } },
         destinatario: { select: { id: true, nome: true } },
-        figurinhaOferecida: {
-          include: {
-            selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
-            jogador: { select: { nome: true, posicao: true, fotoUrl: true, numeroCamisa: true } },
-          },
-        },
-        figurinhaDesejada: {
-          include: {
-            selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
-            jogador: { select: { nome: true, posicao: true, fotoUrl: true, numeroCamisa: true } },
-          },
+        figurinhaDesejada: { include: figurinhaInclude },
+        figurinhasOferecidas: {
+          include: { figurinha: { include: figurinhaInclude } },
         },
       },
     });
 
     return NextResponse.json({ troca }, { status: 201 });
   } catch {
-    return NextResponse.json({ erro: "Erro ao processar solicitação" }, { status: 400 });
+    return NextResponse.json({ erro: "Erro ao processar solicitacao" }, { status: 400 });
   }
 }
