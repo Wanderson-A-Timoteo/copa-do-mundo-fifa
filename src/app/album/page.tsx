@@ -350,35 +350,33 @@ export default function AlbumPage() {
 
       {showAnimacao && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 backdrop-blur-sm pt-16 sm:items-center sm:pt-0"
           onClick={() => setShowAnimacao(false)}
         >
-          <div className="text-center" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-6 text-2xl font-bold text-white">
-              🎉 Suas novas figurinhas!
+          <div className="w-full max-w-2xl px-4 text-center" onClick={(e) => e.stopPropagation()}>
+            <h2 className="mb-6 flex items-center justify-center gap-2 text-2xl font-bold text-white">
+              <IconStar className="h-6 w-6 text-amber-400" />
+              Suas novas figurinhas!
             </h2>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="mx-auto grid grid-cols-1 gap-4 sm:grid-cols-2">
               {novasFigurinhas.map((fig, i) => (
                 <div
                   key={i}
-                  className="animate-bounce rounded-xl border-2 border-white/30 p-4 text-center text-white"
-                  style={{
-                    backgroundColor: fig.selecao.corPrimaria || "#666",
-                    animationDelay: `${i * 0.1}s`,
-                    animationDuration: "0.5s",
-                  }}
+                  className="animate-bounce"
+                  style={{ animationDelay: `${i * 0.1}s`, animationDuration: "0.5s" }}
                 >
-                  <FlagIcon codigo={fig.selecao.codigoPais} className="mx-auto mb-2 h-8 w-auto rounded-sm" />
-                  <div className="text-lg font-bold">
-                    {fig.jogador?.nome || fig.selecao.nome}
-                  </div>
-                  <div className="text-sm text-white/70">
-                    #{fig.numero} · {fig.selecao.nome}
-                  </div>
-                  {fig.raridade === "rara" && (
-                    <div className="mt-1 text-sm font-bold text-yellow-300">
-                      <IconStar className="mr-1 inline-block h-4 w-4" />
-                      RARA
+                  {fig.jogador ? (
+                    <PlayerCard
+                      jogador={fig.jogador}
+                      raridade={fig.raridade}
+                      corPrimaria={fig.selecao.corPrimaria}
+                      codigoPais={fig.selecao.codigoPais}
+                    />
+                  ) : (
+                    <div className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-xl border-2 border-white/30 bg-white/10 p-4 text-white backdrop-blur-sm">
+                      <FlagIcon codigo={fig.selecao.codigoPais} className="h-10 w-auto rounded-sm" />
+                      <span className="text-center text-sm font-bold">{fig.selecao.nome}</span>
+                      <span className="text-xs text-white/70">#{fig.numero}</span>
                     </div>
                   )}
                 </div>
@@ -386,7 +384,7 @@ export default function AlbumPage() {
             </div>
             <button
               onClick={() => setShowAnimacao(false)}
-              className="mt-8 rounded-lg bg-white px-8 py-3 font-medium text-black transition-colors hover:bg-zinc-200"
+              className="mt-8 mb-8 rounded-lg bg-white px-8 py-3 font-medium text-black transition-colors hover:bg-zinc-200"
             >
               Continuar
             </button>

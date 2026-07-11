@@ -25,10 +25,12 @@ export default function PlayerCard({
   jogador,
   corPrimaria,
   codigoPais,
+  raridade,
 }: {
   jogador: JogadorCard;
   corPrimaria: string | null;
   codigoPais: string | null;
+  raridade?: string;
 }) {
   const iniciais = jogador.nome
     .split(" ")
@@ -38,6 +40,7 @@ export default function PlayerCard({
     .toUpperCase();
 
   const idade = jogador.dataNascimento ? calcIdade(jogador.dataNascimento) : null;
+  const isRara = raridade ? raridade === "rara" : jogador.figurinha?.raridade === "rara";
 
   return (
     <div className="flex flex-col items-center rounded-xl border border-zinc-200 bg-stone-50 px-5 pb-5 pt-6 shadow-sm transition-all hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
@@ -68,7 +71,7 @@ export default function PlayerCard({
       <span className="mt-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
         {jogador.posicao}
       </span>
-      {jogador.figurinha?.raridade === "rara" && (
+      {isRara && (
         <span className="mt-1 flex items-center gap-0.5 text-[10px] font-bold text-amber-500">
           <IconStar className="h-3 w-3" /> RARA
         </span>
