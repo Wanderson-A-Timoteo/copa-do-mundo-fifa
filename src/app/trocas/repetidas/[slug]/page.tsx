@@ -29,6 +29,13 @@ export default function RepetidasDetalhePage() {
   const [figurinha, setFigurinha] = useState<FigurinhaDetalhe | null>(null);
   const [usuarios, setUsuarios] = useState<{ id: number; nome: string; slug: string; quantidade: number }[]>([]);
   const [carregando, setCarregando] = useState(true);
+  const [userLogado, setUserLogado] = useState<{ id: number } | null>(null);
+
+  useEffect(() => {
+    const raw = localStorage.getItem("user");
+    const cached = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
+    if (cached) setUserLogado(cached);
+  }, []);
 
   useEffect(() => {
     if (!slug) return;
@@ -133,12 +140,22 @@ export default function RepetidasDetalhePage() {
                         <p className="text-xs text-zinc-400">{usr.quantidade} disponíve{usr.quantidade !== 1 ? "is" : "l"}</p>
                       </div>
                     </div>
-                    <Link
-                      href={`/perfil/${usr.slug || usr.id}`}
-                      className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-                    >
-                      Ver perfil
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      {userLogado && userLogado.id !== usr.id && (
+                        <Link
+                          href={`/trocas/nova/${usr.id}/${figurinha.id}`}
+                          className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                        >
+                          Solicitar Troca
+                        </Link>
+                      )}
+                      <Link
+                        href={`/perfil/${usr.slug || usr.id}`}
+                        className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                      >
+                        Ver perfil
+                      </Link>
+                    </div>
                   </div>
                 ))}
               </div>
