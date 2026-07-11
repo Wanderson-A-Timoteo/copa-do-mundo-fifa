@@ -3,6 +3,15 @@ import { OAuth2Client } from "google-auth-library";
 import { prisma } from "@/lib/prisma";
 import { gerarToken } from "@/lib/auth";
 
+function gerarSlug(texto: string): string {
+  return texto
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    + "-" + Math.random().toString(36).substring(2, 6);
+}
+
 const client = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
 
 export async function POST(request: Request) {
@@ -31,6 +40,7 @@ export async function POST(request: Request) {
           nome: payload.name || payload.email.split("@")[0],
           email: payload.email,
           senha: null,
+          slug: gerarSlug(payload.name || payload.email.split("@")[0]),
         },
       });
     }

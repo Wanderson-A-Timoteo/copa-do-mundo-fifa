@@ -2,6 +2,15 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashSenha, gerarToken } from "@/lib/auth";
 
+function gerarSlug(texto: string): string {
+  return texto
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    + "-" + Math.random().toString(36).substring(2, 6);
+}
+
 export async function POST(request: Request) {
   try {
     const { nome, email, senha } = await request.json();
@@ -32,7 +41,7 @@ export async function POST(request: Request) {
     const senhaHash = await hashSenha(senha);
 
     const user = await prisma.user.create({
-      data: { nome, email, senha: senhaHash },
+      data: { nome, email, senha: senhaHash, slug: gerarSlug(nome) },
     });
 
     const token = gerarToken({ userId: user.id, email: user.email });
