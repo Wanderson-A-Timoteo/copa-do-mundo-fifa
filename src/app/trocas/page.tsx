@@ -237,7 +237,7 @@ export default function TrocasPage() {
                   {repetidasFiltradas.map((grupo) => (
                     <Link
                       key={grupo.figurinha.id}
-                      href={`/perfil/${grupo.usuarios[0].id}`}
+                      href={`/trocas/repetidas/${grupo.figurinha.id}`}
                       className="group relative"
                     >
                       {grupo.figurinha.jogador ? (
