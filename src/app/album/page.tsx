@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
-import { IconStar, IconUser } from "@/components/Icons";
+import { IconStar, IconUser, IconTrophy } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { SkeletonAlbum } from "@/components/Skeleton";
 
@@ -28,7 +28,7 @@ export default function AlbumPage() {
   const [figurinhas, setFigurinhas] = useState<Figurinha[]>([]);
   const [album, setAlbum] = useState<Map<number, AlbumItem>>(new Map());
   const [filtroStatus, setFiltroStatus] = useState("todas");
-  const [filtroSelecao, setFiltroSelecao] = useState("");
+  const [filtroNome, setFiltroNome] = useState("");
   const [abrindo, setAbrindo] = useState(false);
   const [novasFigurinhas, setNovasFigurinhas] = useState<Figurinha[]>([]);
   const [showAnimacao, setShowAnimacao] = useState(false);
@@ -38,13 +38,6 @@ export default function AlbumPage() {
   const [pacotesRestantesHoje, setPacotesRestantesHoje] = useState(10);
   const [limiteDiario, setLimiteDiario] = useState(10);
   const [paginaAtual, setPaginaAtual] = useState(0);
-  const [todasSelecoes, setTodasSelecoes] = useState<{ id: number; nome: string; codigoPais: string | null }[]>([]);
-
-  useEffect(() => {
-    fetch("/api/selecoes")
-      .then((r) => r.json())
-      .then((d) => setTodasSelecoes(d.selecoes ?? []));
-  }, []);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
@@ -62,9 +55,8 @@ export default function AlbumPage() {
   };
 
   const carregarDados = useCallback(async () => {
-    const params = filtroSelecao ? `?selecaoId=${filtroSelecao}` : "";
     const [figRes, albumRes] = await Promise.all([
-      fetch(`/api/figurinhas${params}`),
+      fetch("/api/figurinhas"),
       fetch("/api/album", { headers: { ...getAuthHeaders() } }),
     ]);
 
@@ -83,7 +75,7 @@ export default function AlbumPage() {
     setPacotesRestantesHoje(albumData.pacotesRestantesHoje ?? 10);
     setLimiteDiario(albumData.limiteDiario ?? 10);
     setCarregando(false);
-  }, [filtroSelecao]);
+  }, []);
 
   useEffect(() => {
     carregarDados();
@@ -139,20 +131,21 @@ export default function AlbumPage() {
   }, [figurinhas]);
 
   const selecoesFiltradas = useMemo(() => {
-    return selecoesAgrupadas.filter(({ figurinhas }) =>
-      figurinhas.some(f => {
+    return selecoesAgrupadas.filter(({ selecao, figurinhas }) => {
+      if (filtroNome && !selecao.nome.toLowerCase().includes(filtroNome.toLowerCase())) return false;
+      return figurinhas.some(f => {
         const status = statusFigurinha(f.id);
         if (filtroStatus === "tenho" && status !== "tenho") return false;
         if (filtroStatus === "faltando" && status !== "faltando") return false;
         if (filtroStatus === "repetida" && status !== "repetida") return false;
         return true;
-      })
-    );
-  }, [selecoesAgrupadas, filtroStatus]);
+      });
+    });
+  }, [selecoesAgrupadas, filtroStatus, filtroNome]);
 
   useEffect(() => {
     setPaginaAtual(0);
-  }, [filtroStatus, filtroSelecao]);
+  }, [filtroStatus, filtroNome]);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -228,31 +221,17 @@ export default function AlbumPage() {
           </div>
         </div>
 
-        <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
-          <button
-            onClick={() => setFiltroSelecao("")}
-            className={`shrink-0 rounded-lg px-3 py-1.5 text-sm transition-colors ${
-              filtroSelecao === ""
-                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-            }`}
-          >
-            Todas
-          </button>
-          {todasSelecoes.map((sel) => (
-            <button
-              key={sel.id}
-              onClick={() => setFiltroSelecao(String(sel.id))}
-              className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors ${
-                filtroSelecao === String(sel.id)
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-              }`}
-            >
-              <FlagIcon codigo={sel.codigoPais} className="h-4 w-auto rounded-sm" />
-              {sel.nome}
-            </button>
-          ))}
+        <div className="mt-4">
+          <div className="relative">
+            <IconTrophy className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+            <input
+              type="text"
+              value={filtroNome}
+              onChange={(e) => setFiltroNome(e.target.value)}
+              placeholder="Buscar seleção..."
+              className="w-full rounded-lg border border-zinc-300 bg-transparent py-2 pl-10 pr-4 text-sm outline-none transition-colors focus:border-zinc-500 dark:border-zinc-700 dark:focus:border-zinc-400"
+            />
+          </div>
         </div>
 
         {carregando ? (
