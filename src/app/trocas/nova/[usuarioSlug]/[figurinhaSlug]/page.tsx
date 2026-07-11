@@ -33,8 +33,8 @@ function getAuthHeaders(): Record<string, string> {
 export default function NovaTrocaPage() {
   const params = useParams();
   const router = useRouter();
-  const usuarioId = Number(params.usuarioId);
-  const figurinhaId = Number(params.figurinhaId);
+  const usuarioSlug = params.usuarioSlug as string;
+  const figurinhaSlug = params.figurinhaSlug as string;
 
   const [desejada, setDesejada] = useState<FigurinhaResumo | null>(null);
   const [destinatario, setDestinatario] = useState<{ id: number; nome: string; slug: string } | null>(null);
@@ -64,7 +64,7 @@ export default function NovaTrocaPage() {
     try {
       const [albumRes, userRes] = await Promise.all([
         fetch("/api/album", { headers: { ...getAuthHeaders() } }),
-        fetch(`/api/usuarios/${usuarioId}/repetidas`),
+        fetch(`/api/usuarios/${usuarioSlug}/repetidas`),
       ]);
 
       const albumData = await albumRes.json();
@@ -78,7 +78,7 @@ export default function NovaTrocaPage() {
       if (userData.usuario) setDestinatario(userData.usuario);
       if (userData.repetidas) {
         const desejadaItem = userData.repetidas.find(
-          (r: { figurinha: FigurinhaResumo }) => r.figurinha.id === figurinhaId
+          (r: { figurinha: FigurinhaResumo }) => r.figurinha.slug === figurinhaSlug
         );
         if (desejadaItem) setDesejada(desejadaItem.figurinha);
       }
@@ -87,12 +87,12 @@ export default function NovaTrocaPage() {
     } finally {
       setCarregando(false);
     }
-  }, [usuarioId, figurinhaId]);
+  }, [usuarioSlug, figurinhaSlug]);
 
   useEffect(() => {
-    if (!usuarioId || isNaN(usuarioId) || !figurinhaId || isNaN(figurinhaId)) return;
+    if (!usuarioSlug || !figurinhaSlug) return;
     carregarDados();
-  }, [usuarioId, figurinhaId, carregarDados]);
+  }, [usuarioSlug, figurinhaSlug, carregarDados]);
 
   const enviarSolicitacao = async () => {
     if (selecionadas.size === 0) return;
@@ -104,8 +104,8 @@ export default function NovaTrocaPage() {
       headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       body: JSON.stringify({
         figurinhasOferecidasIds: Array.from(selecionadas),
-        figurinhaDesejadaId: figurinhaId,
-        destinatarioId: usuarioId,
+        figurinhaDesejadaId: desejada?.id,
+        destinatarioId: destinatario?.id,
       }),
     });
 
@@ -140,7 +140,7 @@ export default function NovaTrocaPage() {
       <div className="min-h-screen">
         <NavHeader />
         <main className="mx-auto max-w-2xl px-6 py-8">
-          <Link href={`/perfil/${destinatario?.slug || usuarioId}`} className="mb-4 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+          <Link href={`/perfil/${destinatario?.slug || usuarioSlug}`} className="mb-4 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
             <IconArrowLeft className="h-4 w-4" />
             Voltar ao perfil
           </Link>
