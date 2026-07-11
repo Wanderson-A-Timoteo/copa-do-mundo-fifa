@@ -1,6 +1,10 @@
 export interface JogadorInput {
   nome: string;
   posicao: string;
+  altura?: number;
+  peso?: number;
+  dataNascimento?: string;
+  fotoUrl?: string;
 }
 
 export const JOGADORES_POR_SELECAO: Record<string, JogadorInput[]> = {

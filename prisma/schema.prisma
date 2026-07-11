@@ -68,6 +68,8 @@ model Jogador {
   posicao       String
   dataNascimento DateTime?
   fotoUrl       String?
+  altura        Int?
+  peso          Int?
 
   figurinha Figurinha?
 

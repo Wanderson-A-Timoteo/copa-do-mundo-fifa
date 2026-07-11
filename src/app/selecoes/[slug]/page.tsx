@@ -15,6 +15,8 @@ interface Jogador {
   posicao: string;
   fotoUrl: string | null;
   dataNascimento: string | null;
+  altura: number | null;
+  peso: number | null;
   figurinha: { raridade: string } | null;
 }
 
@@ -128,6 +130,12 @@ export default function DetalheSelecaoPage() {
           <span className="mt-1 text-[10px] text-zinc-400">
             {idade} anos
           </span>
+        )}
+        {(jogador.altura || jogador.peso) && (
+          <div className="mt-1 flex items-center gap-2 text-[10px] text-zinc-400">
+            {jogador.altura && <span>{jogador.altura}cm</span>}
+            {jogador.peso && <span>{jogador.peso}kg</span>}
+          </div>
         )}
       </div>
     );
