@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconStar, IconUser, IconTrophy } from "@/components/Icons";
+import PlayerCard from "@/components/PlayerCard";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { SkeletonAlbum } from "@/components/Skeleton";
 
@@ -15,7 +16,16 @@ interface Figurinha {
   tipo: string;
   raridade: string;
   selecao: { id: number; nome: string; codigoPais: string | null; corPrimaria: string | null };
-  jogador: { nome: string; posicao: string } | null;
+  jogador: {
+    nome: string;
+    posicao: string;
+    fotoUrl: string | null;
+    numeroCamisa: number | null;
+    dataNascimento: string | null;
+    altura: number | null;
+    peso: number | null;
+    figurinha: { raridade: string } | null;
+  } | null;
 }
 
 interface AlbumItem {
@@ -276,34 +286,30 @@ export default function AlbumPage() {
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-6">
+                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                       {figurinhasAtuais.map((fig) => {
                         const status = statusFigurinha(fig.id);
-                        const cardClass = `relative flex aspect-[3/4] cursor-default flex-col items-center justify-center rounded-lg border p-2 text-center transition-all hover:scale-105 ${
-                          status === "faltando"
-                            ? "opacity-30 grayscale border-zinc-200 dark:border-zinc-700"
-                            : fig.raridade === "rara"
-                              ? "bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/30 border-amber-300 dark:border-amber-600"
-                              : "bg-white dark:bg-zinc-800 border-zinc-300 dark:border-zinc-600"
-                        } ${status === "repetida" ? "ring-2 ring-amber-400" : ""}`;
+                        const faltando = status === "faltando";
+                        const repetidaQtd = status === "repetida" ? album.get(fig.id)?.quantidade : null;
 
                         return (
-                          <div key={fig.id} className={cardClass}>
-                            <FlagIcon codigo={fig.selecao.codigoPais} className="mb-1 h-6 w-auto rounded-sm" />
-                            <span className="text-xs font-bold leading-tight">
-                              {fig.jogador?.nome || fig.selecao.nome}
-                            </span>
-                            <span className="text-[10px] text-zinc-400">
-                              #{fig.numero}
-                            </span>
-                            {fig.raridade === "rara" && (
-                              <span className="mt-0.5 text-[10px] font-bold text-amber-500">
-                                RARA
-                              </span>
+                          <div key={fig.id} className={`relative ${faltando ? "opacity-30 grayscale" : ""}`}>
+                            {fig.jogador ? (
+                              <PlayerCard
+                                jogador={fig.jogador}
+                                corPrimaria={fig.selecao.corPrimaria}
+                                codigoPais={fig.selecao.codigoPais}
+                              />
+                            ) : (
+                              <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
+                                <FlagIcon codigo={fig.selecao.codigoPais} className="mb-2 h-10 w-auto rounded-sm" />
+                                <span className="text-center text-xs font-bold">{fig.selecao.nome}</span>
+                                <span className="text-[10px] text-zinc-400">#{fig.numero}</span>
+                              </div>
                             )}
-                            {status === "repetida" && (
-                              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
-                                {album.get(fig.id)?.quantidade}
+                            {repetidaQtd && (
+                              <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
+                                {repetidaQtd}
                               </span>
                             )}
                           </div>
