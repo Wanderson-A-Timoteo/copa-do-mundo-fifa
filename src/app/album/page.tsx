@@ -203,6 +203,18 @@ export default function AlbumPage() {
           />
         </div>
 
+        {figurinhas.length > 0 && album.size === figurinhas.length && (
+          <div className="mt-6 flex items-center gap-4 rounded-xl border border-emerald-300 bg-emerald-50 p-5 dark:border-emerald-700 dark:bg-emerald-950">
+            <IconTrophy className="h-8 w-8 shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <div>
+              <h3 className="text-lg font-bold text-emerald-800 dark:text-emerald-200">Álbum Completo!</h3>
+              <p className="text-sm text-emerald-600 dark:text-emerald-400">
+                Parabéns! Você coletou todas as {figurinhas.length} figurinhas!
+              </p>
+            </div>
+          </div>
+        )}
+
         <div className="mt-6 flex flex-wrap gap-4">
           <div className="flex gap-2">
             {["todas", "tenho", "faltando", "repetida"].map((s) => (
