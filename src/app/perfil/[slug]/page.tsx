@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/Skeleton";
 
 interface FigurinhaResumo {
   id: number;
+  slug: string;
   numero: number;
   raridade: string;
   selecao: { id: number; nome: string; codigoPais: string | null; corPrimaria: string | null };

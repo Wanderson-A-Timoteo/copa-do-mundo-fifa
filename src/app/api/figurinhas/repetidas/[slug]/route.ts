@@ -3,20 +3,26 @@ import { prisma } from "@/lib/prisma";
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const { id } = await params;
-  const figurinhaId = parseInt(id, 10);
+  const { slug } = await params;
 
-  if (isNaN(figurinhaId)) {
-    return NextResponse.json({ erro: "ID inválido" }, { status: 400 });
+  const idNum = parseInt(slug, 10);
+  const figurinha = isNaN(idNum)
+    ? await prisma.figurinha.findUnique({ where: { slug } })
+    : await prisma.figurinha.findUnique({ where: { slug } })
+      ?? await prisma.figurinha.findUnique({ where: { id: idNum } });
+
+  if (!figurinha) {
+    return NextResponse.json({ erro: "Figurinha não encontrada" }, { status: 404 });
   }
 
-  const figurinha = await prisma.figurinha.findUnique({
-    where: { id: figurinhaId },
+  const detalhe = await prisma.figurinha.findUnique({
+    where: { id: figurinha.id },
     select: {
       id: true,
       numero: true,
+      slug: true,
       raridade: true,
       selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
       jogador: {
@@ -29,12 +35,8 @@ export async function GET(
     },
   });
 
-  if (!figurinha) {
-    return NextResponse.json({ erro: "Figurinha não encontrada" }, { status: 404 });
-  }
-
   const itens = await prisma.albumFigurinha.findMany({
-    where: { figurinhaId, quantidade: { gte: 2 } },
+    where: { figurinhaId: figurinha.id, quantidade: { gte: 2 } },
     select: {
       quantidade: true,
       usuario: { select: { id: true, nome: true, slug: true } },
@@ -47,5 +49,5 @@ export async function GET(
     quantidade: item.quantidade,
   }));
 
-  return NextResponse.json({ figurinha, usuarios });
+  return NextResponse.json({ figurinha: detalhe, usuarios });
 }

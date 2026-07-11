@@ -11,6 +11,7 @@ export async function GET() {
       figurinha: {
         select: {
           id: true,
+          slug: true,
           numero: true,
           raridade: true,
           selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },

@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/Skeleton";
 
 interface FigurinhaResumo {
   id: number;
+  slug: string;
   numero: number;
   raridade: string;
   selecao: { id: number; nome: string; codigoPais: string | null; corPrimaria: string | null };
@@ -237,7 +238,7 @@ export default function TrocasPage() {
                   {repetidasFiltradas.map((grupo) => (
                     <Link
                       key={grupo.figurinha.id}
-                      href={`/trocas/repetidas/${grupo.figurinha.id}`}
+                      href={`/trocas/repetidas/${grupo.figurinha.slug}`}
                       className="group relative"
                     >
                       {grupo.figurinha.jogador ? (

@@ -126,6 +126,7 @@ model Figurinha {
   tipo      String   @default("jogador")
   raridade  String   @default("comum")
   imagemUrl String?
+  slug      String   @unique
 
   albumUsuarios          AlbumFigurinha[]
   trocasDesejadas        Troca[]                     @relation("desejada")

@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/Skeleton";
 
 interface FigurinhaDetalhe {
   id: number;
+  slug: string;
   numero: number;
   raridade: string;
   selecao: { id: number; nome: string; codigoPais: string | null; corPrimaria: string | null };
@@ -24,14 +25,14 @@ interface FigurinhaDetalhe {
 
 export default function RepetidasDetalhePage() {
   const params = useParams();
-  const figurinhaId = Number(params.figurinhaId);
+  const slug = params.slug as string;
   const [figurinha, setFigurinha] = useState<FigurinhaDetalhe | null>(null);
   const [usuarios, setUsuarios] = useState<{ id: number; nome: string; slug: string; quantidade: number }[]>([]);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
-    if (!figurinhaId || isNaN(figurinhaId)) return;
-    fetch(`/api/figurinhas/repetidas/${figurinhaId}`)
+    if (!slug) return;
+    fetch(`/api/figurinhas/repetidas/${slug}`)
       .then(r => r.json())
       .then(data => {
         setFigurinha(data.figurinha);
@@ -39,7 +40,7 @@ export default function RepetidasDetalhePage() {
       })
       .catch(() => {})
       .finally(() => setCarregando(false));
-  }, [figurinhaId]);
+  }, [slug]);
 
   if (carregando) {
     return (
