@@ -8,6 +8,7 @@ import { FlagIcon } from "@/components/FlagIcon";
 import { IconTrophy, IconClock, IconMapPin } from "@/components/Icons";
 import ModalLogin from "@/components/ModalLogin";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { SkeletonMataMata } from "@/components/Skeleton";
 import { computeBracket, type GrupoStanding, type BracketResult, type PartidaResolvida } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
 
@@ -327,8 +328,8 @@ export default function TabelaMataMataPage() {
               </button>
             </div>
           ) : !resultado ? (
-            <div className="flex items-center justify-center py-20">
-              <p className="text-zinc-500">Carregando chaveamento...</p>
+            <div className="py-10">
+              <SkeletonMataMata />
             </div>
           ) : !temConteudo ? (
             <div className="flex flex-col items-center justify-center py-20 text-center">

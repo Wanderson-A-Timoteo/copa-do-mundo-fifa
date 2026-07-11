@@ -7,6 +7,7 @@ import { FlagIcon } from "@/components/FlagIcon";
 
 import { IconShield, IconClock, IconMapPin } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { SkeletonMataMata } from "@/components/Skeleton";
 import { computeBracket, type GrupoStanding, type BracketResult } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
 
@@ -451,7 +452,9 @@ export default function AdminOficialPage() {
 
         {/* Mata‑mata */}
         {loadingKnockout ? (
-          <div className="mt-12 text-center text-sm text-zinc-500">Carregando chaveamento...</div>
+          <div className="mt-12">
+            <SkeletonMataMata />
+          </div>
         ) : resultadoMataMata ? (
           <div className="mt-12 space-y-10">
             <h2 className="text-2xl font-bold">Fase Eliminatória</h2>

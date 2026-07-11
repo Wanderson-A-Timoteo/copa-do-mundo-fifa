@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { SkeletonEstadioCard } from "@/components/Skeleton";
 
 interface Estadio {
   id: number;
@@ -17,11 +18,13 @@ interface Estadio {
 
 export default function EstadiosPage() {
   const [estadios, setEstadios] = useState<Estadio[]>([]);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     fetch("/api/estadios")
       .then((r) => r.json())
-      .then((d) => setEstadios(d.estadios));
+      .then((d) => setEstadios(d.estadios))
+      .finally(() => setCarregando(false));
   }, []);
 
   const paises = ["Estados Unidos", "México", "Canadá"];
@@ -34,7 +37,11 @@ export default function EstadiosPage() {
         <h1 className="text-3xl font-bold">Estádios</h1>
         <p className="mt-1 text-zinc-500">As 16 sedes da Copa do Mundo 2026</p>
 
-        {paises.map((pais) => {
+        {carregando ? (
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => <SkeletonEstadioCard key={i} />)}
+          </div>
+        ) : paises.map((pais) => {
           const estadiosDoPais = estadios.filter((e) => e.pais === pais);
           if (estadiosDoPais.length === 0) return null;
           return (

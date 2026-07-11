@@ -6,6 +6,7 @@ import Image from "next/image";
 import NavHeader from "@/components/NavHeader";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { FlagIcon } from "@/components/FlagIcon";
+import { SkeletonCard } from "@/components/Skeleton";
 import { IconMapPin, IconClock, IconStar } from "@/components/Icons";
 
 interface PartidaResumida {
@@ -43,23 +44,6 @@ function capacidadeBadge(capacidade: number): { label: string; cor: string } | n
   if (capacidade >= 80000) return { label: "Top 3 maior", cor: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200" };
   if (capacidade >= 70000) return { label: "Capacidade gigante", cor: "bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200" };
   return null;
-}
-
-function SkeletonCard() {
-  return (
-    <div className="animate-pulse space-y-4">
-      <div className="h-64 w-full rounded-xl bg-zinc-200 dark:bg-zinc-800 sm:h-96" />
-      <div className="space-y-2">
-        <div className="h-4 w-3/4 rounded bg-zinc-200 dark:bg-zinc-800" />
-        <div className="h-4 w-1/2 rounded bg-zinc-200 dark:bg-zinc-800" />
-      </div>
-      <div className="space-y-2">
-        <div className="h-4 w-full rounded bg-zinc-200 dark:bg-zinc-800" />
-        <div className="h-4 w-full rounded bg-zinc-200 dark:bg-zinc-800" />
-        <div className="h-4 w-2/3 rounded bg-zinc-200 dark:bg-zinc-800" />
-      </div>
-    </div>
-  );
 }
 
 export default function EstadioDetailPage({ params }: { params: Promise<{ slug: string }> }) {

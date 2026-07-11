@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { IconShield, IconUser } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { SkeletonPerfil } from "@/components/Skeleton";
 
 export default function PerfilPage() {
   const router = useRouter();
@@ -30,12 +31,14 @@ export default function PerfilPage() {
 
   if (carregando) {
     return (
-      <div className="min-h-screen">
-        <NavHeader />
-        <main className="mx-auto max-w-lg px-6 py-8">
-          <p className="text-zinc-500">Carregando...</p>
-        </main>
-      </div>
+      <PaginaAnimada>
+        <div className="min-h-screen">
+          <NavHeader />
+          <main className="mx-auto max-w-lg px-6 py-8">
+            <SkeletonPerfil />
+          </main>
+        </div>
+      </PaginaAnimada>
     );
   }
 

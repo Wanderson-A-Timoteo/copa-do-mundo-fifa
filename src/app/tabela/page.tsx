@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { SkeletonTabela } from "@/components/Skeleton";
 
 interface ClassificacaoSelecao {
   id: number;
@@ -30,11 +31,13 @@ export default function TabelaPage() {
   const router = useRouter();
   const pathname = usePathname();
   const [grupos, setGrupos] = useState<GrupoComClassificacao[]>([]);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     fetch("/api/grupos")
       .then((r) => r.json())
-      .then((d) => setGrupos(d.grupos ?? []));
+      .then((d) => setGrupos(d.grupos ?? []))
+      .finally(() => setCarregando(false));
   }, []);
 
   return (
@@ -79,7 +82,11 @@ export default function TabelaPage() {
           </div>
         </div>
 
-        {grupos.length === 0 ? (
+        {carregando ? (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => <SkeletonTabela key={i} />)}
+          </div>
+        ) : grupos.length === 0 ? (
           <div className="py-16 text-center">
             <p className="text-lg text-zinc-500">Nenhum resultado oficial registrado ainda.</p>
           </div>

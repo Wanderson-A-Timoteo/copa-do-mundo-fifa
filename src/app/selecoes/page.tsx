@@ -5,6 +5,7 @@ import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { SkeletonSelecaoCard } from "@/components/Skeleton";
 
 interface Selecao {
   id: number;
@@ -21,13 +22,16 @@ interface Selecao {
 
 export default function SelecoesPage() {
   const [selecoes, setSelecoes] = useState<Selecao[]>([]);
+  const [carregando, setCarregando] = useState(true);
   const [grupoFiltro, setGrupoFiltro] = useState("");
 
   useEffect(() => {
+    setCarregando(true);
     const url = grupoFiltro ? `/api/selecoes?grupo=${grupoFiltro}` : "/api/selecoes";
     fetch(url)
       .then((r) => r.json())
-      .then((d) => setSelecoes(d.selecoes));
+      .then((d) => setSelecoes(d.selecoes))
+      .finally(() => setCarregando(false));
   }, [grupoFiltro]);
 
   const grupos = "ABCDEFGHIJKL".split("");
@@ -67,7 +71,13 @@ export default function SelecoesPage() {
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {selecoes.map((sel) => (
+          {carregando ? (
+            Array.from({ length: 12 }).map((_, i) => <SkeletonSelecaoCard key={i} />)
+          ) : selecoes.length === 0 ? (
+            <div className="col-span-full py-16 text-center">
+              <p className="text-zinc-500">Nenhuma seleção encontrada.</p>
+            </div>
+          ) : selecoes.map((sel) => (
             <Link
               key={sel.id}
               href={`/selecoes/${sel.slug || sel.id}`}

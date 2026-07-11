@@ -7,6 +7,7 @@ import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconStar, IconUser } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { SkeletonAlbum } from "@/components/Skeleton";
 
 interface Figurinha {
   id: number;
@@ -221,9 +222,7 @@ export default function AlbumPage() {
         </div>
 
         {carregando ? (
-          <div className="mt-20 text-center text-zinc-500">
-            Carregando álbum...
-          </div>
+          <SkeletonAlbum />
         ) : selecoesFiltradas.length > 0 ? (
           <div className="mt-6">
             <AnimatePresence mode="wait">

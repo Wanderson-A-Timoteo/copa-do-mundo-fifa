@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import NavHeader from "@/components/NavHeader";
-import { IconShield, IconUser } from "@/components/Icons";
+import { IconShield, IconTrophy, IconUser } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { SkeletonAdmin } from "@/components/Skeleton";
 
 interface UserItem {
   id: number;
@@ -76,12 +77,14 @@ export default function AdminPage() {
 
   if (carregando) {
     return (
-      <div className="min-h-screen">
-        <NavHeader />
-        <main className="mx-auto max-w-3xl px-6 py-8">
-          <p className="text-zinc-500">Carregando...</p>
-        </main>
-      </div>
+      <PaginaAnimada>
+        <div className="min-h-screen">
+          <NavHeader />
+          <main className="mx-auto max-w-3xl px-6 py-8">
+            <SkeletonAdmin />
+          </main>
+        </div>
+      </PaginaAnimada>
     );
   }
 

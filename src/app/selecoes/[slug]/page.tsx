@@ -7,6 +7,7 @@ import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconStar } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { SkeletonSelecaoDetalhe } from "@/components/Skeleton";
 
 interface Jogador {
   id: number;
@@ -63,9 +64,9 @@ export default function DetalheSelecaoPage() {
       <PaginaAnimada>
         <div className="min-h-screen">
         <NavHeader />
-        <div className="flex flex-1 items-center justify-center p-8">
-          <p className="text-zinc-500">Carregando...</p>
-        </div>
+        <main className="mx-auto max-w-5xl px-6 py-8">
+          <SkeletonSelecaoDetalhe />
+        </main>
       </div>
       </PaginaAnimada>
     );
