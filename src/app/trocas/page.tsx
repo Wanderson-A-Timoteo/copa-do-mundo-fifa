@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import PaginaAnimada from "@/components/PaginaAnimada";
@@ -66,6 +66,14 @@ export default function TrocasPage() {
   const [carregando, setCarregando] = useState(true);
   const [user, setUser] = useState<{ id: number; nome: string } | null>(null);
   const [filtroBusca, setFiltroBusca] = useState("");
+  const [pendentesRec, setPendentesRec] = useState(0);
+  const [pendentesEnv, setPendentesEnv] = useState(0);
+  const [bannerFechado, setBannerFechado] = useState(false);
+  const [paginaDisponiveis, setPaginaDisponiveis] = useState(0);
+  const [paginaTrocas, setPaginaTrocas] = useState(0);
+
+  const ITENS_POR_PAGINA_DISP = 20;
+  const ITENS_POR_PAGINA_TROCAS = 10;
 
   useEffect(() => {
     const raw = localStorage.getItem("user");
@@ -104,6 +112,20 @@ export default function TrocasPage() {
     }
   }, []);
 
+  const refreshCounts = useCallback(async () => {
+    if (!user) return;
+    const [rec, env] = await Promise.all([
+      fetch("/api/trocas?tipo=recebidas", { headers: { ...getAuthHeaders() } }).then(r => r.json()),
+      fetch("/api/trocas?tipo=enviadas", { headers: { ...getAuthHeaders() } }).then(r => r.json()),
+    ]);
+    setPendentesRec((rec.trocas || []).filter((t: any) => t.status === "pendente").length);
+    setPendentesEnv((env.trocas || []).filter((t: any) => t.status === "pendente").length);
+  }, [user]);
+
+  useEffect(() => {
+    if (user) refreshCounts();
+  }, [user, refreshCounts]);
+
   useEffect(() => {
     if (aba === "disponiveis") {
       carregarRepetidas();
@@ -120,7 +142,7 @@ export default function TrocasPage() {
       headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       body: JSON.stringify({ acao: "aceitar" }),
     });
-    if (res.ok) carregarTrocas();
+    if (res.ok) { carregarTrocas(); refreshCounts(); }
   };
 
   const recusarTroca = async (id: number) => {
@@ -129,7 +151,7 @@ export default function TrocasPage() {
       headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       body: JSON.stringify({ acao: "recusar" }),
     });
-    if (res.ok) carregarTrocas();
+    if (res.ok) { carregarTrocas(); refreshCounts(); }
   };
 
   const repetidasFiltradas = filtroBusca
@@ -138,6 +160,30 @@ export default function TrocasPage() {
         r.figurinha.selecao.nome.toLowerCase().includes(filtroBusca.toLowerCase())
       )
     : repetidas;
+
+  const totalPagDisp = Math.max(1, Math.ceil(repetidasFiltradas.length / ITENS_POR_PAGINA_DISP));
+  const pagDispSegura = Math.min(paginaDisponiveis, totalPagDisp - 1);
+  const pagDispItens = repetidasFiltradas.slice(pagDispSegura * ITENS_POR_PAGINA_DISP, (pagDispSegura + 1) * ITENS_POR_PAGINA_DISP);
+  const numsPagDisp = useMemo(() => {
+    const max = 7, metade = Math.floor(max / 2);
+    let inicio = Math.max(0, pagDispSegura - metade);
+    let fim = Math.min(totalPagDisp, inicio + max);
+    if (fim - inicio < max) inicio = Math.max(0, fim - max);
+    return Array.from({ length: fim - inicio }, (_, i) => inicio + i);
+  }, [pagDispSegura, totalPagDisp]);
+
+  const totalPagTrocas = Math.max(1, Math.ceil(trocas.length / ITENS_POR_PAGINA_TROCAS));
+  const pagTrocasSegura = Math.min(paginaTrocas, totalPagTrocas - 1);
+  const pagTrocasItens = trocas.slice(pagTrocasSegura * ITENS_POR_PAGINA_TROCAS, (pagTrocasSegura + 1) * ITENS_POR_PAGINA_TROCAS);
+  const numsPagTrocas = useMemo(() => {
+    const max = 7, metade = Math.floor(max / 2);
+    let inicio = Math.max(0, pagTrocasSegura - metade);
+    let fim = Math.min(totalPagTrocas, inicio + max);
+    if (fim - inicio < max) inicio = Math.max(0, fim - max);
+    return Array.from({ length: fim - inicio }, (_, i) => inicio + i);
+  }, [pagTrocasSegura, totalPagTrocas]);
+
+  useEffect(() => { setPaginaDisponiveis(0); }, [filtroBusca]);
 
   return (
     <PaginaAnimada>
@@ -149,9 +195,27 @@ export default function TrocasPage() {
             <p className="mt-1 text-zinc-500">Encontre figurinhas para completar seu álbum</p>
           </div>
 
+          {user && (pendentesRec > 0 || pendentesEnv > 0) && !bannerFechado && (
+            <div className="relative mb-6 rounded-lg bg-emerald-50 px-4 py-3 pr-10 text-sm text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200">
+              <span className="font-medium">
+                Você tem {pendentesRec + pendentesEnv} troca{pendentesRec + pendentesEnv !== 1 ? "s" : ""} pendente{pendentesRec + pendentesEnv !== 1 ? "s" : ""}
+                {pendentesRec > 0 && ` (${pendentesRec} recebida${pendentesRec !== 1 ? "s" : ""})`}
+                {pendentesEnv > 0 && ` (${pendentesEnv} enviada${pendentesEnv !== 1 ? "s" : ""})`}.
+              </span>
+              <button
+                onClick={() => setBannerFechado(true)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-200"
+                aria-label="Fechar"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
           <div className="mb-6 flex gap-2">
             {(["disponiveis", "recebidas", "enviadas"] as const).map((t) => {
               const label = t === "disponiveis" ? "Disponíveis" : t === "recebidas" ? "Recebidas" : "Enviadas";
+              const pendentes = t === "recebidas" ? pendentesRec : t === "enviadas" ? pendentesEnv : 0;
               return (
                 <button
                   key={t}
@@ -163,6 +227,11 @@ export default function TrocasPage() {
                   }`}
                 >
                   {label}
+                  {pendentes > 0 && (
+                    <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                      {pendentes}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -205,7 +274,7 @@ export default function TrocasPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                  {repetidasFiltradas.map((grupo) => (
+                  {pagDispItens.map((grupo) => (
                     <Link
                       key={grupo.figurinha.id}
                       href={`/trocas/repetidas/${grupo.figurinha.slug}`}
@@ -230,6 +299,37 @@ export default function TrocasPage() {
                       </span>
                     </Link>
                   ))}
+                </div>
+              )}
+              {totalPagDisp > 1 && (
+                <div className="mt-6 flex items-center justify-center gap-1.5">
+                  <button
+                    disabled={pagDispSegura === 0}
+                    onClick={() => setPaginaDisponiveis(p => Math.max(0, p - 1))}
+                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
+                  >
+                    Anterior
+                  </button>
+                  {numsPagDisp.map(n => (
+                    <button
+                      key={n}
+                      onClick={() => setPaginaDisponiveis(n)}
+                      className={`min-w-[2rem] rounded-lg px-2 py-1.5 text-sm ${
+                        n === pagDispSegura
+                          ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                          : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                      }`}
+                    >
+                      {n + 1}
+                    </button>
+                  ))}
+                  <button
+                    disabled={pagDispSegura >= totalPagDisp - 1}
+                    onClick={() => setPaginaDisponiveis(p => Math.min(totalPagDisp - 1, p + 1))}
+                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
+                  >
+                    Próximo
+                  </button>
                 </div>
               )}
             </>
@@ -278,8 +378,9 @@ export default function TrocasPage() {
           )}
 
           {(aba === "recebidas" || aba === "enviadas") && user && !carregando && trocas.length > 0 && (
-            <div className="space-y-4">
-              {trocas.map((troca) => {
+            <>
+              <div className="space-y-4">
+                {pagTrocasItens.map((troca) => {
                 const isRecebida = aba === "recebidas";
                 const outroUsuario = isRecebida ? troca.remetente : troca.destinatario;
 
@@ -376,6 +477,38 @@ export default function TrocasPage() {
                 );
               })}
             </div>
+            {totalPagTrocas > 1 && (
+              <div className="mt-6 flex items-center justify-center gap-1.5">
+                <button
+                  disabled={pagTrocasSegura === 0}
+                  onClick={() => setPaginaTrocas(p => Math.max(0, p - 1))}
+                  className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
+                >
+                  Anterior
+                </button>
+                {numsPagTrocas.map(n => (
+                  <button
+                    key={n}
+                    onClick={() => setPaginaTrocas(n)}
+                    className={`min-w-[2rem] rounded-lg px-2 py-1.5 text-sm ${
+                      n === pagTrocasSegura
+                        ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                        : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                    }`}
+                  >
+                    {n + 1}
+                  </button>
+                ))}
+                <button
+                  disabled={pagTrocasSegura >= totalPagTrocas - 1}
+                  onClick={() => setPaginaTrocas(p => Math.min(totalPagTrocas - 1, p + 1))}
+                  className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
+                >
+                  Próximo
+                </button>
+              </div>
+            )}
+          </>
           )}
         </main>
       </div>
