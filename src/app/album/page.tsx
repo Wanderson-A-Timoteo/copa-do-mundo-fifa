@@ -38,6 +38,13 @@ export default function AlbumPage() {
   const [pacotesRestantesHoje, setPacotesRestantesHoje] = useState(10);
   const [limiteDiario, setLimiteDiario] = useState(10);
   const [paginaAtual, setPaginaAtual] = useState(0);
+  const [todasSelecoes, setTodasSelecoes] = useState<{ id: number; nome: string; codigoPais: string | null }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/selecoes")
+      .then((r) => r.json())
+      .then((d) => setTodasSelecoes(d.selecoes ?? []));
+  }, []);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
@@ -145,7 +152,7 @@ export default function AlbumPage() {
 
   useEffect(() => {
     setPaginaAtual(0);
-  }, [filtroStatus]);
+  }, [filtroStatus, filtroSelecao]);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
@@ -219,6 +226,33 @@ export default function AlbumPage() {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="mt-4 flex gap-2 overflow-x-auto pb-2">
+          <button
+            onClick={() => setFiltroSelecao("")}
+            className={`shrink-0 rounded-lg px-3 py-1.5 text-sm transition-colors ${
+              filtroSelecao === ""
+                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+            }`}
+          >
+            Todas
+          </button>
+          {todasSelecoes.map((sel) => (
+            <button
+              key={sel.id}
+              onClick={() => setFiltroSelecao(String(sel.id))}
+              className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                filtroSelecao === String(sel.id)
+                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              }`}
+            >
+              <FlagIcon codigo={sel.codigoPais} className="h-4 w-auto rounded-sm" />
+              {sel.nome}
+            </button>
+          ))}
         </div>
 
         {carregando ? (
