@@ -17,7 +17,7 @@ export async function GET() {
           jogador: { select: { nome: true, posicao: true, fotoUrl: true, numeroCamisa: true, dataNascimento: true, altura: true, peso: true, figurinha: { select: { raridade: true } } } },
         },
       },
-      usuario: { select: { id: true, nome: true } },
+      usuario: { select: { id: true, nome: true, slug: true } },
     },
     orderBy: { figurinha: { selecao: { nome: "asc" } } },
   });

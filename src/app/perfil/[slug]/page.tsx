@@ -1,0 +1,259 @@
+"use client";
+
+import { useEffect, useState, useMemo } from "react";
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import NavHeader from "@/components/NavHeader";
+import PaginaAnimada from "@/components/PaginaAnimada";
+import PlayerCard from "@/components/PlayerCard";
+import { FlagIcon } from "@/components/FlagIcon";
+import { IconRepeat, IconArrowLeft, IconUser } from "@/components/Icons";
+import { Skeleton } from "@/components/Skeleton";
+
+interface FigurinhaResumo {
+  id: number;
+  numero: number;
+  raridade: string;
+  selecao: { id: number; nome: string; codigoPais: string | null; corPrimaria: string | null };
+  jogador: { nome: string; posicao: string; fotoUrl: string | null; numeroCamisa: number | null; dataNascimento: string | null; altura: number | null; peso: number | null; figurinha: { raridade: string } | null } | null;
+}
+
+interface RepetidaItem {
+  quantidade: number;
+  figurinha: FigurinhaResumo;
+}
+
+const ITENS_POR_PAGINA = 10;
+
+export default function PerfilPublicoPage() {
+  const params = useParams();
+  const slug = params.slug as string;
+  const [usuario, setUsuario] = useState<{ id: number; nome: string; slug: string } | null>(null);
+  const [repetidas, setRepetidas] = useState<RepetidaItem[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [userLogado, setUserLogado] = useState<{ id: number; nome: string } | null>(null);
+  const [busca, setBusca] = useState("");
+  const [paginaAtual, setPaginaAtual] = useState(0);
+
+  useEffect(() => {
+    const raw = localStorage.getItem("user");
+    const cached = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
+    if (cached) setUserLogado(cached);
+  }, []);
+
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`/api/usuarios/${slug}/repetidas`)
+      .then(r => r.json())
+      .then(data => {
+        setUsuario(data.usuario);
+        setRepetidas(data.repetidas || []);
+      })
+      .catch(() => {})
+      .finally(() => setCarregando(false));
+  }, [slug]);
+
+  const ehProprioPerfil = userLogado?.id === usuario?.id;
+
+  const filtradas = useMemo(() => {
+    if (!busca) return repetidas;
+    const q = busca.toLowerCase();
+    return repetidas.filter(item =>
+      item.figurinha.jogador?.nome.toLowerCase().includes(q) ||
+      item.figurinha.selecao.nome.toLowerCase().includes(q)
+    );
+  }, [repetidas, busca]);
+
+  const totalPaginas = Math.max(1, Math.ceil(filtradas.length / ITENS_POR_PAGINA));
+  const paginaSegura = Math.min(paginaAtual, totalPaginas - 1);
+  const paginaInicio = paginaSegura * ITENS_POR_PAGINA;
+  const paginaFim = paginaInicio + ITENS_POR_PAGINA;
+  const paginaItens = filtradas.slice(paginaInicio, paginaFim);
+
+  const numerosPagina = useMemo(() => {
+    const maxVisiveis = 7;
+    const metade = Math.floor(maxVisiveis / 2);
+    let inicio = Math.max(0, paginaSegura - metade);
+    let fim = Math.min(totalPaginas, inicio + maxVisiveis);
+    if (fim - inicio < maxVisiveis) inicio = Math.max(0, fim - maxVisiveis);
+    return Array.from({ length: fim - inicio }, (_, i) => inicio + i);
+  }, [paginaSegura, totalPaginas]);
+
+  useEffect(() => {
+    setPaginaAtual(0);
+  }, [busca]);
+
+  if (carregando) {
+    return (
+      <PaginaAnimada>
+        <div className="min-h-screen">
+          <NavHeader />
+          <main className="mx-auto max-w-5xl px-6 py-8">
+            <div className="space-y-4">
+              <Skeleton className="h-8 w-48" />
+              <Skeleton className="h-8 w-full rounded-lg" />
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {[1,2,3,4,5].map(i => <Skeleton key={i} className="h-48 w-full rounded-xl" />)}
+              </div>
+            </div>
+          </main>
+        </div>
+      </PaginaAnimada>
+    );
+  }
+
+  if (!usuario) {
+    return (
+      <PaginaAnimada>
+        <div className="min-h-screen">
+          <NavHeader />
+          <main className="mx-auto max-w-lg px-6 py-8 text-center text-zinc-400">
+            <IconUser className="mx-auto h-12 w-12" />
+            <p className="mt-4 text-lg">Usuário não encontrado</p>
+          </main>
+        </div>
+      </PaginaAnimada>
+    );
+  }
+
+  return (
+    <PaginaAnimada>
+      <div className="min-h-screen">
+        <NavHeader />
+        <main className="mx-auto max-w-5xl px-6 py-8">
+          <Link href="/trocas" className="mb-4 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+            <IconArrowLeft className="h-4 w-4" />
+            Voltar para trocas
+          </Link>
+
+          <div className="flex items-center gap-4">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-zinc-200 text-xl font-bold dark:bg-zinc-700">
+              {usuario.nome.charAt(0).toUpperCase()}
+            </span>
+            <div>
+              <h1 className="text-2xl font-bold">{usuario.nome}</h1>
+              <p className="text-sm text-zinc-500">
+                {filtradas.length} figurinha{filtradas.length !== 1 ? "s" : ""} repetida{filtradas.length !== 1 ? "s" : ""} disponíve{filtradas.length !== 1 ? "is" : "l"} para troca
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <input
+              type="text"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              placeholder="Buscar figurinha ou seleção..."
+              className="w-full rounded-lg border border-zinc-300 bg-transparent py-2 px-4 text-sm outline-none transition-colors focus:border-zinc-500 dark:border-zinc-700 dark:focus:border-zinc-400"
+            />
+          </div>
+
+          {filtradas.length === 0 ? (
+            <div className="mt-16 text-center text-zinc-400">
+              <IconRepeat className="mx-auto h-12 w-12" />
+              <p className="mt-4 text-lg font-medium">
+                {busca ? "Nenhuma figurinha encontrada" : "Nenhuma figurinha repetida disponível"}
+              </p>
+            </div>
+          ) : (
+            <>
+              {totalPaginas > 1 && (
+                <div className="mt-4 flex items-center justify-center gap-1">
+                  <button
+                    onClick={() => setPaginaAtual(p => Math.max(0, p - 1))}
+                    disabled={paginaSegura === 0}
+                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                  >
+                    Anterior
+                  </button>
+                  {numerosPagina.map(n => (
+                    <button
+                      key={n}
+                      onClick={() => setPaginaAtual(n)}
+                      className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                        n === paginaSegura
+                          ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                          : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                      }`}
+                    >
+                      {n + 1}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setPaginaAtual(p => Math.min(totalPaginas - 1, p + 1))}
+                    disabled={paginaSegura >= totalPaginas - 1}
+                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                  >
+                    Próximo
+                  </button>
+                </div>
+              )}
+
+              <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {paginaItens.map((item) => (
+                  <div key={item.figurinha.id} className="relative">
+                    {item.figurinha.jogador ? (
+                      <PlayerCard
+                        jogador={item.figurinha.jogador}
+                        raridade={item.figurinha.raridade}
+                        corPrimaria={item.figurinha.selecao.corPrimaria}
+                        codigoPais={item.figurinha.selecao.codigoPais}
+                      />
+                    ) : (
+                      <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
+                        <FlagIcon codigo={item.figurinha.selecao.codigoPais} className="mb-2 h-10 w-auto rounded-sm" />
+                        <span className="text-center text-xs font-bold">{item.figurinha.selecao.nome}</span>
+                        <span className="text-[10px] text-zinc-400">#{item.figurinha.numero}</span>
+                      </div>
+                    )}
+                    <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
+                      {item.quantidade}
+                    </span>
+                    {userLogado && !ehProprioPerfil && (
+                      <Link
+                        href={`/trocas/nova/${usuario.id}/${item.figurinha.id}`}
+                        className="mt-1 flex w-full items-center justify-center gap-1 rounded-md bg-zinc-900 py-1 text-[10px] font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                      >
+                        Solicitar Troca
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {totalPaginas > 1 && (
+                <div className="mt-6 flex items-center justify-between">
+                  <button
+                    onClick={() => setPaginaAtual(p => Math.max(0, p - 1))}
+                    disabled={paginaSegura === 0}
+                    className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                  >
+                    Anterior
+                  </button>
+                  <span className="text-sm text-zinc-500">
+                    Página {paginaSegura + 1} de {totalPaginas}
+                  </span>
+                  <button
+                    onClick={() => setPaginaAtual(p => Math.min(totalPaginas - 1, p + 1))}
+                    disabled={paginaSegura >= totalPaginas - 1}
+                    className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                  >
+                    Próximo
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+
+          {!userLogado && (
+            <div className="mt-8 text-center">
+              <Link href="/login" className="text-sm text-zinc-500 underline hover:text-zinc-700 dark:hover:text-zinc-300">
+                Faça login para solicitar trocas
+              </Link>
+            </div>
+          )}
+        </main>
+      </div>
+    </PaginaAnimada>
+  );
+}

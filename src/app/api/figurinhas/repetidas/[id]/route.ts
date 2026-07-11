@@ -37,7 +37,7 @@ export async function GET(
     where: { figurinhaId, quantidade: { gte: 2 } },
     select: {
       quantidade: true,
-      usuario: { select: { id: true, nome: true } },
+      usuario: { select: { id: true, nome: true, slug: true } },
     },
     orderBy: { usuario: { nome: "asc" } },
   });

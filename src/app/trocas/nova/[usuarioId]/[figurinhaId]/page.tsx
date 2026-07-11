@@ -36,7 +36,7 @@ export default function NovaTrocaPage() {
   const figurinhaId = Number(params.figurinhaId);
 
   const [desejada, setDesejada] = useState<FigurinhaResumo | null>(null);
-  const [destinatario, setDestinatario] = useState<{ id: number; nome: string } | null>(null);
+  const [destinatario, setDestinatario] = useState<{ id: number; nome: string; slug: string } | null>(null);
   const [minhasRepetidas, setMinhasRepetidas] = useState<FigurinhaAlbum[]>([]);
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
   const [carregando, setCarregando] = useState(true);
@@ -139,7 +139,7 @@ export default function NovaTrocaPage() {
       <div className="min-h-screen">
         <NavHeader />
         <main className="mx-auto max-w-2xl px-6 py-8">
-          <Link href={`/perfil/${usuarioId}`} className="mb-4 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
+          <Link href={`/perfil/${destinatario?.slug || usuarioId}`} className="mb-4 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300">
             <IconArrowLeft className="h-4 w-4" />
             Voltar ao perfil
           </Link>

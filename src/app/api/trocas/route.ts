@@ -33,8 +33,8 @@ export async function GET(request: Request) {
   const trocas = await prisma.troca.findMany({
     where,
     include: {
-      remetente: { select: { id: true, nome: true } },
-      destinatario: { select: { id: true, nome: true } },
+      remetente: { select: { id: true, nome: true, slug: true } },
+      destinatario: { select: { id: true, nome: true, slug: true } },
       figurinhaDesejada: { include: figurinhaInclude },
       figurinhasOferecidas: {
         include: { figurinha: { include: figurinhaInclude } },

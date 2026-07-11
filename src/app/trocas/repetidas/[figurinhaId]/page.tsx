@@ -26,7 +26,7 @@ export default function RepetidasDetalhePage() {
   const params = useParams();
   const figurinhaId = Number(params.figurinhaId);
   const [figurinha, setFigurinha] = useState<FigurinhaDetalhe | null>(null);
-  const [usuarios, setUsuarios] = useState<{ id: number; nome: string; quantidade: number }[]>([]);
+  const [usuarios, setUsuarios] = useState<{ id: number; nome: string; slug: string; quantidade: number }[]>([]);
   const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
@@ -133,7 +133,7 @@ export default function RepetidasDetalhePage() {
                       </div>
                     </div>
                     <Link
-                      href={`/perfil/${usr.id}`}
+                      href={`/perfil/${usr.slug || usr.id}`}
                       className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
                     >
                       Ver perfil
