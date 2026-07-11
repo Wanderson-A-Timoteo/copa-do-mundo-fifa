@@ -59,36 +59,6 @@ function StatusBadge({ status }: { status: string }) {
   );
 }
 
-function MiniCard({ figurinha, small }: { figurinha: FigurinhaResumo; small?: boolean }) {
-  return (
-    <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white p-2 dark:border-zinc-700 dark:bg-zinc-800">
-      <div className="flex shrink-0 items-center justify-center">
-        {figurinha.jogador ? (
-          figurinha.jogador.fotoUrl ? (
-            <img src={figurinha.jogador.fotoUrl} alt="" className="h-10 w-8 rounded object-cover" />
-          ) : (
-            <div className="flex h-10 w-8 items-center justify-center rounded bg-zinc-300 text-[8px] font-bold text-white dark:bg-zinc-600">
-              {figurinha.jogador.nome.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
-            </div>
-          )
-        ) : (
-          <div className="flex h-10 w-8 items-center justify-center rounded bg-zinc-200 dark:bg-zinc-700">
-            <FlagIcon codigo={figurinha.selecao.codigoPais} className="h-5 w-auto rounded-sm" />
-          </div>
-        )}
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className={`truncate font-semibold ${small ? "text-xs" : "text-sm"}`}>
-          {figurinha.jogador?.nome || figurinha.selecao.nome}
-        </p>
-        <p className="text-[10px] text-zinc-400">
-          {figurinha.jogador ? `#${figurinha.jogador.numeroCamisa ?? "—"}` : `#${figurinha.numero}`}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 export default function TrocasPage() {
   const [aba, setAba] = useState<Aba>("disponiveis");
   const [trocas, setTrocas] = useState<TrocaItem[]>([]);
@@ -287,8 +257,8 @@ export default function TrocasPage() {
                     <Skeleton className="h-6 w-20 rounded-full" />
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3">
-                    <Skeleton className="h-14 rounded-lg" />
-                    <Skeleton className="h-14 rounded-lg" />
+                    <Skeleton className="h-48 rounded-xl" />
+                    <Skeleton className="h-48 rounded-xl" />
                   </div>
                 </div>
               ))}
@@ -330,18 +300,48 @@ export default function TrocasPage() {
 
                     <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                       <div>
-                        <p className="mb-1 text-xs font-medium text-zinc-400">
+                        <p className="mb-2 text-xs font-medium text-zinc-400">
                           {isRecebida ? "Oferecendo" : "Ofereceu"}
                         </p>
-                        <div className="space-y-1.5">
+                        <div className="flex flex-wrap gap-2">
                           {troca.figurinhasOferecidas.map((of) => (
-                            <MiniCard key={of.figurinha.id} figurinha={of.figurinha} small />
+                            <div key={of.figurinha.id} className="w-[140px]">
+                              {of.figurinha.jogador ? (
+                                <PlayerCard
+                                  jogador={of.figurinha.jogador}
+                                  raridade={of.figurinha.raridade}
+                                  corPrimaria={of.figurinha.selecao.corPrimaria}
+                                  codigoPais={of.figurinha.selecao.codigoPais}
+                                />
+                              ) : (
+                                <div className="flex aspect-[3/4] flex-col items-center justify-center gap-1 rounded-xl border border-zinc-200 bg-stone-50 p-2 dark:border-zinc-800 dark:bg-zinc-900">
+                                  <FlagIcon codigo={of.figurinha.selecao.codigoPais} className="h-8 w-auto rounded-sm" />
+                                  <span className="text-center text-[10px] font-bold">{of.figurinha.selecao.nome}</span>
+                                  <span className="text-[8px] text-zinc-400">#{of.figurinha.numero}</span>
+                                </div>
+                              )}
+                            </div>
                           ))}
                         </div>
                       </div>
                       <div>
-                        <p className="mb-1 text-xs font-medium text-zinc-400">Quer receber</p>
-                        <MiniCard figurinha={troca.figurinhaDesejada} small />
+                        <p className="mb-2 text-xs font-medium text-zinc-400">Quer receber</p>
+                        <div className="w-[140px]">
+                          {troca.figurinhaDesejada.jogador ? (
+                            <PlayerCard
+                              jogador={troca.figurinhaDesejada.jogador}
+                              raridade={troca.figurinhaDesejada.raridade}
+                              corPrimaria={troca.figurinhaDesejada.selecao.corPrimaria}
+                              codigoPais={troca.figurinhaDesejada.selecao.codigoPais}
+                            />
+                          ) : (
+                            <div className="flex aspect-[3/4] flex-col items-center justify-center gap-1 rounded-xl border border-zinc-200 bg-stone-50 p-2 dark:border-zinc-800 dark:bg-zinc-900">
+                              <FlagIcon codigo={troca.figurinhaDesejada.selecao.codigoPais} className="h-8 w-auto rounded-sm" />
+                              <span className="text-center text-[10px] font-bold">{troca.figurinhaDesejada.selecao.nome}</span>
+                              <span className="text-[8px] text-zinc-400">#{troca.figurinhaDesejada.numero}</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
 
