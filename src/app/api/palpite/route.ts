@@ -1,29 +1,30 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken } from "@/lib/auth";
+import { verificarToken, getTokenFromRequest } from "@/lib/auth";
 
-function getUserId(request: Request): number | null {
-  const auth = request.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
+function getUsuarioId(request: Request): number | null {
+  const token = getTokenFromRequest(request);
+  if (!token) return null;
   try {
-    return verificarToken(auth.slice(7)).userId;
+    return verificarToken(token).userId;
   } catch {
     return null;
   }
 }
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const queryUsuarioId = searchParams.get("usuarioId");
-  const usuarioId = queryUsuarioId ? Number(queryUsuarioId) : getUserId(request);
-
+  const usuarioId = getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
 
+  const { searchParams } = new URL(request.url);
+  const queryUsuarioId = searchParams.get("usuarioId");
+  const targetUserId = queryUsuarioId ? Number(queryUsuarioId) : usuarioId;
+
   const partidaId = searchParams.get("partidaId");
 
-  const where: Record<string, unknown> = { usuarioId };
+  const where: Record<string, unknown> = { usuarioId: targetUserId };
   if (partidaId) where.partidaId = Number(partidaId);
 
   const palpites = await prisma.palpite.findMany({
@@ -39,7 +40,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const usuarioId = getUserId(request);
+  const usuarioId = getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }

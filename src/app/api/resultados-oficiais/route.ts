@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken } from "@/lib/auth";
+import { verificarToken, getTokenFromRequest } from "@/lib/auth";
+
+function getUsuarioId(request: Request): number | null {
+  const token = getTokenFromRequest(request);
+  if (!token) return null;
+  try {
+    return verificarToken(token).userId;
+  } catch {
+    return null;
+  }
+}
 
 export async function GET() {
   const resultados = await prisma.resultadoOficial.findMany();
@@ -8,18 +18,12 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const auth = request.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) {
+  const usuarioId = getUsuarioId(request);
+  if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
-  let payload;
-  try {
-    payload = verificarToken(auth.slice(7));
-  } catch {
-    return NextResponse.json({ erro: "Token inválido" }, { status: 401 });
-  }
 
-  const user = await prisma.user.findUnique({ where: { id: payload.userId } });
+  const user = await prisma.user.findUnique({ where: { id: usuarioId } });
   if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 403 });
   }

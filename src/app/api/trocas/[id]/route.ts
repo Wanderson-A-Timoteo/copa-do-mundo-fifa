@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken } from "@/lib/auth";
+import { verificarToken, getTokenFromRequest } from "@/lib/auth";
 
 function getUsuarioId(request: Request): number | null {
-  const auth = request.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
+  const token = getTokenFromRequest(request);
+  if (!token) return null;
   try {
-    return verificarToken(auth.slice(7)).userId;
+    return verificarToken(token).userId;
   } catch {
     return null;
   }

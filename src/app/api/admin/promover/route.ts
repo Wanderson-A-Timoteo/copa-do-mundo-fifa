@@ -1,32 +1,35 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken } from "@/lib/auth";
+import { verificarToken, getTokenFromRequest } from "@/lib/auth";
+
+function getUsuarioId(request: Request): number | null {
+  const token = getTokenFromRequest(request);
+  if (!token) return null;
+  try {
+    return verificarToken(token).userId;
+  } catch {
+    return null;
+  }
+}
 
 export async function POST(request: Request) {
-  const auth = request.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) {
+  const usuarioId = getUsuarioId(request);
+  if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
 
-  let payload;
-  try {
-    payload = verificarToken(auth.slice(7));
-  } catch {
-    return NextResponse.json({ erro: "Token inválido" }, { status: 401 });
-  }
-
-  const admin = await prisma.user.findUnique({ where: { id: payload.userId } });
+  const admin = await prisma.user.findUnique({ where: { id: usuarioId } });
   if (!admin || admin.role !== "ADMIN") {
     return NextResponse.json({ erro: "Acesso restrito" }, { status: 403 });
   }
 
-  const { usuarioId } = await request.json();
-  if (!usuarioId) {
+  const { usuarioId: targetUserId } = await request.json();
+  if (!targetUserId) {
     return NextResponse.json({ erro: "usuarioId é obrigatório" }, { status: 400 });
   }
 
   await prisma.user.update({
-    where: { id: usuarioId },
+    where: { id: targetUserId },
     data: { role: "ADMIN" },
   });
 

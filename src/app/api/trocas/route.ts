@@ -1,21 +1,21 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken } from "@/lib/auth";
+import { verificarToken, getTokenFromRequest } from "@/lib/auth";
+
+function getUsuarioId(request: Request): number | null {
+  const token = getTokenFromRequest(request);
+  if (!token) return null;
+  try {
+    return verificarToken(token).userId;
+  } catch {
+    return null;
+  }
+}
 
 const figurinhaInclude = {
   selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
   jogador: { select: { nome: true, posicao: true, fotoUrl: true, numeroCamisa: true, dataNascimento: true, altura: true, peso: true, figurinha: { select: { raridade: true } } } },
 };
-
-function getUsuarioId(request: Request): number | null {
-  const auth = request.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
-  try {
-    return verificarToken(auth.slice(7)).userId;
-  } catch {
-    return null;
-  }
-}
 
 export async function GET(request: Request) {
   const usuarioId = getUsuarioId(request);

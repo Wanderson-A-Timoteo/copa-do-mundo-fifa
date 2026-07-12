@@ -1,8 +1,20 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { compararSenha, gerarToken } from "@/lib/auth";
+import { compararSenha, gerarToken, setTokenCookie } from "@/lib/auth";
+import { checkRateLimit, getRateLimitHeaders, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const rateLimit = checkRateLimit(`login:${ip}`, 10, 15 * 60 * 1000);
+  const rateHeaders = getRateLimitHeaders(rateLimit);
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { erro: "Muitas tentativas. Tente novamente mais tarde." },
+      { status: 429, headers: rateHeaders }
+    );
+  }
+
   try {
     const { email, senha } = await request.json();
 
@@ -40,10 +52,14 @@ export async function POST(request: Request) {
 
     const token = gerarToken({ userId: user.id, email: user.email });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       token,
       user: { id: user.id, nome: user.nome, email: user.email, role: user.role ?? "TORCEDOR" },
-    });
+    }, { headers: rateHeaders });
+
+    response.headers.append("Set-Cookie", setTokenCookie(token));
+
+    return response;
   } catch {
     return NextResponse.json(
       { erro: "Erro interno do servidor" },

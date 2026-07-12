@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken } from "@/lib/auth";
+import { verificarToken, getTokenFromRequest } from "@/lib/auth";
 
 function getUsuarioId(request: Request): number | null {
-  const auth = request.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
+  const token = getTokenFromRequest(request);
+  if (!token) return null;
   try {
-    return verificarToken(auth.slice(7)).userId;
+    return verificarToken(token).userId;
   } catch {
     return null;
   }
@@ -41,46 +41,36 @@ export async function POST(request: Request) {
     );
   }
 
-  const total = await prisma.figurinha.count();
-  if (total === 0) {
-    return NextResponse.json({ erro: "Nenhuma figurinha disponível" }, { status: 500 });
-  }
+  const pacote = await prisma.$transaction(async (tx) => {
+    const randomFigs = await tx.$queryRawUnsafe<{ id: number }[]>(
+      `SELECT id FROM figurinhas ORDER BY RANDOM() LIMIT $1`,
+      QTD_PACOTE
+    );
 
-  const indices: number[] = [];
-  while (indices.length < QTD_PACOTE) {
-    const idx = Math.floor(Math.random() * total);
-    if (!indices.includes(idx)) indices.push(idx);
-  }
+    const ids = randomFigs.map((f) => f.id);
 
-  const todasFigs = await prisma.figurinha.findMany({
-    include: { selecao: true, jogador: true },
-  });
-
-  const pacote = indices.map((i) => todasFigs[i]);
-
-  for (const fig of pacote) {
-    const existente = await prisma.albumFigurinha.findUnique({
-      where: { usuarioId_figurinhaId: { usuarioId, figurinhaId: fig.id } },
+    const figurinhas = await tx.figurinha.findMany({
+      where: { id: { in: ids } },
+      include: { selecao: true, jogador: true },
     });
 
-    if (existente) {
-      await prisma.albumFigurinha.update({
-        where: { id: existente.id },
-        data: { quantidade: existente.quantidade + 1 },
-      });
-    } else {
-      await prisma.albumFigurinha.create({
-        data: { usuarioId, figurinhaId: fig.id },
+    for (const fig of figurinhas) {
+      await tx.albumFigurinha.upsert({
+        where: { usuarioId_figurinhaId: { usuarioId, figurinhaId: fig.id } },
+        create: { usuarioId, figurinhaId: fig.id },
+        update: { quantidade: { increment: 1 } },
       });
     }
-  }
 
-  await prisma.user.update({
-    where: { id: usuarioId },
-    data: {
-      ultimoDiaAbertura: new Date(),
-      pacotesAbertosHoje: pacotesHoje + 1,
-    },
+    await tx.user.update({
+      where: { id: usuarioId },
+      data: {
+        ultimoDiaAbertura: new Date(),
+        pacotesAbertosHoje: pacotesHoje + 1,
+      },
+    });
+
+    return figurinhas;
   });
 
   return NextResponse.json({

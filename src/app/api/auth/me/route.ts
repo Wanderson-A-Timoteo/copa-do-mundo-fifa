@@ -1,16 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken } from "@/lib/auth";
+import { verificarToken, getTokenFromRequest } from "@/lib/auth";
 
 export async function GET(request: Request) {
   try {
-    const authHeader = request.headers.get("authorization");
+    const token = getTokenFromRequest(request);
 
-    if (!authHeader?.startsWith("Bearer ")) {
+    if (!token) {
       return NextResponse.json({ erro: "Token não fornecido" }, { status: 401 });
     }
 
-    const token = authHeader.split(" ")[1];
     const payload = verificarToken(token);
 
     const user = await prisma.user.findUnique({
