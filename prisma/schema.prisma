@@ -25,6 +25,7 @@ model User {
   palpites            Palpite[]
   palpitesMataMata    PalpiteMataMata[]
 
+  @@index([role])
   @@map("users")
 }
 
@@ -54,9 +55,11 @@ model Selecao {
 
   jogadores    Jogador[]
   figurinhas   Figurinha[]
-  partidasCasa Partida[] @relation("mandante")
-  partidasFora Partida[] @relation("visitante")
+  partidasCasa   Partida[] @relation("mandante")
+  partidasFora   Partida[] @relation("visitante")
+  partidasVencidas Partida[] @relation("vencedor")
 
+  @@index([grupoId])
   @@map("selecoes")
 }
 
@@ -74,6 +77,7 @@ model Jogador {
 
   figurinha Figurinha?
 
+  @@index([selecaoId])
   @@map("jogadores")
 }
 
@@ -110,9 +114,18 @@ model Partida {
   golsVisitante       Int?
   encerrada           Boolean  @default(false)
   vencedorId          Int?
+  vencedor            Selecao? @relation("vencedor", fields: [vencedorId], references: [id])
 
-  palpites Palpite[]
+  palpites            Palpite[]
+  palpitesMataMata    PalpiteMataMata[]
+  resultadoOficial    ResultadoOficial?
 
+  @@index([selecaoMandanteId])
+  @@index([selecaoVisitanteId])
+  @@index([estadioId])
+  @@index([grupoId])
+  @@index([fase])
+  @@index([encerrada])
   @@map("partidas")
 }
 
@@ -132,6 +145,8 @@ model Figurinha {
   trocasDesejadas        Troca[]                     @relation("desejada")
   oferecidaEmTrocas      TrocaFigurinhaOferecida[]
 
+  @@index([selecaoId])
+  @@unique([selecaoId, numero])
   @@map("figurinhas")
 }
 
@@ -144,6 +159,7 @@ model AlbumFigurinha {
   quantidade  Int      @default(1)
 
   @@unique([usuarioId, figurinhaId])
+  @@index([quantidade])
   @@map("album_figurinhas")
 }
 
@@ -160,6 +176,9 @@ model Troca {
 
   figurinhasOferecidas TrocaFigurinhaOferecida[]
 
+  @@index([remetenteId])
+  @@index([destinatarioId])
+  @@index([status])
   @@map("trocas")
 }
 
@@ -171,6 +190,7 @@ model TrocaFigurinhaOferecida {
   figurinha   Figurinha @relation(fields: [figurinhaId], references: [id])
 
   @@unique([trocaId, figurinhaId])
+  @@index([figurinhaId])
   @@map("troca_figurinhas_oferecidas")
 }
 
@@ -186,16 +206,18 @@ model Palpite {
   createdAt     DateTime @default(now()) @map("created_at")
 
   @@unique([usuarioId, partidaId])
+  @@index([partidaId])
   @@map("palpites")
 }
 
 model ResultadoOficial {
-  id                Int   @id @default(autoincrement())
-  partidaId         Int   @unique @map("partida_id")
-  golsMandante      Int?  @map("gols_mandante")
-  golsVisitante     Int?  @map("gols_visitante")
-  penaltisMandante  Int?  @map("penaltis_mandante")
-  penaltisVisitante Int?  @map("penaltis_visitante")
+  id                Int      @id @default(autoincrement())
+  partidaId         Int      @unique @map("partida_id")
+  partida           Partida  @relation(fields: [partidaId], references: [id])
+  golsMandante      Int?     @map("gols_mandante")
+  golsVisitante     Int?     @map("gols_visitante")
+  penaltisMandante  Int?     @map("penaltis_mandante")
+  penaltisVisitante Int?     @map("penaltis_visitante")
 
   @@map("resultados_oficiais")
 }
@@ -205,6 +227,7 @@ model PalpiteMataMata {
   usuarioId     Int
   usuario       User     @relation(fields: [usuarioId], references: [id])
   partidaId     Int
+  partida       Partida  @relation(fields: [partidaId], references: [id])
   golsMandante      Int?
   golsVisitante     Int?
   penaltisMandante  Int?
@@ -213,5 +236,6 @@ model PalpiteMataMata {
   updatedAt     DateTime @updatedAt @map("updated_at")
 
   @@unique([usuarioId, partidaId])
+  @@index([partidaId])
   @@map("palpites_mata_mata")
 }
