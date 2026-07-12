@@ -7,6 +7,7 @@ import ModalLogin from "@/components/ModalLogin";
 
 import { IconClock, IconMapPin } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
+import { formatarData, formatarHora } from "@/lib/format";
 
 interface ClassificacaoSelecao {
   id: number;
@@ -34,16 +35,6 @@ interface Partida {
   mandante: { id: number; nome: string; codigoPais: string | null };
   visitante: { id: number; nome: string; codigoPais: string | null };
   estadio: { nome: string; cidade: string; pais: string };
-}
-
-function formatarData(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("pt-BR", { timeZone: "UTC" });
-}
-
-function formatarHora(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleTimeString("pt-BR", { timeZone: "UTC", hour: "2-digit", minute: "2-digit" });
 }
 
 export default function PlacarPage() {

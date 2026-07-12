@@ -8,6 +8,7 @@ import { FlagIcon } from "@/components/FlagIcon";
 import { IconShield, IconClock, IconMapPin } from "@/components/Icons";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { SkeletonMataMata } from "@/components/Skeleton";
+import { formatarData, formatarHora, formatarDataLonga } from "@/lib/format";
 import { computeBracket, type GrupoStanding, type BracketResult } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
 
@@ -22,21 +23,6 @@ interface Partida {
   mandante: { id: number; nome: string; codigoPais: string | null };
   visitante: { id: number; nome: string; codigoPais: string | null };
   estadio: { nome: string; cidade: string; pais: string };
-}
-
-function formatarData(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("pt-BR", { timeZone: "UTC" });
-}
-
-function formatarHora(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleTimeString("pt-BR", { timeZone: "UTC", hour: "2-digit", minute: "2-digit" });
-}
-
-function formatarDataAgrupamento(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("pt-BR", { timeZone: "UTC", weekday: "long", day: "2-digit", month: "long" });
 }
 
 export default function AdminOficialPage() {
@@ -287,7 +273,7 @@ export default function AdminOficialPage() {
         <div className="mt-6 space-y-8">
           {Object.entries(partidasPorDia).map(([data, jogos]) => (
             <section key={data}>
-              <h2 className="mb-4 text-lg font-bold capitalize">{formatarDataAgrupamento(jogos[0].dataHora)}</h2>
+              <h2 className="mb-4 text-lg font-bold capitalize">{formatarDataLonga(jogos[0].dataHora)}</h2>
               <div className="space-y-3">
                 {jogos.map((p) => {
                   const golsM = placares[p.id]?.golsMandante ?? "";

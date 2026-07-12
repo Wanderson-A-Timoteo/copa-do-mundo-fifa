@@ -9,6 +9,7 @@ import { IconTrophy, IconClock, IconMapPin } from "@/components/Icons";
 import ModalLogin from "@/components/ModalLogin";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { SkeletonMataMata } from "@/components/Skeleton";
+import { formatarData, formatarHora } from "@/lib/format";
 import { computeBracket, type GrupoStanding, type BracketResult, type PartidaResolvida } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
 
@@ -26,15 +27,6 @@ function getUserId(): number | null {
   } catch {
     return null;
   }
-}
-
-function formatarData(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("pt-BR", { timeZone: "UTC", day: "2-digit", month: "2-digit" });
-}
-function formatarHora(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleTimeString("pt-BR", { timeZone: "UTC", hour: "2-digit", minute: "2-digit" });
 }
 
 type PlacaresState = Record<number, { golsMandante: string; golsVisitante: string; penaltisMandante: string; penaltisVisitante: string }>;

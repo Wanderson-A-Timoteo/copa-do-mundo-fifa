@@ -5,10 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import PaginaAnimada from "@/components/PaginaAnimada";
-import PlayerCard from "@/components/PlayerCard";
-import { FlagIcon } from "@/components/FlagIcon";
+import StickerCard from "@/components/StickerCard";
 import { IconRepeat, IconArrowLeft } from "@/components/Icons";
 import { Skeleton } from "@/components/Skeleton";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface FigurinhaResumo {
   id: number;
@@ -25,16 +25,12 @@ interface FigurinhaAlbum {
   figurinha: FigurinhaResumo;
 }
 
-function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem("token");
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 export default function NovaTrocaPage() {
   const params = useParams();
   const router = useRouter();
   const usuarioSlug = params.usuarioSlug as string;
   const figurinhaSlug = params.figurinhaSlug as string;
+  const { user: userLogado, getAuthHeaders } = useAuth();
 
   const [desejada, setDesejada] = useState<FigurinhaResumo | null>(null);
   const [destinatario, setDestinatario] = useState<{ id: number; nome: string; slug: string } | null>(null);
@@ -43,13 +39,6 @@ export default function NovaTrocaPage() {
   const [carregando, setCarregando] = useState(true);
   const [enviando, setEnviando] = useState(false);
   const [erro, setErro] = useState("");
-  const [userLogado, setUserLogado] = useState<{ id: number; nome: string } | null>(null);
-
-  useEffect(() => {
-    const raw = localStorage.getItem("user");
-    const cached = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
-    if (cached) setUserLogado(cached);
-  }, []);
 
   const toggleSelecao = (id: number) => {
     setSelecionadas(prev => {
@@ -63,7 +52,7 @@ export default function NovaTrocaPage() {
   const carregarDados = useCallback(async () => {
     try {
       const [albumRes, userRes] = await Promise.all([
-        fetch("/api/album", { headers: { ...getAuthHeaders() } }),
+        fetch("/api/album", { headers: getAuthHeaders() }),
         fetch(`/api/usuarios/${usuarioSlug}/repetidas`),
       ]);
 
@@ -87,7 +76,7 @@ export default function NovaTrocaPage() {
     } finally {
       setCarregando(false);
     }
-  }, [usuarioSlug, figurinhaSlug]);
+  }, [usuarioSlug, figurinhaSlug, getAuthHeaders]);
 
   useEffect(() => {
     if (!usuarioSlug || !figurinhaSlug) return;
@@ -164,20 +153,7 @@ export default function NovaTrocaPage() {
                 <div className="mb-8">
                   <p className="mb-2 text-sm font-medium text-zinc-500">Figurinha desejada:</p>
                   <div className="mx-auto max-w-[200px]">
-                    {desejada.jogador ? (
-                      <PlayerCard
-                        jogador={desejada.jogador}
-                        raridade={desejada.raridade}
-                        corPrimaria={desejada.selecao.corPrimaria}
-                        codigoPais={desejada.selecao.codigoPais}
-                      />
-                    ) : (
-                      <div className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                        <FlagIcon codigo={desejada.selecao.codigoPais} className="h-10 w-auto rounded-sm" />
-                        <span className="text-center text-sm font-bold">{desejada.selecao.nome}</span>
-                        <span className="text-xs text-zinc-400">#{desejada.numero}</span>
-                      </div>
-                    )}
+                    <StickerCard figurinha={desejada} />
                   </div>
                 </div>
               )}
@@ -208,23 +184,10 @@ export default function NovaTrocaPage() {
                               : "hover:scale-[1.02]"
                           }`}
                         >
-                          {item.figurinha.jogador ? (
-                            <PlayerCard
-                              jogador={item.figurinha.jogador}
-                              raridade={item.figurinha.raridade}
-                              corPrimaria={item.figurinha.selecao.corPrimaria}
-                              codigoPais={item.figurinha.selecao.codigoPais}
-                            />
-                          ) : (
-                            <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                              <FlagIcon codigo={item.figurinha.selecao.codigoPais} className="mb-2 h-8 w-auto rounded-sm" />
-                              <span className="text-center text-xs font-bold">{item.figurinha.selecao.nome}</span>
-                              <span className="text-[10px] text-zinc-400">#{item.figurinha.numero}</span>
-                            </div>
-                          )}
+                          <StickerCard figurinha={item.figurinha} />
                           {selecionado && (
                             <span className="absolute -right-1 -top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-white">
-                              ✓
+                              &#10003;
                             </span>
                           )}
                         </button>

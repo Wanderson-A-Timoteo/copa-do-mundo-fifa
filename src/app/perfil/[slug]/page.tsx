@@ -5,10 +5,11 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import PaginaAnimada from "@/components/PaginaAnimada";
-import PlayerCard from "@/components/PlayerCard";
-import { FlagIcon } from "@/components/FlagIcon";
+import StickerCard from "@/components/StickerCard";
 import { IconRepeat, IconArrowLeft, IconUser } from "@/components/Icons";
 import { Skeleton } from "@/components/Skeleton";
+import { useAuth } from "@/contexts/AuthContext";
+import Pagination from "@/components/Pagination";
 
 interface FigurinhaResumo {
   id: number;
@@ -29,18 +30,12 @@ const ITENS_POR_PAGINA = 10;
 export default function PerfilPublicoPage() {
   const params = useParams();
   const slug = params.slug as string;
+  const { user: userLogado } = useAuth();
   const [usuario, setUsuario] = useState<{ id: number; nome: string; slug: string } | null>(null);
   const [repetidas, setRepetidas] = useState<RepetidaItem[]>([]);
   const [carregando, setCarregando] = useState(true);
-  const [userLogado, setUserLogado] = useState<{ id: number; nome: string } | null>(null);
   const [busca, setBusca] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(0);
-
-  useEffect(() => {
-    const raw = localStorage.getItem("user");
-    const cached = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
-    if (cached) setUserLogado(cached);
-  }, []);
 
   useEffect(() => {
     if (!slug) return;
@@ -70,15 +65,6 @@ export default function PerfilPublicoPage() {
   const paginaInicio = paginaSegura * ITENS_POR_PAGINA;
   const paginaFim = paginaInicio + ITENS_POR_PAGINA;
   const paginaItens = filtradas.slice(paginaInicio, paginaFim);
-
-  const numerosPagina = useMemo(() => {
-    const maxVisiveis = 7;
-    const metade = Math.floor(maxVisiveis / 2);
-    let inicio = Math.max(0, paginaSegura - metade);
-    let fim = Math.min(totalPaginas, inicio + maxVisiveis);
-    if (fim - inicio < maxVisiveis) inicio = Math.max(0, fim - maxVisiveis);
-    return Array.from({ length: fim - inicio }, (_, i) => inicio + i);
-  }, [paginaSegura, totalPaginas]);
 
   useEffect(() => {
     setPaginaAtual(0);
@@ -161,20 +147,7 @@ export default function PerfilPublicoPage() {
               <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                 {paginaItens.map((item) => (
                   <div key={item.figurinha.id} className="relative">
-                    {item.figurinha.jogador ? (
-                      <PlayerCard
-                        jogador={item.figurinha.jogador}
-                        raridade={item.figurinha.raridade}
-                        corPrimaria={item.figurinha.selecao.corPrimaria}
-                        codigoPais={item.figurinha.selecao.codigoPais}
-                      />
-                    ) : (
-                      <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                        <FlagIcon codigo={item.figurinha.selecao.codigoPais} className="mb-2 h-10 w-auto rounded-sm" />
-                        <span className="text-center text-xs font-bold">{item.figurinha.selecao.nome}</span>
-                        <span className="text-[10px] text-zinc-400">#{item.figurinha.numero}</span>
-                      </div>
-                    )}
+                    <StickerCard figurinha={item.figurinha} />
                     <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
                       {item.quantidade}
                     </span>
@@ -190,37 +163,12 @@ export default function PerfilPublicoPage() {
                 ))}
               </div>
 
-              {totalPaginas > 1 && (
-                <div className="mt-6 flex items-center justify-center gap-1">
-                  <button
-                    onClick={() => setPaginaAtual(p => Math.max(0, p - 1))}
-                    disabled={paginaSegura === 0}
-                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                  >
-                    Anterior
-                  </button>
-                  {numerosPagina.map(n => (
-                    <button
-                      key={n}
-                      onClick={() => setPaginaAtual(n)}
-                      className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
-                        n === paginaSegura
-                          ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                          : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                      }`}
-                    >
-                      {n + 1}
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => setPaginaAtual(p => Math.min(totalPaginas - 1, p + 1))}
-                    disabled={paginaSegura >= totalPaginas - 1}
-                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                  >
-                    Próximo
-                  </button>
-                </div>
-              )}
+              <Pagination
+                paginaAtual={paginaAtual}
+                totalItens={filtradas.length}
+                itensPorPagina={ITENS_POR_PAGINA}
+                onPageChange={setPaginaAtual}
+              />
             </>
           )}
 

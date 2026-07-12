@@ -5,10 +5,10 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import PaginaAnimada from "@/components/PaginaAnimada";
-import PlayerCard from "@/components/PlayerCard";
-import { FlagIcon } from "@/components/FlagIcon";
+import StickerCard from "@/components/StickerCard";
 import { IconUser, IconArrowLeft, IconRepeat } from "@/components/Icons";
 import { Skeleton } from "@/components/Skeleton";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface FigurinhaDetalhe {
   id: number;
@@ -26,16 +26,10 @@ interface FigurinhaDetalhe {
 export default function RepetidasDetalhePage() {
   const params = useParams();
   const slug = params.slug as string;
+  const { user: userLogado } = useAuth();
   const [figurinha, setFigurinha] = useState<FigurinhaDetalhe | null>(null);
   const [usuarios, setUsuarios] = useState<{ id: number; nome: string; slug: string; quantidade: number }[]>([]);
   const [carregando, setCarregando] = useState(true);
-  const [userLogado, setUserLogado] = useState<{ id: number } | null>(null);
-
-  useEffect(() => {
-    const raw = localStorage.getItem("user");
-    const cached = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
-    if (cached) setUserLogado(cached);
-  }, []);
 
   useEffect(() => {
     if (!slug) return;
@@ -97,20 +91,7 @@ export default function RepetidasDetalhePage() {
           <div className="mb-8 flex flex-col items-center">
             <h1 className="mb-6 text-2xl font-bold">Figurinhas disponíveis</h1>
             <div className="w-full max-w-[220px]">
-              {figurinha.jogador ? (
-                <PlayerCard
-                  jogador={figurinha.jogador}
-                  raridade={figurinha.raridade}
-                  corPrimaria={figurinha.selecao.corPrimaria}
-                  codigoPais={figurinha.selecao.codigoPais}
-                />
-              ) : (
-                <div className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                  <FlagIcon codigo={figurinha.selecao.codigoPais} className="h-12 w-auto rounded-sm" />
-                  <span className="text-center text-sm font-bold">{figurinha.selecao.nome}</span>
-                  <span className="text-xs text-zinc-400">#{figurinha.numero}</span>
-                </div>
-              )}
+              <StickerCard figurinha={figurinha} />
             </div>
           </div>
 

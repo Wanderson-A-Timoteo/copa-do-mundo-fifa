@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import NavHeader from "@/components/NavHeader";
 import PaginaAnimada from "@/components/PaginaAnimada";
-import { FlagIcon } from "@/components/FlagIcon";
 import { IconRepeat, IconBook, IconUser, IconShield } from "@/components/Icons";
-import PlayerCard from "@/components/PlayerCard";
+import StickerCard from "@/components/StickerCard";
 import { Skeleton } from "@/components/Skeleton";
+import { useAuth } from "@/contexts/AuthContext";
+import Pagination from "@/components/Pagination";
 
 interface FigurinhaResumo {
   id: number;
@@ -36,11 +37,6 @@ interface RepetidaGrupo {
 
 type Aba = "disponiveis" | "recebidas" | "enviadas";
 
-function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem("token");
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     pendente: "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
@@ -60,11 +56,11 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export default function TrocasPage() {
+  const { user, getAuthHeaders } = useAuth();
   const [aba, setAba] = useState<Aba>("disponiveis");
   const [trocas, setTrocas] = useState<TrocaItem[]>([]);
   const [repetidas, setRepetidas] = useState<RepetidaGrupo[]>([]);
   const [carregando, setCarregando] = useState(true);
-  const [user, setUser] = useState<{ id: number; nome: string } | null>(null);
   const [filtroBusca, setFiltroBusca] = useState("");
   const [pendentesRec, setPendentesRec] = useState(0);
   const [pendentesEnv, setPendentesEnv] = useState(0);
@@ -75,17 +71,11 @@ export default function TrocasPage() {
   const ITENS_POR_PAGINA_DISP = 20;
   const ITENS_POR_PAGINA_TROCAS = 10;
 
-  useEffect(() => {
-    const raw = localStorage.getItem("user");
-    const cached = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
-    if (cached) setUser(cached);
-  }, []);
-
   const carregarTrocas = useCallback(async () => {
     if (!user) return;
     setCarregando(true);
     try {
-      const res = await fetch(`/api/trocas?tipo=${aba}`, { headers: { ...getAuthHeaders() } });
+      const res = await fetch(`/api/trocas?tipo=${aba}`, { headers: getAuthHeaders() });
       if (res.ok) {
         const data = await res.json();
         setTrocas(data.trocas);
@@ -95,7 +85,7 @@ export default function TrocasPage() {
     } finally {
       setCarregando(false);
     }
-  }, [aba, user]);
+  }, [aba, user, getAuthHeaders]);
 
   const carregarRepetidas = useCallback(async () => {
     setCarregando(true);
@@ -115,12 +105,12 @@ export default function TrocasPage() {
   const refreshCounts = useCallback(async () => {
     if (!user) return;
     const [rec, env] = await Promise.all([
-      fetch("/api/trocas?tipo=recebidas", { headers: { ...getAuthHeaders() } }).then(r => r.json()),
-      fetch("/api/trocas?tipo=enviadas", { headers: { ...getAuthHeaders() } }).then(r => r.json()),
+      fetch("/api/trocas?tipo=recebidas", { headers: getAuthHeaders() }).then(r => r.json()),
+      fetch("/api/trocas?tipo=enviadas", { headers: getAuthHeaders() }).then(r => r.json()),
     ]);
-    setPendentesRec((rec.trocas || []).filter((t: any) => t.status === "pendente").length);
-    setPendentesEnv((env.trocas || []).filter((t: any) => t.status === "pendente").length);
-  }, [user]);
+    setPendentesRec((rec.trocas || []).filter((t: { status: string }) => t.status === "pendente").length);
+    setPendentesEnv((env.trocas || []).filter((t: { status: string }) => t.status === "pendente").length);
+  }, [user, getAuthHeaders]);
 
   useEffect(() => {
     if (user) refreshCounts();
@@ -164,24 +154,10 @@ export default function TrocasPage() {
   const totalPagDisp = Math.max(1, Math.ceil(repetidasFiltradas.length / ITENS_POR_PAGINA_DISP));
   const pagDispSegura = Math.min(paginaDisponiveis, totalPagDisp - 1);
   const pagDispItens = repetidasFiltradas.slice(pagDispSegura * ITENS_POR_PAGINA_DISP, (pagDispSegura + 1) * ITENS_POR_PAGINA_DISP);
-  const numsPagDisp = useMemo(() => {
-    const max = 7, metade = Math.floor(max / 2);
-    let inicio = Math.max(0, pagDispSegura - metade);
-    let fim = Math.min(totalPagDisp, inicio + max);
-    if (fim - inicio < max) inicio = Math.max(0, fim - max);
-    return Array.from({ length: fim - inicio }, (_, i) => inicio + i);
-  }, [pagDispSegura, totalPagDisp]);
 
   const totalPagTrocas = Math.max(1, Math.ceil(trocas.length / ITENS_POR_PAGINA_TROCAS));
   const pagTrocasSegura = Math.min(paginaTrocas, totalPagTrocas - 1);
   const pagTrocasItens = trocas.slice(pagTrocasSegura * ITENS_POR_PAGINA_TROCAS, (pagTrocasSegura + 1) * ITENS_POR_PAGINA_TROCAS);
-  const numsPagTrocas = useMemo(() => {
-    const max = 7, metade = Math.floor(max / 2);
-    let inicio = Math.max(0, pagTrocasSegura - metade);
-    let fim = Math.min(totalPagTrocas, inicio + max);
-    if (fim - inicio < max) inicio = Math.max(0, fim - max);
-    return Array.from({ length: fim - inicio }, (_, i) => inicio + i);
-  }, [pagTrocasSegura, totalPagTrocas]);
 
   useEffect(() => { setPaginaDisponiveis(0); }, [filtroBusca]);
 
@@ -278,57 +254,19 @@ export default function TrocasPage() {
                     <Link
                       key={grupo.figurinha.id}
                       href={`/trocas/repetidas/${grupo.figurinha.slug}`}
-                      className="group relative"
+                      className="group"
                     >
-                      {grupo.figurinha.jogador ? (
-                        <PlayerCard
-                          jogador={grupo.figurinha.jogador}
-                          raridade={grupo.figurinha.raridade}
-                          corPrimaria={grupo.figurinha.selecao.corPrimaria}
-                          codigoPais={grupo.figurinha.selecao.codigoPais}
-                        />
-                      ) : (
-                        <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                          <FlagIcon codigo={grupo.figurinha.selecao.codigoPais} className="mb-2 h-10 w-auto rounded-sm" />
-                          <span className="text-center text-xs font-bold">{grupo.figurinha.selecao.nome}</span>
-                          <span className="text-[10px] text-zinc-400">#{grupo.figurinha.numero}</span>
-                        </div>
-                      )}
+                      <StickerCard figurinha={grupo.figurinha} />
                     </Link>
                   ))}
                 </div>
               )}
-              {totalPagDisp > 1 && (
-                <div className="mt-6 flex items-center justify-center gap-1.5">
-                  <button
-                    disabled={pagDispSegura === 0}
-                    onClick={() => setPaginaDisponiveis(p => Math.max(0, p - 1))}
-                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
-                  >
-                    Anterior
-                  </button>
-                  {numsPagDisp.map(n => (
-                    <button
-                      key={n}
-                      onClick={() => setPaginaDisponiveis(n)}
-                      className={`min-w-[2rem] rounded-lg px-2 py-1.5 text-sm ${
-                        n === pagDispSegura
-                          ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                          : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                      }`}
-                    >
-                      {n + 1}
-                    </button>
-                  ))}
-                  <button
-                    disabled={pagDispSegura >= totalPagDisp - 1}
-                    onClick={() => setPaginaDisponiveis(p => Math.min(totalPagDisp - 1, p + 1))}
-                    className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
-                  >
-                    Próximo
-                  </button>
-                </div>
-              )}
+              <Pagination
+                paginaAtual={paginaDisponiveis}
+                totalItens={repetidasFiltradas.length}
+                itensPorPagina={ITENS_POR_PAGINA_DISP}
+                onPageChange={setPaginaDisponiveis}
+              />
             </>
           )}
 
@@ -404,20 +342,7 @@ export default function TrocasPage() {
                         <div className="flex flex-wrap gap-2">
                           {troca.figurinhasOferecidas.map((of) => (
                             <div key={of.figurinha.id} className="w-[140px]">
-                              {of.figurinha.jogador ? (
-                                <PlayerCard
-                                  jogador={of.figurinha.jogador}
-                                  raridade={of.figurinha.raridade}
-                                  corPrimaria={of.figurinha.selecao.corPrimaria}
-                                  codigoPais={of.figurinha.selecao.codigoPais}
-                                />
-                              ) : (
-                                <div className="flex aspect-[3/4] flex-col items-center justify-center gap-1 rounded-xl border border-zinc-200 bg-stone-50 p-2 dark:border-zinc-800 dark:bg-zinc-900">
-                                  <FlagIcon codigo={of.figurinha.selecao.codigoPais} className="h-8 w-auto rounded-sm" />
-                                  <span className="text-center text-[10px] font-bold">{of.figurinha.selecao.nome}</span>
-                                  <span className="text-[8px] text-zinc-400">#{of.figurinha.numero}</span>
-                                </div>
-                              )}
+                              <StickerCard figurinha={of.figurinha} />
                             </div>
                           ))}
                         </div>
@@ -425,20 +350,7 @@ export default function TrocasPage() {
                       <div>
                         <p className="mb-2 text-xs font-medium text-zinc-400">Quer receber</p>
                         <div className="w-[140px]">
-                          {troca.figurinhaDesejada.jogador ? (
-                            <PlayerCard
-                              jogador={troca.figurinhaDesejada.jogador}
-                              raridade={troca.figurinhaDesejada.raridade}
-                              corPrimaria={troca.figurinhaDesejada.selecao.corPrimaria}
-                              codigoPais={troca.figurinhaDesejada.selecao.codigoPais}
-                            />
-                          ) : (
-                            <div className="flex aspect-[3/4] flex-col items-center justify-center gap-1 rounded-xl border border-zinc-200 bg-stone-50 p-2 dark:border-zinc-800 dark:bg-zinc-900">
-                              <FlagIcon codigo={troca.figurinhaDesejada.selecao.codigoPais} className="h-8 w-auto rounded-sm" />
-                              <span className="text-center text-[10px] font-bold">{troca.figurinhaDesejada.selecao.nome}</span>
-                              <span className="text-[8px] text-zinc-400">#{troca.figurinhaDesejada.numero}</span>
-                            </div>
-                          )}
+                          <StickerCard figurinha={troca.figurinhaDesejada} />
                         </div>
                       </div>
                     </div>
@@ -474,37 +386,12 @@ export default function TrocasPage() {
                 );
               })}
             </div>
-            {totalPagTrocas > 1 && (
-              <div className="mt-6 flex items-center justify-center gap-1.5">
-                <button
-                  disabled={pagTrocasSegura === 0}
-                  onClick={() => setPaginaTrocas(p => Math.max(0, p - 1))}
-                  className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
-                >
-                  Anterior
-                </button>
-                {numsPagTrocas.map(n => (
-                  <button
-                    key={n}
-                    onClick={() => setPaginaTrocas(n)}
-                    className={`min-w-[2rem] rounded-lg px-2 py-1.5 text-sm ${
-                      n === pagTrocasSegura
-                        ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                        : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-                    }`}
-                  >
-                    {n + 1}
-                  </button>
-                ))}
-                <button
-                  disabled={pagTrocasSegura >= totalPagTrocas - 1}
-                  onClick={() => setPaginaTrocas(p => Math.min(totalPagTrocas - 1, p + 1))}
-                  className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm disabled:opacity-40 dark:border-zinc-700"
-                >
-                  Próximo
-                </button>
-              </div>
-            )}
+            <Pagination
+              paginaAtual={paginaTrocas}
+              totalItens={trocas.length}
+              itensPorPagina={ITENS_POR_PAGINA_TROCAS}
+              onPageChange={setPaginaTrocas}
+            />
           </>
           )}
         </main>

@@ -6,9 +6,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import NavHeader from "@/components/NavHeader";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconStar, IconUser, IconTrophy, IconRepeat } from "@/components/Icons";
-import PlayerCard from "@/components/PlayerCard";
+import StickerCard from "@/components/StickerCard";
 import PaginaAnimada from "@/components/PaginaAnimada";
 import { SkeletonAlbum } from "@/components/Skeleton";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Figurinha {
   id: number;
@@ -35,6 +36,7 @@ interface AlbumItem {
 }
 
 export default function AlbumPage() {
+  const { user, getAuthHeaders } = useAuth();
   const [figurinhas, setFigurinhas] = useState<Figurinha[]>([]);
   const [album, setAlbum] = useState<Map<number, AlbumItem>>(new Map());
   const [filtroStatus, setFiltroStatus] = useState("todas");
@@ -43,31 +45,14 @@ export default function AlbumPage() {
   const [novasFigurinhas, setNovasFigurinhas] = useState<Figurinha[]>([]);
   const [showAnimacao, setShowAnimacao] = useState(false);
   const [carregando, setCarregando] = useState(true);
-  const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<{ id: number; nome: string } | null>(null);
   const [pacotesRestantesHoje, setPacotesRestantesHoje] = useState(10);
   const [limiteDiario, setLimiteDiario] = useState(10);
   const [paginaAtual, setPaginaAtual] = useState(0);
 
-  useEffect(() => {
-    setToken(localStorage.getItem("token"));
-  }, []);
-
-  useEffect(() => {
-    const raw = localStorage.getItem("user");
-    const cached = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
-    if (cached) setUser(cached);
-  }, []);
-
-  const getAuthHeaders = (): Record<string, string> => {
-    const t = localStorage.getItem("token");
-    return t ? { Authorization: `Bearer ${t}` } : {};
-  };
-
   const carregarDados = useCallback(async () => {
     const [figRes, albumRes] = await Promise.all([
       fetch("/api/figurinhas"),
-      fetch("/api/album", { headers: { ...getAuthHeaders() } }),
+      fetch("/api/album", { headers: getAuthHeaders() }),
     ]);
 
     const figData = await figRes.json();
@@ -85,7 +70,7 @@ export default function AlbumPage() {
     setPacotesRestantesHoje(albumData.pacotesRestantesHoje ?? 10);
     setLimiteDiario(albumData.limiteDiario ?? 10);
     setCarregando(false);
-  }, []);
+  }, [getAuthHeaders]);
 
   useEffect(() => {
     carregarDados();
@@ -96,7 +81,7 @@ export default function AlbumPage() {
 
     const res = await fetch("/api/album/abrir-pacote", {
       method: "POST",
-      headers: { ...getAuthHeaders() },
+      headers: getAuthHeaders(),
     });
 
     const data = await res.json();
@@ -302,29 +287,13 @@ export default function AlbumPage() {
                         const repetidaQtd = status === "repetida" ? album.get(fig.id)?.quantidade : null;
 
                         return (
-                          <div key={fig.id} className={`relative ${faltando ? "opacity-30 grayscale" : ""}`}>
-                            {fig.jogador ? (
-                              <PlayerCard
-                                jogador={fig.jogador}
-                                corPrimaria={fig.selecao.corPrimaria}
-                                codigoPais={fig.selecao.codigoPais}
-                              />
-                            ) : (
-                              <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
-                                <FlagIcon codigo={fig.selecao.codigoPais} className="mb-2 h-10 w-auto rounded-sm" />
-                                <span className="text-center text-xs font-bold">{fig.selecao.nome}</span>
-                                <span className="text-[10px] text-zinc-400">#{fig.numero}</span>
-                              </div>
-                            )}
+                          <StickerCard key={fig.id} figurinha={fig} className={faltando ? "opacity-30 grayscale" : ""}>
                             {repetidaQtd && (
-                              <>
-                                <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
-                                  {repetidaQtd}
-                                </span>
-
-                              </>
+                              <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
+                                {repetidaQtd}
+                              </span>
                             )}
-                          </div>
+                          </StickerCard>
                         );
                       })}
                     </div>
@@ -339,7 +308,7 @@ export default function AlbumPage() {
                 disabled={paginaAtual === 0}
                 className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
               >
-                ◀ Anterior
+                &#9664; Anterior
               </button>
               <span className="text-sm text-zinc-500">
                 Página {paginaAtual + 1} de {selecoesFiltradas.length}
@@ -349,7 +318,7 @@ export default function AlbumPage() {
                 disabled={paginaAtual === selecoesFiltradas.length - 1}
                 className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
               >
-                Próxima ▶
+                Próxima &#9654;
               </button>
             </div>
           </div>
@@ -377,20 +346,7 @@ export default function AlbumPage() {
                   className="animate-bounce mx-auto w-full max-w-[200px] shadow-xl shadow-black/30"
                   style={{ animationDelay: `${i * 0.1}s`, animationDuration: "0.5s" }}
                 >
-                  {fig.jogador ? (
-                    <PlayerCard
-                      jogador={fig.jogador}
-                      raridade={fig.raridade}
-                      corPrimaria={fig.selecao.corPrimaria}
-                      codigoPais={fig.selecao.codigoPais}
-                    />
-                  ) : (
-                    <div className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-xl border-2 border-white/30 bg-white/10 p-4 text-white backdrop-blur-sm">
-                      <FlagIcon codigo={fig.selecao.codigoPais} className="h-10 w-auto rounded-sm" />
-                      <span className="text-center text-sm font-bold">{fig.selecao.nome}</span>
-                      <span className="text-xs text-white/70">#{fig.numero}</span>
-                    </div>
-                  )}
+                  <StickerCard figurinha={fig} />
                 </div>
               ))}
             </div>
