@@ -1,20 +1,22 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { extractUserIdFromRequest } from "@/lib/auth";
+import { salvarResultadoOficial } from "@/services/palpite.service";
 
 export async function GET() {
+  const { prisma } = await import("@/lib/prisma");
   const resultados = await prisma.resultadoOficial.findMany();
   return NextResponse.json({ resultados });
 }
 
 export async function POST(request: Request) {
-  const usuarioId = await extractUserIdFromRequest(request);
-  if (!usuarioId) {
-    return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
-  }
-
-  const user = await prisma.user.findUnique({ where: { id: usuarioId } });
-  if (!user || user.role !== "ADMIN") {
+  let usuarioId: number;
+  try {
+    const { requireAdmin } = await import("@/lib/auth");
+    usuarioId = await requireAdmin(request);
+  } catch (e) {
+    if (e instanceof Error && e.message === "UNAUTHORIZED") {
+      return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
+    }
     return NextResponse.json({ erro: "Não autorizado" }, { status: 403 });
   }
 
@@ -25,29 +27,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ erro: "partidaId é obrigatório" }, { status: 400 });
   }
 
-  const isLimpar = golsMandante === null && golsVisitante === null;
-
-  if (isLimpar) {
-    await prisma.resultadoOficial.deleteMany({ where: { partidaId } });
-    return NextResponse.json({ sucesso: true, limpo: true });
-  }
-
-  if (typeof golsMandante !== "number" || typeof golsVisitante !== "number") {
+  try {
+    const result = await salvarResultadoOficial(
+      partidaId,
+      golsMandante,
+      golsVisitante,
+      penaltisMandante,
+      penaltisVisitante,
+    );
+    return NextResponse.json(result);
+  } catch {
     return NextResponse.json(
       { erro: "golsMandante e golsVisitante devem ser números" },
       { status: 400 },
     );
   }
-
-  const data: Record<string, unknown> = { golsMandante, golsVisitante };
-  if (penaltisMandante !== undefined) data.penaltisMandante = penaltisMandante;
-  if (penaltisVisitante !== undefined) data.penaltisVisitante = penaltisVisitante;
-
-  const resultado = await prisma.resultadoOficial.upsert({
-    where: { partidaId },
-    create: { partidaId, ...data } as never,
-    update: data,
-  });
-
-  return NextResponse.json({ resultado });
 }

@@ -1,54 +1,31 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { extractUserIdFromRequest } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth";
+import { atualizarPartida } from "@/services/partida.service";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const usuarioId = await extractUserIdFromRequest(request);
-  if (!usuarioId) {
-    return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
-  }
-
-  const user = await prisma.user.findUnique({ where: { id: usuarioId } });
-  if (!user || user.role !== "ADMIN") {
+  let usuarioId: number;
+  try {
+    usuarioId = await requireAdmin(request);
+  } catch (e) {
+    if (e instanceof Error && e.message === "UNAUTHORIZED") {
+      return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
+    }
     return NextResponse.json({ erro: "Não autorizado" }, { status: 403 });
   }
 
   const { id } = await params;
   const { golsMandante, golsVisitante } = await request.json();
 
-  const partida = await prisma.partida.findUnique({
-    where: { id: Number(id) },
-  });
-
-  if (!partida) {
-    return NextResponse.json({ erro: "Partida não encontrada" }, { status: 404 });
-  }
-
-  const isLimpar = golsMandante === null && golsVisitante === null;
-
-  if (!isLimpar && (typeof golsMandante !== "number" || typeof golsVisitante !== "number")) {
+  try {
+    const partida = await atualizarPartida(Number(id), golsMandante, golsVisitante);
+    return NextResponse.json({ partida });
+  } catch (e) {
+    if (e instanceof Error && e.message === "MATCH_NOT_FOUND") {
+      return NextResponse.json({ erro: "Partida não encontrada" }, { status: 404 });
+    }
     return NextResponse.json(
       { erro: "golsMandante e golsVisitante devem ser números ou ambos null" },
       { status: 400 },
     );
   }
-
-  let vencedorId: number | null = null;
-  if (!isLimpar) {
-    if (golsMandante > golsVisitante) vencedorId = partida.selecaoMandanteId;
-    else if (golsVisitante > golsMandante) vencedorId = partida.selecaoVisitanteId;
-  }
-
-  const atualizada = await prisma.partida.update({
-    where: { id: Number(id) },
-    data: {
-      golsMandante: isLimpar ? null : golsMandante,
-      golsVisitante: isLimpar ? null : golsVisitante,
-      encerrada: !isLimpar,
-      vencedorId,
-    },
-    include: { mandante: true, visitante: true, estadio: true },
-  });
-
-  return NextResponse.json({ partida: atualizada });
 }

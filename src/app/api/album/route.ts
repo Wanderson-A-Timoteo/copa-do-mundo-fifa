@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { extractUserIdFromRequest } from "@/lib/auth";
-
-const LIMITE_DIARIO = 10;
+import { getAlbum, adicionarFigurinha, removerFigurinha } from "@/services/album.service";
 
 export async function GET(request: Request) {
   const usuarioId = await extractUserIdFromRequest(request);
@@ -10,30 +8,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
   }
 
-  const [album, usuario] = await Promise.all([
-    prisma.albumFigurinha.findMany({
-      where: { usuarioId },
-      include: {
-        figurinha: {
-          include: { selecao: true, jogador: true },
-        },
-      },
-    }),
-    prisma.user.findUnique({
-      where: { id: usuarioId },
-      select: { ultimoDiaAbertura: true, pacotesAbertosHoje: true },
-    }),
-  ]);
-
-  const hoje = new Date();
-  hoje.setHours(0, 0, 0, 0);
-
-  let pacotesRestantesHoje = LIMITE_DIARIO;
-  if (usuario?.ultimoDiaAbertura && new Date(usuario.ultimoDiaAbertura) >= hoje) {
-    pacotesRestantesHoje = Math.max(0, LIMITE_DIARIO - usuario.pacotesAbertosHoje);
-  }
-
-  return NextResponse.json({ album, pacotesRestantesHoje, limiteDiario: LIMITE_DIARIO });
+  const result = await getAlbum(usuarioId);
+  return NextResponse.json(result);
 }
 
 export async function POST(request: Request) {
@@ -43,21 +19,7 @@ export async function POST(request: Request) {
   }
 
   const { figurinhaId } = await request.json();
-
-  const existente = await prisma.albumFigurinha.findUnique({
-    where: { usuarioId_figurinhaId: { usuarioId, figurinhaId } },
-  });
-
-  if (existente) {
-    await prisma.albumFigurinha.update({
-      where: { id: existente.id },
-      data: { quantidade: existente.quantidade + 1 },
-    });
-  } else {
-    await prisma.albumFigurinha.create({
-      data: { usuarioId, figurinhaId },
-    });
-  }
+  await adicionarFigurinha(usuarioId, figurinhaId);
 
   return NextResponse.json({ sucesso: true });
 }
@@ -69,26 +31,7 @@ export async function DELETE(request: Request) {
   }
 
   const { figurinhaId, removerTudo } = await request.json();
-
-  if (removerTudo) {
-    await prisma.albumFigurinha.deleteMany({
-      where: { usuarioId, figurinhaId },
-    });
-  } else {
-    const existente = await prisma.albumFigurinha.findUnique({
-      where: { usuarioId_figurinhaId: { usuarioId, figurinhaId } },
-    });
-    if (existente) {
-      if (existente.quantidade <= 1) {
-        await prisma.albumFigurinha.delete({ where: { id: existente.id } });
-      } else {
-        await prisma.albumFigurinha.update({
-          where: { id: existente.id },
-          data: { quantidade: existente.quantidade - 1 },
-        });
-      }
-    }
-  }
+  await removerFigurinha(usuarioId, figurinhaId, removerTudo);
 
   return NextResponse.json({ sucesso: true });
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { extractUserIdFromRequest } from "@/lib/auth";
+import { listarPalpites, salvarPalpite } from "@/services/palpite.service";
 
 export async function GET(request: Request) {
   const usuarioId = await extractUserIdFromRequest(request);
@@ -11,18 +11,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const partidaId = searchParams.get("partidaId");
 
-  const where: Record<string, unknown> = { usuarioId };
-  if (partidaId) where.partidaId = Number(partidaId);
-
-  const palpites = await prisma.palpite.findMany({
-    where,
-    include: {
-      partida: {
-        include: { mandante: true, visitante: true, estadio: true, grupo: true },
-      },
-    },
-  });
-
+  const palpites = await listarPalpites(usuarioId, partidaId ? Number(partidaId) : undefined);
   return NextResponse.json({ palpites });
 }
 
@@ -38,30 +27,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ erro: "partidaId é obrigatório" }, { status: 400 });
   }
 
-  const partida = await prisma.partida.findUnique({ where: { id: partidaId } });
-  if (!partida) {
-    return NextResponse.json({ erro: "Partida não encontrada" }, { status: 404 });
-  }
-
-  const isLimpar = golsMandante === null && golsVisitante === null;
-
-  if (isLimpar) {
-    await prisma.palpite.deleteMany({ where: { usuarioId, partidaId } });
-    return NextResponse.json({ sucesso: true, limpo: true });
-  }
-
-  if (typeof golsMandante !== "number" || typeof golsVisitante !== "number") {
+  try {
+    const result = await salvarPalpite(usuarioId, partidaId, golsMandante, golsVisitante);
+    return NextResponse.json(result);
+  } catch (e) {
+    if (e instanceof Error && e.message === "MATCH_NOT_FOUND") {
+      return NextResponse.json({ erro: "Partida não encontrada" }, { status: 404 });
+    }
     return NextResponse.json(
       { erro: "golsMandante e golsVisitante devem ser números" },
       { status: 400 },
     );
   }
-
-  const palpite = await prisma.palpite.upsert({
-    where: { usuarioId_partidaId: { usuarioId, partidaId } },
-    create: { usuarioId, partidaId, golsMandante, golsVisitante },
-    update: { golsMandante, golsVisitante },
-  });
-
-  return NextResponse.json({ palpite });
 }

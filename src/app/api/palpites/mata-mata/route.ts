@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import { extractUserIdFromRequest } from "@/lib/auth";
+import { listarPalpitesMataMata, salvarPalpiteMataMata } from "@/services/palpite.service";
 
 export async function GET(request: Request) {
   const usuarioId = await extractUserIdFromRequest(request);
@@ -11,11 +11,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const partidaId = searchParams.get("partidaId");
 
-  const where: Record<string, unknown> = { usuarioId };
-  if (partidaId) where.partidaId = Number(partidaId);
-
-  const palpites = await prisma.palpiteMataMata.findMany({ where });
-
+  const palpites = await listarPalpitesMataMata(usuarioId, partidaId ? Number(partidaId) : undefined);
   return NextResponse.json({ palpites });
 }
 
@@ -32,29 +28,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ erro: "partidaId é obrigatório" }, { status: 400 });
   }
 
-  const isLimpar = golsMandante === null && golsVisitante === null;
-
-  if (isLimpar) {
-    await prisma.palpiteMataMata.deleteMany({ where: { usuarioId, partidaId } });
-    return NextResponse.json({ sucesso: true, limpo: true });
-  }
-
-  if (typeof golsMandante !== "number" || typeof golsVisitante !== "number") {
+  try {
+    const result = await salvarPalpiteMataMata(
+      usuarioId,
+      partidaId,
+      golsMandante,
+      golsVisitante,
+      penaltisMandante,
+      penaltisVisitante,
+    );
+    return NextResponse.json(result);
+  } catch {
     return NextResponse.json(
       { erro: "golsMandante e golsVisitante devem ser números" },
       { status: 400 },
     );
   }
-
-  const data: Record<string, unknown> = { golsMandante, golsVisitante };
-  if (penaltisMandante !== undefined) data.penaltisMandante = penaltisMandante;
-  if (penaltisVisitante !== undefined) data.penaltisVisitante = penaltisVisitante;
-
-  const palpite = await prisma.palpiteMataMata.upsert({
-    where: { usuarioId_partidaId: { usuarioId, partidaId } },
-    create: { usuarioId, partidaId, ...data } as never,
-    update: data,
-  });
-
-  return NextResponse.json({ palpite });
 }
