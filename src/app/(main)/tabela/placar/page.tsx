@@ -7,6 +7,7 @@ import ModalLogin from "@/components/ModalLogin";
 import { IconClock, IconMapPin } from "@/components/Icons";
 import { formatarData, formatarHora } from "@/lib/format";
 import type { ClassificacaoSelecao, PartidaResumo } from "@/types";
+import ScoreInput from "@/components/ScoreInput";
 
 export default function PlacarPage() {
   const [grupos, setGrupos] = useState<
@@ -271,59 +272,39 @@ export default function PlacarPage() {
                             </div>
 
                             <div className="flex items-center gap-2 sm:gap-3">
-                              <div className="relative">
-                                {!token && (
-                                  <div
-                                    className="absolute inset-0 z-10 cursor-pointer"
-                                    onClick={() => setShowModalLogin(true)}
-                                  />
-                                )}
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="99"
-                                  disabled={!token}
-                                  value={golsM}
-                                  onChange={(e) =>
-                                    setPlacares((prev) => ({
-                                      ...prev,
-                                      [p.id]: {
-                                        golsMandante: e.target.value,
-                                        golsVisitante: prev[p.id]?.golsVisitante ?? "",
-                                      },
-                                    }))
-                                  }
-                                  onBlur={() => autoSalvar(p.id)}
-                                  className="w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg"
-                                />
-                              </div>
+                              <ScoreInput
+                                disabled={!token}
+                                value={golsM}
+                                onChange={(v) =>
+                                  setPlacares((prev) => ({
+                                    ...prev,
+                                    [p.id]: {
+                                      golsMandante: v,
+                                      golsVisitante: prev[p.id]?.golsVisitante ?? "",
+                                    },
+                                  }))
+                                }
+                                onBlur={() => autoSalvar(p.id)}
+                                showOverlay={!token}
+                                onOverlayClick={() => setShowModalLogin(true)}
+                              />
                               <span className="text-sm text-zinc-400 sm:text-base">x</span>
-                              <div className="relative">
-                                {!token && (
-                                  <div
-                                    className="absolute inset-0 z-10 cursor-pointer"
-                                    onClick={() => setShowModalLogin(true)}
-                                  />
-                                )}
-                                <input
-                                  type="number"
-                                  min="0"
-                                  max="99"
-                                  disabled={!token}
-                                  value={golsV}
-                                  onChange={(e) =>
-                                    setPlacares((prev) => ({
-                                      ...prev,
-                                      [p.id]: {
-                                        golsMandante: prev[p.id]?.golsMandante ?? "",
-                                        golsVisitante: e.target.value,
-                                      },
-                                    }))
-                                  }
-                                  onBlur={() => autoSalvar(p.id)}
-                                  className="w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg"
-                                />
-                              </div>
+                              <ScoreInput
+                                disabled={!token}
+                                value={golsV}
+                                onChange={(v) =>
+                                  setPlacares((prev) => ({
+                                    ...prev,
+                                    [p.id]: {
+                                      golsMandante: prev[p.id]?.golsMandante ?? "",
+                                      golsVisitante: v,
+                                    },
+                                  }))
+                                }
+                                onBlur={() => autoSalvar(p.id)}
+                                showOverlay={!token}
+                                onOverlayClick={() => setShowModalLogin(true)}
+                              />
                             </div>
 
                             <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
@@ -365,32 +346,23 @@ export default function PlacarPage() {
                                 {p.mandante.nome}
                               </span>
                             </div>
-                            <div className="relative">
-                              {!token && (
-                                <div
-                                  className="absolute inset-0 z-10 cursor-pointer"
-                                  onClick={() => setShowModalLogin(true)}
-                                />
-                              )}
-                              <input
-                                type="number"
-                                min="0"
-                                max="99"
-                                disabled={!token}
-                                value={golsM}
-                                onChange={(e) =>
-                                  setPlacares((prev) => ({
-                                    ...prev,
-                                    [p.id]: {
-                                      golsMandante: e.target.value,
-                                      golsVisitante: prev[p.id]?.golsVisitante ?? "",
-                                    },
-                                  }))
-                                }
-                                onBlur={() => autoSalvar(p.id)}
-                                className="w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800"
-                              />
-                            </div>
+                            <ScoreInput
+                              disabled={!token}
+                              value={golsM}
+                              onChange={(v) =>
+                                setPlacares((prev) => ({
+                                  ...prev,
+                                  [p.id]: {
+                                    golsMandante: v,
+                                    golsVisitante: prev[p.id]?.golsVisitante ?? "",
+                                  },
+                                }))
+                              }
+                              onBlur={() => autoSalvar(p.id)}
+                              showOverlay={!token}
+                              onOverlayClick={() => setShowModalLogin(true)}
+                              isMobile
+                            />
                           </div>
                           <div className="mt-1 flex items-center justify-between gap-2">
                             <div className="flex items-center gap-1.5">
@@ -402,32 +374,23 @@ export default function PlacarPage() {
                                 {p.visitante.nome}
                               </span>
                             </div>
-                            <div className="relative">
-                              {!token && (
-                                <div
-                                  className="absolute inset-0 z-10 cursor-pointer"
-                                  onClick={() => setShowModalLogin(true)}
-                                />
-                              )}
-                              <input
-                                type="number"
-                                min="0"
-                                max="99"
-                                disabled={!token}
-                                value={golsV}
-                                onChange={(e) =>
-                                  setPlacares((prev) => ({
-                                    ...prev,
-                                    [p.id]: {
-                                      golsMandante: prev[p.id]?.golsMandante ?? "",
-                                      golsVisitante: e.target.value,
-                                    },
-                                  }))
-                                }
-                                onBlur={() => autoSalvar(p.id)}
-                                className="w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800"
-                              />
-                            </div>
+                            <ScoreInput
+                              disabled={!token}
+                              value={golsV}
+                              onChange={(v) =>
+                                setPlacares((prev) => ({
+                                  ...prev,
+                                  [p.id]: {
+                                    golsMandante: prev[p.id]?.golsMandante ?? "",
+                                    golsVisitante: v,
+                                  },
+                                }))
+                              }
+                              onBlur={() => autoSalvar(p.id)}
+                              showOverlay={!token}
+                              onOverlayClick={() => setShowModalLogin(true)}
+                              isMobile
+                            />
                           </div>
                           <div className="my-2 border-t border-zinc-300/30 dark:border-zinc-700/30" />
                           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">

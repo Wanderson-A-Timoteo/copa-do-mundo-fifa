@@ -1,6 +1,7 @@
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconClock, IconMapPin } from "@/components/Icons";
 import { formatarData, formatarHora, formatarDataLonga } from "@/lib/format";
+import ScoreInput from "@/components/ScoreInput";
 
 export interface GrupoPartida {
   id: number;
@@ -46,24 +47,18 @@ export default function GrupoPartidaEditor({
 
           {isAdmin ? (
             <div className="flex items-center gap-2 sm:gap-3">
-              <input
-                type="number"
-                min="0"
-                max="99"
+              <ScoreInput
                 value={golsM}
-                onChange={(e) => onChangePlacar(p.id, "golsMandante", e.target.value)}
+                onChange={(v) => onChangePlacar(p.id, "golsMandante", v)}
                 onBlur={() => onSalvar(p.id)}
-                className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvando ? "opacity-50" : ""}`}
+                salvando={salvando}
               />
               <span className="text-sm text-zinc-400 sm:text-base">x</span>
-              <input
-                type="number"
-                min="0"
-                max="99"
+              <ScoreInput
                 value={golsV}
-                onChange={(e) => onChangePlacar(p.id, "golsVisitante", e.target.value)}
+                onChange={(v) => onChangePlacar(p.id, "golsVisitante", v)}
                 onBlur={() => onSalvar(p.id)}
-                className={`w-14 rounded-lg border border-zinc-300 px-2 py-1.5 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-16 sm:text-lg ${salvando ? "opacity-50" : ""}`}
+                salvando={salvando}
               />
             </div>
           ) : (
@@ -114,14 +109,12 @@ export default function GrupoPartidaEditor({
             <span className="truncate text-sm font-medium">{p.mandante.nome}</span>
           </div>
           {isAdmin ? (
-            <input
-              type="number"
-              min="0"
-              max="99"
+            <ScoreInput
               value={golsM}
-              onChange={(e) => onChangePlacar(p.id, "golsMandante", e.target.value)}
+              onChange={(v) => onChangePlacar(p.id, "golsMandante", v)}
               onBlur={() => onSalvar(p.id)}
-              className={`w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 ${salvando ? "opacity-50" : ""}`}
+              salvando={salvando}
+              isMobile
             />
           ) : (
             <span className="text-sm font-bold">{p.golsMandante ?? "-"}</span>
@@ -133,14 +126,12 @@ export default function GrupoPartidaEditor({
             <span className="truncate text-sm font-medium">{p.visitante.nome}</span>
           </div>
           {isAdmin ? (
-            <input
-              type="number"
-              min="0"
-              max="99"
+            <ScoreInput
               value={golsV}
-              onChange={(e) => onChangePlacar(p.id, "golsVisitante", e.target.value)}
+              onChange={(v) => onChangePlacar(p.id, "golsVisitante", v)}
               onBlur={() => onSalvar(p.id)}
-              className={`w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-sm focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 ${salvando ? "opacity-50" : ""}`}
+              salvando={salvando}
+              isMobile
             />
           ) : (
             <span className="text-sm font-bold">{p.golsVisitante ?? "-"}</span>
