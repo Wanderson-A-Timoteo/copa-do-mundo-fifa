@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import ThemeProvider from "@/components/ThemeProvider";
-import TransitionWrapper from "@/components/TransitionWrapper";
 import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
 
@@ -35,9 +34,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
           <ThemeProvider>
-            <AuthProvider>
-              <TransitionWrapper>{children}</TransitionWrapper>
-            </AuthProvider>
+            <AuthProvider>{children}</AuthProvider>
           </ThemeProvider>
         </GoogleOAuthProvider>
       </body>

@@ -15,7 +15,7 @@ import {
   type PartidaResolvida,
 } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
-import { getAuthHeaders, getStoredUser } from "@/lib/auth-client";
+import { useAuth } from "@/contexts/AuthContext";
 
 type PlacaresState = Record<
   number,
@@ -157,14 +157,10 @@ export default function TabelaMataMataPage() {
   const [resultado, setResultado] = useState<BracketResult | null>(null);
   const [placares, setPlacares] = useState<PlacaresState>({});
   const [salvando, setSalvando] = useState<Set<number>>(new Set());
-  const [token, setToken] = useState<string | null>(null);
+  const { user, token } = useAuth();
   const [showModalLogin, setShowModalLogin] = useState(false);
   const timers = useRef<Record<number, ReturnType<typeof setTimeout>>>({});
   const gruposRef = useRef<GrupoStanding[]>([]);
-
-  useEffect(() => {
-    setToken(localStorage.getItem("token"));
-  }, []);
 
   const layoutNodes = useMemo(() => {
     const map = new Map<number, { col: number; row: number }>();
@@ -178,12 +174,14 @@ export default function TabelaMataMataPage() {
   const svgH = TOP_OFFSET + (maxRow + 1) * ROW_UNIT + CARD_H;
 
   const carregar = useCallback(async () => {
-    const usuarioId = getStoredUser()?.id ?? null;
+    const usuarioId = user?.id ?? null;
     if (!usuarioId) return;
 
+    const headers = { Authorization: `Bearer ${token}` };
+
     const [resGrupos, resPalpites] = await Promise.all([
-      fetch(`/api/grupos?usuarioId=${usuarioId}`, { headers: getAuthHeaders() }),
-      fetch("/api/palpites/mata-mata", { headers: getAuthHeaders() }),
+      fetch(`/api/grupos?usuarioId=${usuarioId}`, { headers }),
+      fetch("/api/palpites/mata-mata", { headers }),
     ]);
 
     const dataGrupos = await resGrupos.json();
@@ -227,8 +225,8 @@ export default function TabelaMataMataPage() {
   }, []);
 
   useEffect(() => {
-    carregar();
-  }, [carregar]);
+    if (user) carregar();
+  }, [carregar, user]);
 
   const salvarPalpite = async (
     partidaId: number,
@@ -244,7 +242,7 @@ export default function TabelaMataMataPage() {
       if (penaltisVisitante !== null) body.penaltisVisitante = penaltisVisitante;
       await fetch("/api/palpites/mata-mata", {
         method: "POST",
-        headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
     } finally {
@@ -318,7 +316,7 @@ export default function TabelaMataMataPage() {
           for (const id of ids) {
             await fetch("/api/palpites/mata-mata", {
               method: "POST",
-              headers: { ...getAuthHeaders(), "Content-Type": "application/json" },
+              headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
               body: JSON.stringify({ partidaId: id, golsMandante: null, golsVisitante: null }),
             });
           }
