@@ -2,19 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashSenha, gerarToken, setTokenCookie } from "@/lib/auth";
 import { checkRateLimit, getRateLimitHeaders, getClientIp } from "@/lib/rate-limit";
-
-function gerarSlug(texto: string): string {
-  return (
-    texto
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "") +
-    "-" +
-    Math.random().toString(36).substring(2, 6)
-  );
-}
+import { gerarSlug } from "@/lib/slug";
 
 export async function POST(request: Request) {
   const ip = getClientIp(request);

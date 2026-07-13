@@ -8,23 +8,10 @@ import { IconStar, IconUser, IconTrophy, IconRepeat } from "@/components/Icons";
 import StickerCard from "@/components/StickerCard";
 import { SkeletonAlbum } from "@/components/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
+import type { FigurinhaResumo, FigurinhaAlbum } from "@/types";
 
-interface Figurinha {
-  id: number;
-  numero: number;
+interface Figurinha extends FigurinhaResumo {
   tipo: string;
-  raridade: string;
-  selecao: { id: number; nome: string; codigoPais: string | null; corPrimaria: string | null };
-  jogador: {
-    nome: string;
-    posicao: string;
-    fotoUrl: string | null;
-    numeroCamisa: number | null;
-    dataNascimento: string | null;
-    altura: number | null;
-    peso: number | null;
-    figurinha: { raridade: string } | null;
-  } | null;
 }
 
 interface AlbumItem {

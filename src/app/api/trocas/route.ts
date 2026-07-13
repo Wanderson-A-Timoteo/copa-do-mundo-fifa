@@ -1,35 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken, getTokenFromRequest } from "@/lib/auth";
-
-async function getUsuarioId(request: Request): Promise<number | null> {
-  const token = getTokenFromRequest(request);
-  if (!token) return null;
-  try {
-    return (await verificarToken(token)).userId;
-  } catch {
-    return null;
-  }
-}
-
-const figurinhaInclude = {
-  selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
-  jogador: {
-    select: {
-      nome: true,
-      posicao: true,
-      fotoUrl: true,
-      numeroCamisa: true,
-      dataNascimento: true,
-      altura: true,
-      peso: true,
-      figurinha: { select: { raridade: true } },
-    },
-  },
-};
+import { extractUserIdFromRequest } from "@/lib/auth";
+import { figurinhaInclude } from "@/lib/prisma-selects";
 
 export async function GET(request: Request) {
-  const usuarioId = await getUsuarioId(request);
+  const usuarioId = await extractUserIdFromRequest(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
   }
@@ -56,7 +31,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const usuarioId = await getUsuarioId(request);
+  const usuarioId = await extractUserIdFromRequest(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
   }

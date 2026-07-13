@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { figurinhaInclude } from "@/lib/prisma-selects";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -21,19 +22,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
       numero: true,
       slug: true,
       raridade: true,
-      selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
-      jogador: {
-        select: {
-          nome: true,
-          posicao: true,
-          fotoUrl: true,
-          numeroCamisa: true,
-          dataNascimento: true,
-          altura: true,
-          peso: true,
-          figurinha: { select: { raridade: true } },
-        },
-      },
+      ...figurinhaInclude,
     },
   });
 

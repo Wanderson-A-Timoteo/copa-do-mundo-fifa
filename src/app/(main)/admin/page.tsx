@@ -4,18 +4,12 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconShield, IconTrophy, IconUser } from "@/components/Icons";
 import { SkeletonAdmin } from "@/components/Skeleton";
-
-interface UserItem {
-  id: number;
-  nome: string;
-  email: string;
-  role: string;
-}
+import type { UserProfileAdmin } from "@/types";
 
 export default function AdminPage() {
   const router = useRouter();
-  const [user, setUser] = useState<UserItem | null>(null);
-  const [usuarios, setUsuarios] = useState<UserItem[]>([]);
+  const [user, setUser] = useState<UserProfileAdmin | null>(null);
+  const [usuarios, setUsuarios] = useState<UserProfileAdmin[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [promovendo, setPromovendo] = useState<number | null>(null);
 

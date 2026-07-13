@@ -7,42 +7,7 @@ import StickerCard from "@/components/StickerCard";
 import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import Pagination from "@/components/Pagination";
-
-interface FigurinhaResumo {
-  id: number;
-  slug: string;
-  numero: number;
-  raridade: string;
-  selecao: { id: number; nome: string; codigoPais: string | null; corPrimaria: string | null };
-  jogador: {
-    nome: string;
-    posicao: string;
-    fotoUrl: string | null;
-    numeroCamisa: number | null;
-    dataNascimento: string | null;
-    altura: number | null;
-    peso: number | null;
-    figurinha: { raridade: string } | null;
-  } | null;
-}
-
-interface TrocaItem {
-  id: number;
-  status: string;
-  createdAt: string;
-  remetente: { id: number; nome: string };
-  destinatario: { id: number; nome: string };
-  figurinhaDesejada: FigurinhaResumo;
-  figurinhasOferecidas: { figurinha: FigurinhaResumo }[];
-}
-
-interface RepetidaGrupo {
-  figurinha: FigurinhaResumo;
-  totalUsuarios: number;
-  usuarios: { id: number; nome: string }[];
-}
-
-type Aba = "disponiveis" | "recebidas" | "enviadas";
+import type { FigurinhaResumo, TrocaItem, RepetidaGrupo, Aba } from "@/types";
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {

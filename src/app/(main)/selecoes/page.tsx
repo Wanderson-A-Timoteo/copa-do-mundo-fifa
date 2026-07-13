@@ -4,22 +4,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { FlagIcon } from "@/components/FlagIcon";
 import { SkeletonSelecaoCard } from "@/components/Skeleton";
-
-interface Selecao {
-  id: number;
-  nome: string;
-  slug: string | null;
-  codigoPais: string | null;
-  grupoId: string;
-  continente: string;
-  rankingFifa: number | null;
-  corPrimaria: string | null;
-  titulos: number;
-  _count: { jogadores: number };
-}
+import type { SelecaoResumo } from "@/types";
 
 export default function SelecoesPage() {
-  const [selecoes, setSelecoes] = useState<Selecao[]>([]);
+  const [selecoes, setSelecoes] = useState<SelecaoResumo[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [grupoFiltro, setGrupoFiltro] = useState("");
 

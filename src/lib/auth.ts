@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/prisma";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -86,4 +87,27 @@ export function getTokenFromRequest(request: Request): string | null {
     return authHeader.split(" ")[1];
   }
   return getTokenFromCookie(request);
+}
+
+export async function extractUserIdFromRequest(request: Request): Promise<number | null> {
+  const token = getTokenFromRequest(request);
+  if (!token) return null;
+  try {
+    return (await verificarToken(token)).userId;
+  } catch {
+    return null;
+  }
+}
+
+export async function requireAuth(request: Request): Promise<number> {
+  const userId = await extractUserIdFromRequest(request);
+  if (!userId) throw new Error("UNAUTHORIZED");
+  return userId;
+}
+
+export async function requireAdmin(request: Request): Promise<number> {
+  const userId = await requireAuth(request);
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user || user.role !== "ADMIN") throw new Error("FORBIDDEN");
+  return userId;
 }

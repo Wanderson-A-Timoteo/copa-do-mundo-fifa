@@ -15,22 +15,7 @@ import {
   type PartidaResolvida,
 } from "@/lib/compute-bracket";
 import { formatoCopa } from "@/data/formato-copa";
-
-function getAuthHeaders(): Record<string, string> {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  if (!token) return {};
-  return { Authorization: `Bearer ${token}` };
-}
-
-function getUserId(): number | null {
-  try {
-    const raw = localStorage.getItem("user");
-    if (!raw) return null;
-    return JSON.parse(raw).id ?? null;
-  } catch {
-    return null;
-  }
-}
+import { getAuthHeaders, getStoredUser } from "@/lib/auth-client";
 
 type PlacaresState = Record<
   number,
@@ -193,7 +178,7 @@ export default function TabelaMataMataPage() {
   const svgH = TOP_OFFSET + (maxRow + 1) * ROW_UNIT + CARD_H;
 
   const carregar = useCallback(async () => {
-    const usuarioId = getUserId();
+    const usuarioId = getStoredUser()?.id ?? null;
     if (!usuarioId) return;
 
     const [resGrupos, resPalpites] = await Promise.all([

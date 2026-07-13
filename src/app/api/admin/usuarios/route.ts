@@ -1,25 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken, getTokenFromRequest } from "@/lib/auth";
-
-async function getUsuarioId(request: Request): Promise<number | null> {
-  const token = getTokenFromRequest(request);
-  if (!token) return null;
-  try {
-    return (await verificarToken(token)).userId;
-  } catch {
-    return null;
-  }
-}
+import { requireAdmin } from "@/lib/auth";
 
 export async function GET(request: Request) {
-  const usuarioId = await getUsuarioId(request);
-  if (!usuarioId) {
-    return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
-  }
-
-  const user = await prisma.user.findUnique({ where: { id: usuarioId } });
-  if (!user || user.role !== "ADMIN") {
+  let usuarioId: number;
+  try {
+    usuarioId = await requireAdmin(request);
+  } catch (e) {
+    if (e instanceof Error && e.message === "UNAUTHORIZED") {
+      return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
+    }
     return NextResponse.json({ erro: "Acesso restrito" }, { status: 403 });
   }
 

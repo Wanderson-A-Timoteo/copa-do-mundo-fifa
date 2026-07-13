@@ -6,40 +6,13 @@ import ModalLogin from "@/components/ModalLogin";
 
 import { IconClock, IconMapPin } from "@/components/Icons";
 import { formatarData, formatarHora } from "@/lib/format";
-
-interface ClassificacaoSelecao {
-  id: number;
-  nome: string;
-  slug: string;
-  codigoPais: string | null;
-  p: number;
-  j: number;
-  v: number;
-  e: number;
-  d: number;
-  gp: number;
-  gc: number;
-  sg: number;
-}
-
-interface Partida {
-  id: number;
-  fase: string;
-  grupoId: string;
-  dataHora: string;
-  golsMandante: number | null;
-  golsVisitante: number | null;
-  encerrada: boolean;
-  mandante: { id: number; nome: string; codigoPais: string | null };
-  visitante: { id: number; nome: string; codigoPais: string | null };
-  estadio: { nome: string; cidade: string; pais: string };
-}
+import type { ClassificacaoSelecao, PartidaResumo } from "@/types";
 
 export default function PlacarPage() {
   const [grupos, setGrupos] = useState<
     { id: string; nome: string; selecoes: ClassificacaoSelecao[] }[]
   >([]);
-  const [partidas, setPartidas] = useState<Partida[]>([]);
+  const [partidas, setPartidas] = useState<PartidaResumo[]>([]);
   const [grupoAtivo, setGrupoAtivo] = useState("A");
   const [placares, setPlacares] = useState<
     Record<number, { golsMandante: string; golsVisitante: string }>

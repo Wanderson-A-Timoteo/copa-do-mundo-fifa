@@ -7,30 +7,7 @@ import StickerCard from "@/components/StickerCard";
 import { IconRepeat, IconArrowLeft } from "@/components/Icons";
 import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
-
-interface FigurinhaResumo {
-  id: number;
-  slug: string;
-  numero: number;
-  raridade: string;
-  selecao: { id: number; nome: string; codigoPais: string | null; corPrimaria: string | null };
-  jogador: {
-    nome: string;
-    posicao: string;
-    fotoUrl: string | null;
-    numeroCamisa: number | null;
-    dataNascimento: string | null;
-    altura: number | null;
-    peso: number | null;
-    figurinha: { raridade: string } | null;
-  } | null;
-}
-
-interface FigurinhaAlbum {
-  figurinhaId: number;
-  quantidade: number;
-  figurinha: FigurinhaResumo;
-}
+import type { FigurinhaResumo, FigurinhaAlbum } from "@/types";
 
 export default function NovaTrocaPage() {
   const params = useParams();

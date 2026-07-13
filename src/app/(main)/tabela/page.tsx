@@ -4,26 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { FlagIcon } from "@/components/FlagIcon";
 import { SkeletonTabela } from "@/components/Skeleton";
-
-interface ClassificacaoSelecao {
-  id: number;
-  nome: string;
-  codigoPais: string | null;
-  p: number;
-  j: number;
-  v: number;
-  e: number;
-  d: number;
-  gp: number;
-  gc: number;
-  sg: number;
-}
-
-interface GrupoComClassificacao {
-  id: string;
-  nome: string;
-  selecoes: ClassificacaoSelecao[];
-}
+import type { ClassificacaoSelecao, GrupoComClassificacao } from "@/types";
 
 export default function TabelaPage() {
   const router = useRouter();

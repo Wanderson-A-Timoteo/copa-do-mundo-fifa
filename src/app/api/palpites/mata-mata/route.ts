@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verificarToken, getTokenFromRequest } from "@/lib/auth";
-
-async function getUsuarioId(request: Request): Promise<number | null> {
-  const token = getTokenFromRequest(request);
-  if (!token) return null;
-  try {
-    return (await verificarToken(token)).userId;
-  } catch {
-    return null;
-  }
-}
+import { extractUserIdFromRequest } from "@/lib/auth";
 
 export async function GET(request: Request) {
-  const usuarioId = await getUsuarioId(request);
+  const usuarioId = await extractUserIdFromRequest(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
@@ -30,7 +20,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const usuarioId = await getUsuarioId(request);
+  const usuarioId = await extractUserIdFromRequest(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
