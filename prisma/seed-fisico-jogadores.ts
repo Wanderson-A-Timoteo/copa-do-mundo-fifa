@@ -84,9 +84,4 @@ export async function main() {
   console.log(`  Com dados gerados: ${atualizados - comDadosReais}`);
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
+// executed from seed.ts

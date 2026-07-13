@@ -6,47 +6,14 @@ import Link from "next/link";
 import { IconUser, IconShield, IconTrophy, IconLogout } from "./Icons";
 import ModalConfirm from "./ModalConfirm";
 
-interface User {
-  id: number;
-  nome: string;
-  email: string;
-  role: string;
-}
+import { useAuth } from "@/hooks/useAuth";
 
 export default function UserMenu() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const { user, loading, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [showSairModal, setShowSairModal] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const raw = localStorage.getItem("user");
-    const cached = raw
-      ? (() => {
-          try {
-            return JSON.parse(raw);
-          } catch {
-            return null;
-          }
-        })()
-      : null;
-    if (cached) setUser(cached);
-
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    fetch("/api/auth/me", {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.user) {
-          setUser(d.user);
-          localStorage.setItem("user", JSON.stringify(d.user));
-        }
-      });
-  }, []);
-
   useEffect(() => {
     if (!open) return;
     function handleClick(e: MouseEvent) {
@@ -55,6 +22,8 @@ export default function UserMenu() {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
+
+  if (loading) return null;
 
   if (!user) {
     return (
@@ -164,10 +133,8 @@ export default function UserMenu() {
           title="Sair da conta?"
           message="Tem certeza que deseja sair?"
           onConfirm={() => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
+            logout();
             setOpen(false);
-            setUser(null);
             setShowSairModal(false);
             router.push("/");
           }}

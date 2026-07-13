@@ -7,6 +7,7 @@ interface User {
   nome: string;
   slug?: string;
   role?: string;
+  email?: string;
 }
 
 interface AuthContextValue {

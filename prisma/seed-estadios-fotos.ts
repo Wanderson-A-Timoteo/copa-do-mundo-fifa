@@ -51,9 +51,4 @@ export async function main() {
   console.log("Seed de fotos concluído!");
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
+// executed from seed.ts

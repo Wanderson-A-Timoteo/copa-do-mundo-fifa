@@ -1,4 +1,4 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import StickerCard from "@/components/StickerCard";
 import TradeLink from "@/components/TradeLink";
@@ -76,7 +76,7 @@ export default async function RepetidasDetalhePage({
       <div className="mb-8 flex flex-col items-center">
         <h1 className="mb-6 text-2xl font-bold">Figurinhas disponíveis</h1>
         <div className="w-full max-w-[220px]">
-          <StickerCard figurinha={figurinha} />
+          <StickerCard figurinha={{ ...figurinha!, jogador: figurinha!.jogador ? { ...figurinha!.jogador, dataNascimento: figurinha!.jogador.dataNascimento?.toISOString() ?? null } : null }} />
         </div>
       </div>
 

@@ -54,7 +54,7 @@ export async function main() {
         ).map((f) => f.id);
         if (idsFig.length > 0) {
           await prisma.albumFigurinha.deleteMany({ where: { figurinhaId: { in: idsFig } } });
-          await prisma.troca.deleteMany({ where: { figurinhaOferecidaId: { in: idsFig } } });
+          await prisma.trocaFigurinhaOferecida.deleteMany({ where: { figurinhaId: { in: idsFig } } });
           await prisma.troca.deleteMany({ where: { figurinhaDesejadaId: { in: idsFig } } });
         }
         await prisma.figurinha.deleteMany({ where: { selecaoId: selecao.id } });
@@ -80,19 +80,23 @@ export async function main() {
     const jogadoresData = jogadores.map((j) => ({
       selecaoId: selecao.id,
       nome: j.nome,
-      posicao: j.posicao,
+      posicao: j.posicao as any,
       numeroCamisa: Math.floor(Math.random() * 30) + 1,
     }));
 
     const criados = await prisma.jogador.createManyAndReturn({ data: jogadoresData });
 
-    const figurinhasData = criados.map((jogador) => ({
-      numero: numFigurinha++,
-      selecaoId: selecao.id,
-      jogadorId: jogador.id,
-      tipo: "jogador",
-      raridade: Math.random() < 0.1 ? "rara" : "comum",
-    }));
+    const figurinhasData = criados.map((jogador, index) => {
+      const num = numFigurinha++;
+      return {
+        numero: num,
+        selecaoId: selecao.id,
+        jogadorId: jogador.id,
+        tipo: "jogador" as const,
+        raridade: (Math.random() < 0.1 ? "rara" : "comum") as any,
+        slug: `fig-${num}-${jogador.nome.toLowerCase().replace(/[^a-z0-9]/g, "-")}`,
+      };
+    });
 
     await prisma.figurinha.createMany({ data: figurinhasData });
 
@@ -119,9 +123,4 @@ export async function main() {
   console.log(`  Figurinhas criadas: ${totalFigurinhas}`);
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
+// executed from seed.ts
