@@ -31,11 +31,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/api/(.*)",
-        headers: [
-          poweredByHeader,
-          ...securityHeaders,
-          { key: "Cache-Control", value: "no-store" },
-        ],
+        headers: [poweredByHeader, ...securityHeaders, { key: "Cache-Control", value: "no-store" }],
       },
     ];
   },

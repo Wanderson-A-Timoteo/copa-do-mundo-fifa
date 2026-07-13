@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verificarToken, getTokenFromRequest } from "@/lib/auth";
 
-function getUsuarioId(request: Request): number | null {
+async function getUsuarioId(request: Request): Promise<number | null> {
   const token = getTokenFromRequest(request);
   if (!token) return null;
   try {
-    return verificarToken(token).userId;
+    return (await verificarToken(token)).userId;
   } catch {
     return null;
   }
@@ -14,11 +14,22 @@ function getUsuarioId(request: Request): number | null {
 
 const figurinhaInclude = {
   selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
-  jogador: { select: { nome: true, posicao: true, fotoUrl: true, numeroCamisa: true, dataNascimento: true, altura: true, peso: true, figurinha: { select: { raridade: true } } } },
+  jogador: {
+    select: {
+      nome: true,
+      posicao: true,
+      fotoUrl: true,
+      numeroCamisa: true,
+      dataNascimento: true,
+      altura: true,
+      peso: true,
+      figurinha: { select: { raridade: true } },
+    },
+  },
 };
 
 export async function GET(request: Request) {
-  const usuarioId = getUsuarioId(request);
+  const usuarioId = await getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
   }
@@ -26,9 +37,7 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const tipo = url.searchParams.get("tipo") || "recebidas";
 
-  const where = tipo === "enviadas"
-    ? { remetenteId: usuarioId }
-    : { destinatarioId: usuarioId };
+  const where = tipo === "enviadas" ? { remetenteId: usuarioId } : { destinatarioId: usuarioId };
 
   const trocas = await prisma.troca.findMany({
     where,
@@ -47,7 +56,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const usuarioId = getUsuarioId(request);
+  const usuarioId = await getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
   }
@@ -57,11 +66,19 @@ export async function POST(request: Request) {
     const { figurinhasOferecidasIds, figurinhaDesejadaId, destinatarioId } = body;
 
     if (!figurinhasOferecidasIds?.length || !figurinhaDesejadaId || !destinatarioId) {
-      return NextResponse.json({ erro: "Campos obrigatorios: figurinhasOferecidasIds (array), figurinhaDesejadaId, destinatarioId" }, { status: 400 });
+      return NextResponse.json(
+        {
+          erro: "Campos obrigatorios: figurinhasOferecidasIds (array), figurinhaDesejadaId, destinatarioId",
+        },
+        { status: 400 },
+      );
     }
 
     if (destinatarioId === usuarioId) {
-      return NextResponse.json({ erro: "Voce nao pode criar uma troca consigo mesmo" }, { status: 400 });
+      return NextResponse.json(
+        { erro: "Voce nao pode criar uma troca consigo mesmo" },
+        { status: 400 },
+      );
     }
 
     const [itensAlbum, desejadaAlbum, destinatario] = await Promise.all([
@@ -75,9 +92,12 @@ export async function POST(request: Request) {
     ]);
 
     for (const id of figurinhasOferecidasIds) {
-      const item = itensAlbum.find(i => i.figurinhaId === id);
+      const item = itensAlbum.find((i) => i.figurinhaId === id);
       if (!item || item.quantidade < 2) {
-        return NextResponse.json({ erro: `Voce nao tem a figurinha ${id} repetida para oferecer` }, { status: 400 });
+        return NextResponse.json(
+          { erro: `Voce nao tem a figurinha ${id} repetida para oferecer` },
+          { status: 400 },
+        );
       }
     }
 

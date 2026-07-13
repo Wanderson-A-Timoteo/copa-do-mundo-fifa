@@ -32,7 +32,15 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
           <div className="relative group">
             <button className="flex cursor-pointer items-center gap-1 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
               Álbum
-              <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                className="h-3 w-3"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
@@ -66,12 +74,29 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
             aria-label="Abrir menu"
           >
             {mobileOpen ? (
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              <svg
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             ) : (
-              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="3" y1="6" x2="21" y2="6" /><line x1="3" y1="12" x2="21" y2="12" /><line x1="3" y1="18" x2="21" y2="18" />
+              <svg
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             )}
           </button>
@@ -93,20 +118,42 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
           className="absolute top-4 right-4 cursor-pointer rounded-lg p-2 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
           aria-label="Fechar menu"
         >
-          <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          <svg
+            className="h-5 w-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
-        <ActiveLink href="/" onClick={() => setMobileOpen(false)}>Início</ActiveLink>
-        <ActiveLink href="/selecoes" onClick={() => setMobileOpen(false)}>Seleções</ActiveLink>
-        <ActiveLink href="/tabela" onClick={() => setMobileOpen(false)}>Classificação</ActiveLink>
+        <ActiveLink href="/" onClick={() => setMobileOpen(false)}>
+          Início
+        </ActiveLink>
+        <ActiveLink href="/selecoes" onClick={() => setMobileOpen(false)}>
+          Seleções
+        </ActiveLink>
+        <ActiveLink href="/tabela" onClick={() => setMobileOpen(false)}>
+          Classificação
+        </ActiveLink>
         <div>
           <button
             onClick={() => setAlbumOpen(!albumOpen)}
             className="flex w-full items-center justify-between text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             Álbum
-            <svg className={`h-3 w-3 transition-transform ${albumOpen ? "rotate-180" : ""}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              className={`h-3 w-3 transition-transform ${albumOpen ? "rotate-180" : ""}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <polyline points="6 9 12 15 18 9" />
             </svg>
           </button>
@@ -131,7 +178,9 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
             </div>
           )}
         </div>
-        <ActiveLink href="/estadios" onClick={() => setMobileOpen(false)}>Estádios</ActiveLink>
+        <ActiveLink href="/estadios" onClick={() => setMobileOpen(false)}>
+          Estádios
+        </ActiveLink>
       </nav>
     </>
   );

@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verificarToken, getTokenFromRequest } from "@/lib/auth";
 
-function getUsuarioId(request: Request): number | null {
+async function getUsuarioId(request: Request): Promise<number | null> {
   const token = getTokenFromRequest(request);
   if (!token) return null;
   try {
-    return verificarToken(token).userId;
+    return (await verificarToken(token)).userId;
   } catch {
     return null;
   }
@@ -15,7 +15,7 @@ function getUsuarioId(request: Request): number | null {
 const LIMITE_DIARIO = 10;
 
 export async function GET(request: Request) {
-  const usuarioId = getUsuarioId(request);
+  const usuarioId = await getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
   }
@@ -29,7 +29,10 @@ export async function GET(request: Request) {
         },
       },
     }),
-    prisma.user.findUnique({ where: { id: usuarioId }, select: { ultimoDiaAbertura: true, pacotesAbertosHoje: true } }),
+    prisma.user.findUnique({
+      where: { id: usuarioId },
+      select: { ultimoDiaAbertura: true, pacotesAbertosHoje: true },
+    }),
   ]);
 
   const hoje = new Date();
@@ -44,7 +47,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const usuarioId = getUsuarioId(request);
+  const usuarioId = await getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
   }
@@ -70,7 +73,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const usuarioId = getUsuarioId(request);
+  const usuarioId = await getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
   }

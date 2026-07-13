@@ -22,7 +22,15 @@ export default function UserMenu() {
 
   useEffect(() => {
     const raw = localStorage.getItem("user");
-    const cached = raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
+    const cached = raw
+      ? (() => {
+          try {
+            return JSON.parse(raw);
+          } catch {
+            return null;
+          }
+        })()
+      : null;
     if (cached) setUser(cached);
 
     const token = localStorage.getItem("token");
@@ -87,11 +95,13 @@ export default function UserMenu() {
               </div>
             </div>
             <div className="mt-2">
-              <span className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                isAdmin
-                  ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                  : "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-              }`}>
+              <span
+                className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                  isAdmin
+                    ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                    : "bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                }`}
+              >
                 {isAdmin ? (
                   <span className="inline-flex items-center gap-1">
                     <IconShield className="h-3.5 w-3.5" />

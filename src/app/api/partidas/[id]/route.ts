@@ -2,21 +2,18 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verificarToken, getTokenFromRequest } from "@/lib/auth";
 
-function getUsuarioId(request: Request): number | null {
+async function getUsuarioId(request: Request): Promise<number | null> {
   const token = getTokenFromRequest(request);
   if (!token) return null;
   try {
-    return verificarToken(token).userId;
+    return (await verificarToken(token)).userId;
   } catch {
     return null;
   }
 }
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  const usuarioId = getUsuarioId(request);
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const usuarioId = await getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
@@ -42,7 +39,7 @@ export async function PATCH(
   if (!isLimpar && (typeof golsMandante !== "number" || typeof golsVisitante !== "number")) {
     return NextResponse.json(
       { erro: "golsMandante e golsVisitante devem ser números ou ambos null" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

@@ -20,7 +20,7 @@ let lastCleanup = Date.now();
 export function checkRateLimit(
   key: string,
   limit: number,
-  windowMs: number
+  windowMs: number,
 ): { allowed: boolean; remaining: number; resetAt: number } {
   const now = Date.now();
 
@@ -50,7 +50,7 @@ export function checkRateLimit(
 }
 
 export function getRateLimitHeaders(
-  result: ReturnType<typeof checkRateLimit>
+  result: ReturnType<typeof checkRateLimit>,
 ): Record<string, string> {
   const headers: Record<string, string> = {
     "X-RateLimit-Remaining": String(result.remaining),
@@ -58,9 +58,7 @@ export function getRateLimitHeaders(
   };
 
   if (!result.allowed) {
-    headers["Retry-After"] = String(
-      Math.ceil((result.resetAt - Date.now()) / 1000)
-    );
+    headers["Retry-After"] = String(Math.ceil((result.resetAt - Date.now()) / 1000));
   }
 
   return headers;

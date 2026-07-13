@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Copa do Mundo FIFA 2026 - Álbum de Figurinhas
 
-## Getting Started
+Aplicação web para o álbum de figurinhas da Copa do Mundo FIFA 2026, com troca de figurinhas, palpites e gerenciamento de partidas.
 
-First, run the development server:
+## Stack
+
+- **Framework:** Next.js 16
+- **Banco de dados:** PostgreSQL (Neon) + Prisma 7
+- **Estilo:** Tailwind CSS 4
+- **Testes:** Vitest
+- **Deploy:** Vercel
+
+## Funcionalidades
+
+- Álbum de figurinhas interativo com 48 seleções e ~1256 jogadores
+- Abertura de pacotes de figurinhas
+- Sistema de troca entre usuários
+- Palpites para partidas
+- Painel admin para gerenciamento de tabela oficial
+- Autenticação com JWT (jose) + cookies HttpOnly
+- Google OAuth
+
+## Setup
 
 ```bash
+# Instalar dependências
+npm install
+
+# Configurar variáveis de ambiente
+cp .env.example .env
+# Editar .env com suas credenciais
+
+# Gerar Prisma Client
+npm run db:generate
+
+# Push schema para o banco
+npm run db:push
+
+# Seed do banco (grupos, estádios, seleções + jogadores + partidas)
+npm run db:seed
+
+# Iniciar desenvolvimento
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Comando                     | Descrição                   |
+| --------------------------- | --------------------------- |
+| `npm run dev`               | Servidor de desenvolvimento |
+| `npm run build`             | Build de produção           |
+| `npm run start`             | Iniciar produção            |
+| `npm run lint`              | ESLint                      |
+| `npm run format`            | Prettier (formatação)       |
+| `npm run format:check`      | Verificar formatação        |
+| `npm test`                  | Rodar testes (Vitest)       |
+| `npm run db:generate`       | Gerar Prisma Client         |
+| `npm run db:push`           | Push schema para DB         |
+| `npm run db:seed`           | Seed completo               |
+| `npm run db:seed:jogadores` | Seed apenas jogadores       |
+| `npm run db:seed:partidas`  | Seed apenas partidas        |
+| `npm run db:seed:fotos`     | Seed fotos dos estádios     |
+| `npm run db:seed:fisico`    | Seed dados físicos          |
+| `npm run db:studio`         | Prisma Studio               |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Estrutura
 
-## Learn More
+```
+src/
+  app/            # Rotas Next.js (App Router)
+  components/     # Componentes React
+  contexts/       # Context providers
+  lib/            # Utilitários (auth, formatação, rate-limit)
+  data/           # Dados estáticos (formato copa, países)
+prisma/
+  schema.prisma   # Schema do banco
+  seed.ts         # Orchestrator de seed
+  seed-base.ts    # Grupos, estádios, seleções
+  seed-jogadores.ts
+  seed-partidas.ts
+  seed-estadios-fotos.ts
+  seed-fisico-jogadores.ts
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Variáveis de Ambiente
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Variável               | Descrição                     |
+| ---------------------- | ----------------------------- |
+| `DATABASE_URL`         | URL de conexão PostgreSQL     |
+| `JWT_SECRET`           | Segredo para assinatura JWT   |
+| `GOOGLE_CLIENT_ID`     | Client ID do Google OAuth     |
+| `GOOGLE_CLIENT_SECRET` | Client Secret do Google OAuth |

@@ -1,10 +1,4 @@
-import { PrismaClient } from "../src/generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import "dotenv/config";
-
-const url = process.env.DATABASE_URL!;
-const adapter = new PrismaPg({ connectionString: url });
-const prisma = new PrismaClient({ adapter });
+import { prisma } from "./lib";
 
 const fotos: Record<string, string> = {
   "Estádio de Nova York/Nova Jersey":
@@ -27,12 +21,10 @@ const fotos: Record<string, string> = {
     "https://upload.wikimedia.org/wikipedia/commons/7/79/Gillette_Stadium_%28Top_View%29.jpg",
   "Estádio de Kansas City":
     "https://upload.wikimedia.org/wikipedia/commons/a/ac/Aerial_view_of_Arrowhead_Stadium_08-31-2013.jpg",
-  "Estádio de Miami":
-    "https://upload.wikimedia.org/wikipedia/commons/9/94/Hard_Rock_Stadium.jpg",
+  "Estádio de Miami": "https://upload.wikimedia.org/wikipedia/commons/9/94/Hard_Rock_Stadium.jpg",
   "Estádio da Cidade do México":
     "https://upload.wikimedia.org/wikipedia/commons/6/65/Estadio_azteca.jpg",
-  "Estádio de Monterrey":
-    "https://upload.wikimedia.org/wikipedia/commons/f/f9/Estadio_BBVA.jpg",
+  "Estádio de Monterrey": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Estadio_BBVA.jpg",
   "Estádio de Guadalajara":
     "https://upload.wikimedia.org/wikipedia/commons/8/8b/Estadio_Omnilife_Chivas.jpg",
   "BC Place de Vancouver":
@@ -41,7 +33,9 @@ const fotos: Record<string, string> = {
     "https://upload.wikimedia.org/wikipedia/commons/9/93/BMO_Field%2C_Toronto%2C_Ontario_%2829969149766%29.jpg",
 };
 
-async function main() {
+export async function main() {
+  console.log("=== Seed de Fotos dos Estádios ===");
+
   for (const [nome, fotoUrl] of Object.entries(fotos)) {
     const estadio = await prisma.estadio.findFirst({ where: { nome } });
     if (!estadio) {
@@ -52,9 +46,9 @@ async function main() {
       where: { id: estadio.id },
       data: { fotoUrl },
     });
-    console.log(`✔ ${nome}`);
+    console.log(`  ✔ ${nome}`);
   }
-  console.log("Concluído!");
+  console.log("Seed de fotos concluído!");
 }
 
 main()

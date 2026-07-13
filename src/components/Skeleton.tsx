@@ -50,7 +50,10 @@ export function SkeletonSelecaoDetalhe() {
         <Skeleton className="h-6 w-24" />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="flex flex-col items-center rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
+            <div
+              key={i}
+              className="flex flex-col items-center rounded-xl border border-zinc-200 p-4 dark:border-zinc-800"
+            >
               <Skeleton className="mb-3 h-32 w-20 rounded-lg" />
               <Skeleton className="mb-1 h-3 w-8" />
               <Skeleton className="mb-1 h-4 w-24" />
@@ -179,7 +182,10 @@ export function SkeletonAdmin() {
       <Skeleton className="h-5 w-64" />
       <div className="mt-6 space-y-2">
         {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="flex items-center justify-between rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+          <div
+            key={i}
+            className="flex items-center justify-between rounded-lg border border-zinc-200 p-4 dark:border-zinc-800"
+          >
             <div className="space-y-1">
               <Skeleton className="h-5 w-32" />
               <Skeleton className="h-4 w-48" />

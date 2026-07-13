@@ -29,7 +29,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const t = localStorage.getItem("token");
     const raw = localStorage.getItem("user");
     setToken(t);
-    setUser(raw ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null);
+    setUser(
+      raw
+        ? (() => {
+            try {
+              return JSON.parse(raw);
+            } catch {
+              return null;
+            }
+          })()
+        : null,
+    );
     setLoading(false);
   }, []);
 

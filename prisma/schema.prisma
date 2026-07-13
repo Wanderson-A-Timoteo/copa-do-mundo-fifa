@@ -7,15 +7,52 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  TORCEDOR
+  ADMIN
+}
+
+enum FasePartida {
+  GRUPOS
+  SEGUNDAS
+  OITAVAS
+  QUARTAS
+  SEMI
+  TERCEIRO
+  FINAL
+}
+
+enum StatusTroca {
+  pendente
+  aceita
+  recusada
+}
+
+enum TipoFigurinha {
+  jogador
+}
+
+enum RaridadeFigurinha {
+  comum
+  rara
+}
+
+enum PosicaoJogador {
+  Goleiro
+  Defensor
+  Meia
+  Atacante
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   nome      String
   slug      String   @unique
   email     String   @unique
   senha     String?
-  role      String   @default("TORCEDOR")
+  role      UserRole @default(TORCEDOR)
   createdAt DateTime @default(now())  @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   ultimoDiaAbertura   DateTime?  @map("ultimo_dia_abertura")
   pacotesAbertosHoje  Int        @default(0) @map("pacotes_abertos_hoje")
 
@@ -32,6 +69,8 @@ model User {
 model Grupo {
   id        String    @id
   nome      String    @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   selecoes  Selecao[]
   partidas  Partida[]
 
@@ -40,6 +79,8 @@ model Grupo {
 
 model Selecao {
   id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
   nome          String
   slug          String?   @unique
   codigoPais    String?
@@ -65,11 +106,13 @@ model Selecao {
 
 model Jogador {
   id            Int       @id @default(autoincrement())
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @default(now()) @updatedAt @map("updated_at")
   selecaoId     Int
   selecao       Selecao   @relation(fields: [selecaoId], references: [id])
   nome          String
   numeroCamisa  Int?
-  posicao       String
+  posicao       PosicaoJogador
   dataNascimento DateTime?
   fotoUrl       String?
   altura        Int?
@@ -83,6 +126,8 @@ model Jogador {
 
 model Estadio {
   id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
   slug        String   @unique
   nome        String
   cidade      String
@@ -100,7 +145,9 @@ model Estadio {
 
 model Partida {
   id                  Int      @id @default(autoincrement())
-  fase                String
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at")
+  fase                FasePartida
   grupoId             String?
   grupo               Grupo?   @relation(fields: [grupoId], references: [id])
   selecaoMandanteId   Int
@@ -131,13 +178,15 @@ model Partida {
 
 model Figurinha {
   id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   numero    Int
   selecaoId Int
   selecao   Selecao  @relation(fields: [selecaoId], references: [id])
   jogadorId Int?     @unique
   jogador   Jogador? @relation(fields: [jogadorId], references: [id])
-  tipo      String   @default("jogador")
-  raridade  String   @default("comum")
+  tipo      TipoFigurinha   @default(jogador)
+  raridade  RaridadeFigurinha   @default(comum)
   imagemUrl String?
   slug      String   @unique
 
@@ -152,6 +201,8 @@ model Figurinha {
 
 model AlbumFigurinha {
   id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
   usuarioId   Int
   usuario     User     @relation(fields: [usuarioId], references: [id])
   figurinhaId Int
@@ -171,8 +222,9 @@ model Troca {
   destinatario        User     @relation("troca_destinatario", fields: [destinatarioId], references: [id])
   figurinhaDesejadaId Int
   figurinhaDesejada   Figurinha @relation("desejada", fields: [figurinhaDesejadaId], references: [id])
-  status              String   @default("pendente")
+  status              StatusTroca   @default(pendente)
   createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @default(now()) @updatedAt @map("updated_at")
 
   figurinhasOferecidas TrocaFigurinhaOferecida[]
 
@@ -184,6 +236,8 @@ model Troca {
 
 model TrocaFigurinhaOferecida {
   id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
   trocaId     Int
   troca       Troca    @relation(fields: [trocaId], references: [id], onDelete: Cascade)
   figurinhaId Int
@@ -204,6 +258,7 @@ model Palpite {
   golsVisitante Int
   pontos        Int?
   createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@unique([usuarioId, partidaId])
   @@index([partidaId])
@@ -212,6 +267,8 @@ model Palpite {
 
 model ResultadoOficial {
   id                Int      @id @default(autoincrement())
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
   partidaId         Int      @unique @map("partida_id")
   partida           Partida  @relation(fields: [partidaId], references: [id])
   golsMandante      Int?     @map("gols_mandante")
@@ -233,7 +290,7 @@ model PalpiteMataMata {
   penaltisMandante  Int?
   penaltisVisitante Int?
   createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@unique([usuarioId, partidaId])
   @@index([partidaId])

@@ -23,3 +23,46 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+.bola-grupo {
+  transform-origin: 50px 48px;
+  animation: bounce 1.2s ease-in-out infinite;
+}
+.bola-sombra {
+  animation: sombra 1.2s ease-in-out infinite;
+  transform-origin: 50px 118px;
+}
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-18px) rotate(15deg);
+  }
+  50% {
+    transform: translateY(0) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-9px) rotate(8deg);
+  }
+}
+@keyframes sombra {
+  0%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.12;
+  }
+  25% {
+    transform: scaleX(0.6);
+    opacity: 0.08;
+  }
+  50% {
+    transform: scaleX(1);
+    opacity: 0.12;
+  }
+  75% {
+    transform: scaleX(0.8);
+    opacity: 0.1;
+  }
+}

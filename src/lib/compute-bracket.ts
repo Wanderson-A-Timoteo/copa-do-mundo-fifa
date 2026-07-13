@@ -64,7 +64,7 @@ function resolverFonte(
   terceiro: Map<string, SelecaoStanding>,
   terceirosAssignados: Map<number, SelecaoStanding>,
   vencedores: Map<number, SelecaoStanding>,
-  perdedores: Map<number, SelecaoStanding>
+  perdedores: Map<number, SelecaoStanding>,
 ): SelecaoStanding | null {
   switch (fonte.tipo) {
     case "grupo":
@@ -83,7 +83,7 @@ function resolverFonte(
 export function computeBracket(
   format: BracketFormat,
   grupos: GrupoStanding[],
-  palpites: PalpiteMataMataInput[]
+  palpites: PalpiteMataMataInput[],
 ): BracketResult {
   const primeiro = new Map<string, SelecaoStanding>();
   const segundo = new Map<string, SelecaoStanding>();
@@ -106,15 +106,28 @@ export function computeBracket(
 
   const melhoresTerceiros = todosTerceiros.slice(0, format.vagas.melhoresTerceiros);
 
-  const palpitesPorPartida = new Map<number, { golsMandante: number; golsVisitante: number; penaltisMandante: number | null; penaltisVisitante: number | null }>();
+  const palpitesPorPartida = new Map<
+    number,
+    {
+      golsMandante: number;
+      golsVisitante: number;
+      penaltisMandante: number | null;
+      penaltisVisitante: number | null;
+    }
+  >();
   for (const p of palpites) {
     if (p.golsMandante !== null && p.golsVisitante !== null) {
-      palpitesPorPartida.set(p.partidaId, { golsMandante: p.golsMandante, golsVisitante: p.golsVisitante, penaltisMandante: p.penaltisMandante ?? null, penaltisVisitante: p.penaltisVisitante ?? null });
+      palpitesPorPartida.set(p.partidaId, {
+        golsMandante: p.golsMandante,
+        golsVisitante: p.golsVisitante,
+        penaltisMandante: p.penaltisMandante ?? null,
+        penaltisVisitante: p.penaltisVisitante ?? null,
+      });
     }
   }
 
   const todasPartidas = format.fases.flatMap((f) =>
-    f.partidas.map((p) => ({ ...p, fase: f.key, faseLabel: f.label }))
+    f.partidas.map((p) => ({ ...p, fase: f.key, faseLabel: f.label })),
   );
 
   const terceirosAssignados = new Map<number, SelecaoStanding>();
@@ -131,8 +144,26 @@ export function computeBracket(
   const perdedores = new Map<number, SelecaoStanding>();
 
   for (const partida of todasPartidas) {
-    const mandante = resolverFonte(partida.mandante, partida.numero, primeiro, segundo, terceiro, terceirosAssignados, vencedores, perdedores);
-    const visitante = resolverFonte(partida.visitante, partida.numero, primeiro, segundo, terceiro, terceirosAssignados, vencedores, perdedores);
+    const mandante = resolverFonte(
+      partida.mandante,
+      partida.numero,
+      primeiro,
+      segundo,
+      terceiro,
+      terceirosAssignados,
+      vencedores,
+      perdedores,
+    );
+    const visitante = resolverFonte(
+      partida.visitante,
+      partida.numero,
+      primeiro,
+      segundo,
+      terceiro,
+      terceirosAssignados,
+      vencedores,
+      perdedores,
+    );
 
     const palpite = palpitesPorPartida.get(partida.numero);
 
@@ -159,8 +190,26 @@ export function computeBracket(
     key: fase.key,
     label: fase.label,
     partidas: fase.partidas.map((p) => {
-      const mandante = resolverFonte(p.mandante, p.numero, primeiro, segundo, terceiro, terceirosAssignados, vencedores, perdedores);
-      const visitante = resolverFonte(p.visitante, p.numero, primeiro, segundo, terceiro, terceirosAssignados, vencedores, perdedores);
+      const mandante = resolverFonte(
+        p.mandante,
+        p.numero,
+        primeiro,
+        segundo,
+        terceiro,
+        terceirosAssignados,
+        vencedores,
+        perdedores,
+      );
+      const visitante = resolverFonte(
+        p.visitante,
+        p.numero,
+        primeiro,
+        segundo,
+        terceiro,
+        terceirosAssignados,
+        vencedores,
+        perdedores,
+      );
       const palpite = palpitesPorPartida.get(p.numero);
 
       return {
@@ -177,7 +226,12 @@ export function computeBracket(
         penaltisVisitante: palpite?.penaltisVisitante ?? null,
         vencedor: vencedores.get(p.numero) ?? null,
         perdedor: perdedores.get(p.numero) ?? null,
-        resolvida: !!palpite && !!mandante && !!visitante && (palpite.golsMandante !== palpite.golsVisitante || (palpite.penaltisMandante !== null && palpite.penaltisVisitante !== null)),
+        resolvida:
+          !!palpite &&
+          !!mandante &&
+          !!visitante &&
+          (palpite.golsMandante !== palpite.golsVisitante ||
+            (palpite.penaltisMandante !== null && palpite.penaltisVisitante !== null)),
       };
     }),
   }));

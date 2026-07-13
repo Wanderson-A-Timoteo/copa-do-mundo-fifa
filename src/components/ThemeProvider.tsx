@@ -18,11 +18,7 @@ export function useTheme() {
   return useContext(ThemeContext);
 }
 
-export default function ThemeProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
 
   useEffect(() => {
@@ -31,9 +27,7 @@ export default function ThemeProvider({
       setTheme(stored);
       document.documentElement.classList.toggle("dark", stored === "dark");
     } else {
-      const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       setTheme(prefersDark ? "dark" : "light");
       document.documentElement.classList.toggle("dark", prefersDark);
     }
@@ -46,9 +40,5 @@ export default function ThemeProvider({
     document.documentElement.classList.toggle("dark", next === "dark");
   };
 
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
 }

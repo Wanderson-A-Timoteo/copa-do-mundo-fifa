@@ -1,17 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ slug: string }> }
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   let selecao = await prisma.selecao.findUnique({
     where: { slug },
     include: {
       grupo: true,
-      jogadores: { orderBy: { posicao: "asc" }, include: { figurinha: { select: { raridade: true } } } },
+      jogadores: {
+        orderBy: { posicao: "asc" },
+        include: { figurinha: { select: { raridade: true } } },
+      },
       partidasCasa: { include: { estadio: true, mandante: true, visitante: true } },
       partidasFora: { include: { estadio: true, mandante: true, visitante: true } },
     },
@@ -24,7 +24,10 @@ export async function GET(
         where: { id },
         include: {
           grupo: true,
-      jogadores: { orderBy: { posicao: "asc" }, include: { figurinha: { select: { raridade: true } } } },
+          jogadores: {
+            orderBy: { posicao: "asc" },
+            include: { figurinha: { select: { raridade: true } } },
+          },
           partidasCasa: { include: { estadio: true, mandante: true, visitante: true } },
           partidasFora: { include: { estadio: true, mandante: true, visitante: true } },
         },

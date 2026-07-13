@@ -2,29 +2,26 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verificarToken, getTokenFromRequest } from "@/lib/auth";
 
-function getUsuarioId(request: Request): number | null {
+async function getUsuarioId(request: Request): Promise<number | null> {
   const token = getTokenFromRequest(request);
   if (!token) return null;
   try {
-    return verificarToken(token).userId;
+    return (await verificarToken(token)).userId;
   } catch {
     return null;
   }
 }
 
 export async function GET(request: Request) {
-  const usuarioId = getUsuarioId(request);
+  const usuarioId = await getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
-  const queryUsuarioId = searchParams.get("usuarioId");
-  const targetUserId = queryUsuarioId ? Number(queryUsuarioId) : usuarioId;
-
   const partidaId = searchParams.get("partidaId");
 
-  const where: Record<string, unknown> = { usuarioId: targetUserId };
+  const where: Record<string, unknown> = { usuarioId };
   if (partidaId) where.partidaId = Number(partidaId);
 
   const palpites = await prisma.palpite.findMany({
@@ -40,7 +37,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const usuarioId = getUsuarioId(request);
+  const usuarioId = await getUsuarioId(request);
   if (!usuarioId) {
     return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
   }
@@ -66,7 +63,7 @@ export async function POST(request: Request) {
   if (typeof golsMandante !== "number" || typeof golsVisitante !== "number") {
     return NextResponse.json(
       { erro: "golsMandante e golsVisitante devem ser números" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

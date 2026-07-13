@@ -23,12 +23,13 @@ const adapter = new PrismaPg({ connectionString: url });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const rows: { id: number; nome: string; fotoUrl: string | null }[] =
-    await prisma.$queryRawUnsafe(
-      `SELECT id, nome, "fotoUrl" FROM estadios ORDER BY id`
-    );
+  const rows: { id: number; nome: string; fotoUrl: string | null }[] = await prisma.$queryRawUnsafe(
+    `SELECT id, nome, "fotoUrl" FROM estadios ORDER BY id`,
+  );
 
-  console.log("id  | nome                                  | slug (computado)                  | tipo    | fotoUrl");
+  console.log(
+    "id  | nome                                  | slug (computado)                  | tipo    | fotoUrl",
+  );
   console.log("-".repeat(160));
 
   for (const row of rows) {
@@ -41,7 +42,7 @@ async function main() {
           : "NENHUMA";
     const fotoExib = row.fotoUrl ?? "(null)";
     console.log(
-      `${String(row.id).padEnd(3)}| ${row.nome.padEnd(40)}| ${slug.padEnd(35)}| ${tipo.padEnd(7)} | ${fotoExib}`
+      `${String(row.id).padEnd(3)}| ${row.nome.padEnd(40)}| ${slug.padEnd(35)}| ${tipo.padEnd(7)} | ${fotoExib}`,
     );
   }
 }

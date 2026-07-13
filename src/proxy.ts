@@ -72,10 +72,7 @@ export async function proxy(request: NextRequest) {
 
   if (pathname.startsWith("/api/")) {
     if (!user) {
-      return NextResponse.json(
-        { erro: "Não autorizado" },
-        { status: 401 }
-      );
+      return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });
     }
     return NextResponse.next();
   }
@@ -90,7 +87,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

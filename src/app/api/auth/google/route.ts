@@ -5,12 +5,16 @@ import { gerarToken, setTokenCookie } from "@/lib/auth";
 import { checkRateLimit, getRateLimitHeaders, getClientIp } from "@/lib/rate-limit";
 
 function gerarSlug(texto: string): string {
-  return texto
-    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    + "-" + Math.random().toString(36).substring(2, 6);
+  return (
+    texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "") +
+    "-" +
+    Math.random().toString(36).substring(2, 6)
+  );
 }
 
 const client = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
@@ -23,7 +27,7 @@ export async function POST(request: Request) {
   if (!rateLimit.allowed) {
     return NextResponse.json(
       { erro: "Muitas tentativas. Tente novamente mais tarde." },
-      { status: 429, headers: rateHeaders }
+      { status: 429, headers: rateHeaders },
     );
   }
 
@@ -57,20 +61,20 @@ export async function POST(request: Request) {
       });
     }
 
-    const token = gerarToken({ userId: user.id, email: user.email });
+    const token = await gerarToken({ userId: user.id, email: user.email });
 
-    const response = NextResponse.json({
-      token,
-      user: { id: user.id, nome: user.nome, email: user.email, role: user.role ?? "TORCEDOR" },
-    }, { headers: rateHeaders });
+    const response = NextResponse.json(
+      {
+        token,
+        user: { id: user.id, nome: user.nome, email: user.email, role: user.role ?? "TORCEDOR" },
+      },
+      { headers: rateHeaders },
+    );
 
     response.headers.append("Set-Cookie", setTokenCookie(token));
 
     return response;
   } catch {
-    return NextResponse.json(
-      { erro: "Erro ao autenticar com Google" },
-      { status: 500 }
-    );
+    return NextResponse.json({ erro: "Erro ao autenticar com Google" }, { status: 500 });
   }
 }

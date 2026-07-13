@@ -7,10 +7,19 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
+    "db:seed:base": "tsx prisma/seed-base-standalone.ts",
+    "db:seed:jogadores": "tsx prisma/seed-jogadores.ts",
+    "db:seed:partidas": "tsx prisma/seed-partidas.ts",
+    "db:seed:fotos": "tsx prisma/seed-estadios-fotos.ts",
+    "db:seed:fisico": "tsx prisma/seed-fisico-jogadores.ts",
     "db:studio": "prisma studio"
   },
   "prisma": {
@@ -25,17 +34,14 @@
     "framer-motion": "^12.42.0",
     "google-auth-library": "^10.9.0",
     "jose": "^6.2.3",
-    "jsonwebtoken": "^9.0.3",
     "next": "16.2.9",
     "pg": "^8.22.0",
-    "prisma": "^7.8.0",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
@@ -43,8 +49,11 @@
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "prettier": "^3.9.5",
+    "prisma": "^7.8.0",
     "tailwindcss": "^4",
     "tsx": "^4.22.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }

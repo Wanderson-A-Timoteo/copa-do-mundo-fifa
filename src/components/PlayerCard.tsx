@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconStar } from "@/components/Icons";
 
@@ -46,10 +47,12 @@ export default function PlayerCard({
     <div className="flex flex-col items-center rounded-xl border border-zinc-200 bg-stone-50 px-5 pb-5 pt-6 shadow-sm transition-all hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
       <div className="relative mb-3">
         {jogador.fotoUrl ? (
-          <img
+          <Image
             src={jogador.fotoUrl}
             alt={jogador.nome}
-            className="h-28 w-20 rounded-lg object-cover transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24"
+            width={96}
+            height={128}
+            className="rounded-lg object-cover transition-transform duration-200 hover:scale-105"
           />
         ) : (
           <div
@@ -76,11 +79,7 @@ export default function PlayerCard({
           <IconStar className="h-3 w-3" /> RARA
         </span>
       )}
-      {idade && (
-        <span className="mt-1 text-[10px] text-zinc-400">
-          {idade} anos
-        </span>
-      )}
+      {idade && <span className="mt-1 text-[10px] text-zinc-400">{idade} anos</span>}
       {(jogador.altura || jogador.peso) && (
         <div className="mt-1 flex items-center gap-2 text-[10px] text-zinc-400">
           {jogador.altura && <span>{jogador.altura}cm</span>}

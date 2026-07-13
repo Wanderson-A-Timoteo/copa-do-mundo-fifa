@@ -1,17 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ slug: string }> }
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
   const idNum = parseInt(slug, 10);
   const figurinha = isNaN(idNum)
     ? await prisma.figurinha.findUnique({ where: { slug } })
-    : await prisma.figurinha.findUnique({ where: { slug } })
-      ?? await prisma.figurinha.findUnique({ where: { id: idNum } });
+    : ((await prisma.figurinha.findUnique({ where: { slug } })) ??
+      (await prisma.figurinha.findUnique({ where: { id: idNum } })));
 
   if (!figurinha) {
     return NextResponse.json({ erro: "Figurinha não encontrada" }, { status: 404 });
@@ -27,8 +24,13 @@ export async function GET(
       selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
       jogador: {
         select: {
-          nome: true, posicao: true, fotoUrl: true, numeroCamisa: true,
-          dataNascimento: true, altura: true, peso: true,
+          nome: true,
+          posicao: true,
+          fotoUrl: true,
+          numeroCamisa: true,
+          dataNascimento: true,
+          altura: true,
+          peso: true,
           figurinha: { select: { raridade: true } },
         },
       },
@@ -44,7 +46,7 @@ export async function GET(
     orderBy: { usuario: { nome: "asc" } },
   });
 
-  const usuarios = itens.map(item => ({
+  const usuarios = itens.map((item) => ({
     ...item.usuario,
     quantidade: item.quantidade,
   }));

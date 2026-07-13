@@ -1,11 +1,5 @@
-import { PrismaClient } from "../src/generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import "dotenv/config";
+import { prisma } from "./lib";
 import { JOGADORES_POR_SELECAO, TECNICOS_POR_SELECAO } from "./dados-jogadores";
-
-const url = process.env.DATABASE_URL!;
-const adapter = new PrismaPg({ connectionString: url });
-const prisma = new PrismaClient({ adapter });
 
 const RENOMEAR_SELECOES: Record<string, string> = {
   "República da Coreia": "Coreia do Sul",
@@ -15,10 +9,9 @@ const RENOMEAR_SELECOES: Record<string, string> = {
   "RI do Irã": "Irã",
 };
 
-async function main() {
+export async function main() {
   console.log("=== Seed de Jogadores ===");
 
-  // 1. Renomear seleções (se ainda estiverem com nomes antigos)
   for (const [nomeAntigo, nomeNovo] of Object.entries(RENOMEAR_SELECOES)) {
     const selecao = await prisma.selecao.findFirst({ where: { nome: nomeAntigo } });
     if (selecao) {
@@ -43,7 +36,6 @@ async function main() {
     }
   }
 
-  // 2. Deletar figurinhas e jogadores existentes
   const todasSelecoes = await prisma.selecao.findMany({ orderBy: { id: "asc" } });
   const nomesParaSeed = Object.keys(JOGADORES_POR_SELECAO);
 
@@ -54,7 +46,12 @@ async function main() {
       const qtdJog = await prisma.jogador.count({ where: { selecaoId: selecao.id } });
       if (qtdFig > 0 || qtdJog > 0) {
         console.log(`  ${nomeCorrigido}: deletando ${qtdFig} figurinhas e ${qtdJog} jogadores...`);
-        const idsFig = (await prisma.figurinha.findMany({ where: { selecaoId: selecao.id }, select: { id: true } })).map(f => f.id);
+        const idsFig = (
+          await prisma.figurinha.findMany({
+            where: { selecaoId: selecao.id },
+            select: { id: true },
+          })
+        ).map((f) => f.id);
         if (idsFig.length > 0) {
           await prisma.albumFigurinha.deleteMany({ where: { figurinhaId: { in: idsFig } } });
           await prisma.troca.deleteMany({ where: { figurinhaOferecidaId: { in: idsFig } } });
@@ -66,10 +63,10 @@ async function main() {
     }
   }
 
-  // 3. Inserir jogadores e figurinhas em lote
   let totalJogadores = 0;
   let totalFigurinhas = 0;
-  let numFigurinha = (await prisma.figurinha.findFirst({ orderBy: { numero: "desc" } }))?.numero ?? 0;
+  let numFigurinha =
+    (await prisma.figurinha.findFirst({ orderBy: { numero: "desc" } }))?.numero ?? 0;
   numFigurinha++;
 
   for (const selecao of todasSelecoes) {
@@ -89,7 +86,7 @@ async function main() {
 
     const criados = await prisma.jogador.createManyAndReturn({ data: jogadoresData });
 
-    const figurinhasData = criados.map((jogador, i) => ({
+    const figurinhasData = criados.map((jogador) => ({
       numero: numFigurinha++,
       selecaoId: selecao.id,
       jogadorId: jogador.id,
@@ -103,7 +100,6 @@ async function main() {
     totalFigurinhas += figurinhasData.length;
   }
 
-  // 4. Atualizar técnico de cada seleção
   for (const selecao of todasSelecoes) {
     const nomeCorrigido = RENOMEAR_SELECOES[selecao.nome] ?? selecao.nome;
     const tecnico = TECNICOS_POR_SELECAO[nomeCorrigido];
@@ -118,7 +114,7 @@ async function main() {
     }
   }
 
-  console.log(`\nSeed concluído!`);
+  console.log(`\nSeed de jogadores concluído!`);
   console.log(`  Jogadores inseridos: ${totalJogadores}`);
   console.log(`  Figurinhas criadas: ${totalFigurinhas}`);
 }

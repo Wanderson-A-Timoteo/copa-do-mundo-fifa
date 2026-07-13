@@ -1,13 +1,13 @@
-import { PrismaClient } from "../src/generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import "dotenv/config";
-
-const url = process.env.DATABASE_URL!;
-const adapter = new PrismaPg({ connectionString: url });
-const prisma = new PrismaClient({ adapter });
+import { prisma } from "./lib";
 
 type PartidaDef = {
-  mand: number; vis: number; mes: number; dia: number; hora: number; min: number; est: number;
+  mand: number;
+  vis: number;
+  mes: number;
+  dia: number;
+  hora: number;
+  min: number;
+  est: number;
 };
 
 const jogos: PartidaDef[] = [
@@ -85,19 +85,20 @@ const jogos: PartidaDef[] = [
   { mand: 46, vis: 45, mes: 6, dia: 27, hora: 17, min: 0, est: 6 },
 ];
 
-async function main() {
+export async function main() {
   const todasSelecoes = await prisma.selecao.findMany({ orderBy: { id: "asc" } });
   const todosEstadios = await prisma.estadio.findMany({ orderBy: { id: "asc" } });
 
   if (todasSelecoes.length < 48) {
-    console.error(`ERRO: Apenas ${todasSelecoes.length} selecoes encontradas (esperado 48). Execute o seed completo primeiro.`);
+    console.error(
+      `ERRO: Apenas ${todasSelecoes.length} selecoes encontradas (esperado 48). Execute o seed base primeiro.`,
+    );
     process.exit(1);
   }
 
   const existentes = await prisma.partida.count();
   if (existentes > 0) {
     console.log(`Ja existem ${existentes} partidas. Nada a fazer.`);
-    console.log("Para recriar, execute: npx prisma db seed (recria tudo)");
     return;
   }
 
@@ -117,9 +118,12 @@ async function main() {
   }
 
   const total = await prisma.partida.count();
-  console.log(`Pronto! ${total} partidas criadas.`);
+  console.log(`Seed de partidas concluído! ${total} partidas criadas.`);
 }
 
 main()
-  .catch((e) => { console.error(e); process.exit(1); })
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
   .finally(() => prisma.$disconnect());

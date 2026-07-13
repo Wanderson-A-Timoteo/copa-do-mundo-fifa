@@ -4,7 +4,15 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ReactNode, MouseEvent } from "react";
 
-export default function ActiveLink({ href, children, onClick }: { href: string; children: ReactNode; onClick?: (e: MouseEvent) => void }) {
+export default function ActiveLink({
+  href,
+  children,
+  onClick,
+}: {
+  href: string;
+  children: ReactNode;
+  onClick?: (e: MouseEvent) => void;
+}) {
   const pathname = usePathname();
   const isActive = pathname === href;
 

@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   if (!rateLimit.allowed) {
     return NextResponse.json(
       { erro: "Muitas tentativas. Tente novamente mais tarde." },
-      { status: 429, headers: rateHeaders }
+      { status: 429, headers: rateHeaders },
     );
   }
 
@@ -19,51 +19,42 @@ export async function POST(request: Request) {
     const { email, senha } = await request.json();
 
     if (!email || !senha) {
-      return NextResponse.json(
-        { erro: "Email e senha são obrigatórios" },
-        { status: 400 }
-      );
+      return NextResponse.json({ erro: "Email e senha são obrigatórios" }, { status: 400 });
     }
 
     const user = await prisma.user.findUnique({ where: { email } });
 
     if (!user) {
-      return NextResponse.json(
-        { erro: "Email ou senha inválidos" },
-        { status: 401 }
-      );
+      return NextResponse.json({ erro: "Email ou senha inválidos" }, { status: 401 });
     }
 
     if (!user.senha) {
       return NextResponse.json(
         { erro: "Esta conta usa login com Google. Faça login com Google." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     const senhaValida = await compararSenha(senha, user.senha);
 
     if (!senhaValida) {
-      return NextResponse.json(
-        { erro: "Email ou senha inválidos" },
-        { status: 401 }
-      );
+      return NextResponse.json({ erro: "Email ou senha inválidos" }, { status: 401 });
     }
 
-    const token = gerarToken({ userId: user.id, email: user.email });
+    const token = await gerarToken({ userId: user.id, email: user.email });
 
-    const response = NextResponse.json({
-      token,
-      user: { id: user.id, nome: user.nome, email: user.email, role: user.role ?? "TORCEDOR" },
-    }, { headers: rateHeaders });
+    const response = NextResponse.json(
+      {
+        token,
+        user: { id: user.id, nome: user.nome, email: user.email, role: user.role ?? "TORCEDOR" },
+      },
+      { headers: rateHeaders },
+    );
 
     response.headers.append("Set-Cookie", setTokenCookie(token));
 
     return response;
   } catch {
-    return NextResponse.json(
-      { erro: "Erro interno do servidor" },
-      { status: 500 }
-    );
+    return NextResponse.json({ erro: "Erro interno do servidor" }, { status: 500 });
   }
 }

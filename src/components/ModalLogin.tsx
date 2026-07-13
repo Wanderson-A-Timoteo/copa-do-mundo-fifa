@@ -2,11 +2,7 @@
 
 import GoogleLoginButton from "./GoogleLoginButton";
 
-export default function ModalLogin({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+export default function ModalLogin({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="w-full max-w-sm rounded-xl bg-white p-8 shadow-xl dark:bg-zinc-900">

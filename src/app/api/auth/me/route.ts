@@ -10,7 +10,7 @@ export async function GET(request: Request) {
       return NextResponse.json({ erro: "Token não fornecido" }, { status: 401 });
     }
 
-    const payload = verificarToken(token);
+    const payload = await verificarToken(token);
 
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },

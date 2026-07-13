@@ -15,7 +15,18 @@ export async function GET() {
           numero: true,
           raridade: true,
           selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },
-          jogador: { select: { nome: true, posicao: true, fotoUrl: true, numeroCamisa: true, dataNascimento: true, altura: true, peso: true, figurinha: { select: { raridade: true } } } },
+          jogador: {
+            select: {
+              nome: true,
+              posicao: true,
+              fotoUrl: true,
+              numeroCamisa: true,
+              dataNascimento: true,
+              altura: true,
+              peso: true,
+              figurinha: { select: { raridade: true } },
+            },
+          },
         },
       },
       usuario: { select: { id: true, nome: true, slug: true } },
@@ -23,11 +34,14 @@ export async function GET() {
     orderBy: { figurinha: { selecao: { nome: "asc" } } },
   });
 
-  const agrupadas = new Map<number, {
-    figurinha: typeof repetidas[0]["figurinha"];
-    totalUsuarios: number;
-    usuarios: { id: number; nome: string }[];
-  }>();
+  const agrupadas = new Map<
+    number,
+    {
+      figurinha: (typeof repetidas)[0]["figurinha"];
+      totalUsuarios: number;
+      usuarios: { id: number; nome: string }[];
+    }
+  >();
 
   for (const item of repetidas) {
     const grupo = agrupadas.get(item.figurinhaId);
