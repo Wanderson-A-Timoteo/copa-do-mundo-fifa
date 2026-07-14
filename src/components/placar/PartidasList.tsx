@@ -55,6 +55,7 @@ export default function PartidasList({
                     onBlur={() => onAutoSalvar(p.id)}
                     showOverlay={!token}
                     onOverlayClick={onOpenModal}
+                    dataHora={p.dataHora}
                   />
                   <span className="text-sm text-zinc-400 sm:text-base">x</span>
                   <ScoreInput
@@ -64,6 +65,7 @@ export default function PartidasList({
                     onBlur={() => onAutoSalvar(p.id)}
                     showOverlay={!token}
                     onOverlayClick={onOpenModal}
+                    dataHora={p.dataHora}
                   />
                 </div>
 
@@ -114,6 +116,7 @@ export default function PartidasList({
                   showOverlay={!token}
                   onOverlayClick={onOpenModal}
                   isMobile
+                  dataHora={p.dataHora}
                 />
               </div>
               <div className="mt-1 flex items-center justify-between gap-2">
@@ -134,6 +137,7 @@ export default function PartidasList({
                   showOverlay={!token}
                   onOverlayClick={onOpenModal}
                   isMobile
+                  dataHora={p.dataHora}
                 />
               </div>
               <div className="my-2 border-t border-zinc-300/30 dark:border-zinc-700/30" />

@@ -16,9 +16,7 @@ async function main() {
   const { main: seedEstadiosFotos } = await import("./seed-estadios-fotos");
   await seedEstadiosFotos();
 
-  console.log("\n--- Executando seed-fisico-jogadores ---");
-  const { main: seedFisico } = await import("./seed-fisico-jogadores");
-  await seedFisico();
+
 
   console.log("\n=== Seed completo! ===");
 }

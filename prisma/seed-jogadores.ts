@@ -1,5 +1,37 @@
 import { prisma } from "./lib";
-import { JOGADORES_POR_SELECAO, TECNICOS_POR_SELECAO } from "./dados-jogadores";
+import { JOGADORES_POR_SELECAO, TECNICOS_POR_SELECAO } from "./data/dados-jogadores";
+import { FISICOS_POR_SELECAO } from "./data/dados-fisicos-jogadores";
+
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function gerarAltura(posicao: string): number {
+  switch (posicao) {
+    case "Goleiro":
+      return randomInt(185, 200);
+    case "Defensor":
+      return randomInt(175, 195);
+    case "Meia":
+      return randomInt(165, 185);
+    case "Atacante":
+      return randomInt(168, 192);
+    default:
+      return randomInt(170, 190);
+  }
+}
+
+function gerarPeso(_posicao: string, _altura: number): number {
+  return randomInt(65, 85);
+}
+
+function gerarDataNascimento(): Date {
+  const hoje = new Date();
+  const ano = hoje.getFullYear() - randomInt(18, 38);
+  const mes = randomInt(0, 11);
+  const dia = randomInt(1, 28);
+  return new Date(ano, mes, dia);
+}
 
 const RENOMEAR_SELECOES: Record<string, string> = {
   "República da Coreia": "Coreia do Sul",
@@ -77,12 +109,30 @@ export async function main() {
       continue;
     }
 
-    const jogadoresData = jogadores.map((j) => ({
-      selecaoId: selecao.id,
-      nome: j.nome,
-      posicao: j.posicao as any,
-      numeroCamisa: Math.floor(Math.random() * 30) + 1,
-    }));
+    const fisicos = FISICOS_POR_SELECAO[nomeCorrigido] ?? [];
+
+    const jogadoresData = jogadores.map((j) => {
+      const fisico = fisicos.find((f) => f.nome === j.nome);
+      let altura = fisico?.altura;
+      let peso = fisico?.peso;
+      let dataNascimento = fisico ? new Date(fisico.dataNascimento) : undefined;
+
+      if (!altura || !peso || !dataNascimento) {
+        altura = gerarAltura(j.posicao);
+        peso = gerarPeso(j.posicao, altura);
+        dataNascimento = gerarDataNascimento();
+      }
+
+      return {
+        selecaoId: selecao.id,
+        nome: j.nome,
+        posicao: j.posicao as any,
+        numeroCamisa: Math.floor(Math.random() * 30) + 1,
+        altura,
+        peso,
+        dataNascimento,
+      };
+    });
 
     const criados = await prisma.jogador.createManyAndReturn({ data: jogadoresData });
 

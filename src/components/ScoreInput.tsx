@@ -9,6 +9,7 @@ interface ScoreInputProps {
   salvando?: boolean;
   showOverlay?: boolean;
   onOverlayClick?: () => void;
+  dataHora?: string;
 }
 
 export default function ScoreInput({
@@ -20,7 +21,9 @@ export default function ScoreInput({
   salvando = false,
   showOverlay = false,
   onOverlayClick,
+  dataHora,
 }: ScoreInputProps) {
+  const jogoIniciado = dataHora ? new Date() >= new Date(dataHora) : false;
   const baseClasses =
     "rounded-lg border border-zinc-300 text-center focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed dark:border-zinc-700 dark:bg-zinc-800";
 
@@ -28,29 +31,42 @@ export default function ScoreInput({
     ? "w-12 px-2 py-1 text-sm"
     : "w-14 px-2 py-1.5 text-sm sm:w-16 sm:text-lg";
 
-  const opacityClasses = disabled || salvando ? "opacity-50" : "";
+  const opacityClasses = disabled || salvando || jogoIniciado ? "opacity-50" : "";
+  const cursorClass = jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : "";
 
   const inputElement = (
     <input
       type="number"
       min="0"
       max="99"
-      disabled={disabled || salvando || showOverlay}
+      disabled={disabled || salvando || showOverlay || jogoIniciado}
       value={value}
       onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
       onBlur={onBlur}
-      className={`${baseClasses} ${sizeClasses} ${opacityClasses}`.trim()}
+      className={`${baseClasses} ${sizeClasses} ${opacityClasses} ${cursorClass}`.trim()}
     />
+  );
+
+  const encerradoBadge = jogoIniciado && !isMobile && (
+    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded bg-red-500 px-1 py-0.5 text-[8px] font-bold text-white shadow-sm">
+      Encerrado
+    </span>
   );
 
   if (showOverlay) {
     return (
       <div className="relative">
         <div className="absolute inset-0 z-10 cursor-pointer" onClick={onOverlayClick} />
+        {encerradoBadge}
         {inputElement}
       </div>
     );
   }
 
-  return inputElement;
+  return (
+    <div className="relative">
+      {encerradoBadge}
+      {inputElement}
+    </div>
+  );
 }

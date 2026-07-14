@@ -223,6 +223,8 @@ export default function MataMataDesktop({
             placar.golsMandante !== "" &&
             placar.golsVisitante !== "" &&
             Number(placar.golsMandante) === Number(placar.golsVisitante);
+          
+          const jogoIniciado = p.dataHora ? new Date() >= new Date(p.dataHora) : false;
 
           return (
             <div
@@ -261,11 +263,12 @@ export default function MataMataDesktop({
                         type="text"
                         inputMode="numeric"
                         maxLength={2}
+                        disabled={jogoIniciado}
                         value={placar.golsMandante}
                         onChange={(e) =>
                           onChangePlacar(p.numero, "golsMandante", e.target.value)
                         }
-                        className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                        className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                       />
                     ) : (
                       <span className="w-7 text-center text-xs font-bold">
@@ -300,11 +303,12 @@ export default function MataMataDesktop({
                         type="text"
                         inputMode="numeric"
                         maxLength={2}
+                        disabled={jogoIniciado}
                         value={placar.golsVisitante}
                         onChange={(e) =>
                           onChangePlacar(p.numero, "golsVisitante", e.target.value)
                         }
-                        className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                        className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                       />
                     ) : (
                       <span className="w-7 text-center text-xs font-bold">
@@ -331,22 +335,24 @@ export default function MataMataDesktop({
                             type="text"
                             inputMode="numeric"
                             maxLength={2}
+                            disabled={jogoIniciado}
                             value={placar.penaltisMandante}
                             onChange={(e) =>
                               onChangePlacar(p.numero, "penaltisMandante", e.target.value)
                             }
-                            className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                            className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                           />
                           <span className="text-[10px] text-zinc-400">x</span>
                           <input
                             type="text"
                             inputMode="numeric"
                             maxLength={2}
+                            disabled={jogoIniciado}
                             value={placar.penaltisVisitante}
                             onChange={(e) =>
                               onChangePlacar(p.numero, "penaltisVisitante", e.target.value)
                             }
-                            className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                            className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                           />
                           {p.visitante && (
                             <FlagIcon
@@ -367,6 +373,11 @@ export default function MataMataDesktop({
                   <div
                     className={`flex items-center gap-2 text-[10px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}
                   >
+                    {jogoIniciado && (
+                      <span className="rounded bg-red-500/10 px-1 font-bold text-red-500">
+                        Encerrado
+                      </span>
+                    )}
                     {p.dataHora && (
                       <span>
                         {formatarData(p.dataHora)} {formatarHora(p.dataHora)}

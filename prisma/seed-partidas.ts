@@ -96,26 +96,34 @@ export async function main() {
     process.exit(1);
   }
 
+  if (todosEstadios.length < 16) {
+    console.error(
+      `ERRO: Apenas ${todosEstadios.length} estádios encontrados (esperado 16). Execute o seed base primeiro.`,
+    );
+    process.exit(1);
+  }
+
   const existentes = await prisma.partida.count();
   if (existentes > 0) {
     console.log(`Ja existem ${existentes} partidas. Nada a fazer.`);
     return;
   }
 
-  console.log("Criando partidas da fase de grupos...");
-  for (const j of jogos) {
-    await prisma.partida.create({
-      data: {
-        fase: "GRUPOS",
-        grupoId: todasSelecoes[j.mand].grupoId,
-        selecaoMandanteId: todasSelecoes[j.mand].id,
-        selecaoVisitanteId: todasSelecoes[j.vis].id,
-        dataHora: new Date(2026, j.mes - 1, j.dia, j.hora, j.min),
-        estadioId: todosEstadios[j.est].id,
-        encerrada: false,
-      },
-    });
-  }
+  console.log("Criando partidas da fase de grupos em lote...");
+  
+  const dadosPartidas = jogos.map(j => ({
+    fase: "GRUPOS" as const,
+    grupoId: todasSelecoes[j.mand].grupoId,
+    selecaoMandanteId: todasSelecoes[j.mand].id,
+    selecaoVisitanteId: todasSelecoes[j.vis].id,
+    dataHora: new Date(Date.UTC(2026, j.mes - 1, j.dia, j.hora, j.min)),
+    estadioId: todosEstadios[j.est].id,
+    encerrada: false,
+  }));
+
+  await prisma.partida.createMany({
+    data: dadosPartidas,
+  });
 
   const total = await prisma.partida.count();
   console.log(`Seed de partidas concluído! ${total} partidas criadas.`);

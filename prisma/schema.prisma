@@ -134,6 +134,7 @@ model Estadio {
   pais        String
   capacidade  Int
   fotoUrl     String?
+  galeria     String[] @default([])
   descricao   String?
   historia    String?
   latitude    Float?
