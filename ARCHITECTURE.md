@@ -94,50 +94,50 @@ Ferramentas independentes do contexto de negócio:
 
 ### 🌐 API Routes
 
-| Método | Caminho | Proteção | Responsabilidade | Service / Origem |
-|--------|---------|----------|------------------|------------------|
-| POST | `/api/auth/cadastro` | Public | Registro de usuário | `prisma.user` |
-| POST | `/api/auth/login` | Public | Autenticação JWT | `auth.ts` |
-| POST | `/api/auth/google` | Public | Autenticação Social | `auth.ts` |
-| GET | `/api/auth/me` | `verifyAuth` | Validação de sessão | `prisma.user` |
-| GET/PATCH | `/api/admin/usuarios` | `verifyAdmin` | Gerenciamento de usuários | `prisma.user` |
-| POST | `/api/admin/promover` | `verifyAdmin` | Conceder cargo admin | `prisma.user` |
-| GET/POST | `/api/palpite` | `verifyAuth` | Palpites Fase de Grupos | `palpite.service.ts` |
-| GET/POST | `/api/palpites/mata-mata` | `verifyAuth` | Palpites Mata-Mata | `palpite.service.ts` |
-| GET | `/api/palpite/ranking` | Public | Leaderboard Global | `palpite.service.ts` |
-| POST | `/api/resultados-oficiais` | `verifyAdmin` | Lançar placares reais | `palpite.service.ts` |
-| GET | `/api/album` | `verifyAuth` | Carregar álbum de figurinhas | `album.service.ts` |
-| POST | `/api/album/abrir-pacote` | `verifyAuth` | Gacha / Sorteio de figurinhas | `album.service.ts` |
-| GET/POST | `/api/trocas` | `verifyAuth` | Listar / Iniciar troca | `troca.service.ts` |
-| PATCH | `/api/trocas/[id]` | `verifyAuth` | Aceitar / Recusar troca | `troca.service.ts` |
-| GET | `/api/grupos` | Public | Grupos da Copa | `prisma.grupo` |
-| GET | `/api/estadios` | Public | Catálogo de Estádios | `prisma.estadio` |
-| GET | `/api/estadios/[slug]` | Public | Detalhes do Estádio | `prisma.estadio` |
-| GET | `/api/partidas` | Public | Lista de Jogos | `prisma.partida` |
-| PATCH | `/api/partidas/[id]` | `verifyAdmin` | Atualização de jogo (Admin) | `partida.service.ts` |
-| GET | `/api/figurinhas` | Public | Catálogo Base de Figurinhas | `prisma.figurinha` |
-| GET | `/api/figurinhas/repetidas` | Public | Usuários com repetições | `prisma.figurinha` |
-| GET | `/api/figurinhas/repetidas/[slug]`| Public | Detalhes de repetição específica| `prisma.figurinha` |
-| GET | `/api/usuarios/[slug]/repetidas` | Public | Estoque de troca de um usuário | `prisma.figurinha` |
+| Método    | Caminho                            | Proteção      | Responsabilidade                 | Service / Origem     |
+| --------- | ---------------------------------- | ------------- | -------------------------------- | -------------------- |
+| POST      | `/api/auth/cadastro`               | Public        | Registro de usuário              | `prisma.user`        |
+| POST      | `/api/auth/login`                  | Public        | Autenticação JWT                 | `auth.ts`            |
+| POST      | `/api/auth/google`                 | Public        | Autenticação Social              | `auth.ts`            |
+| GET       | `/api/auth/me`                     | `verifyAuth`  | Validação de sessão              | `prisma.user`        |
+| GET/PATCH | `/api/admin/usuarios`              | `verifyAdmin` | Gerenciamento de usuários        | `prisma.user`        |
+| POST      | `/api/admin/promover`              | `verifyAdmin` | Conceder cargo admin             | `prisma.user`        |
+| GET/POST  | `/api/palpite`                     | `verifyAuth`  | Palpites Fase de Grupos          | `palpite.service.ts` |
+| GET/POST  | `/api/palpites/mata-mata`          | `verifyAuth`  | Palpites Mata-Mata               | `palpite.service.ts` |
+| GET       | `/api/palpite/ranking`             | Public        | Leaderboard Global               | `palpite.service.ts` |
+| POST      | `/api/resultados-oficiais`         | `verifyAdmin` | Lançar placares reais            | `palpite.service.ts` |
+| GET       | `/api/album`                       | `verifyAuth`  | Carregar álbum de figurinhas     | `album.service.ts`   |
+| POST      | `/api/album/abrir-pacote`          | `verifyAuth`  | Gacha / Sorteio de figurinhas    | `album.service.ts`   |
+| GET/POST  | `/api/trocas`                      | `verifyAuth`  | Listar / Iniciar troca           | `troca.service.ts`   |
+| PATCH     | `/api/trocas/[id]`                 | `verifyAuth`  | Aceitar / Recusar troca          | `troca.service.ts`   |
+| GET       | `/api/grupos`                      | Public        | Grupos da Copa                   | `prisma.grupo`       |
+| GET       | `/api/estadios`                    | Public        | Catálogo de Estádios             | `prisma.estadio`     |
+| GET       | `/api/estadios/[slug]`             | Public        | Detalhes do Estádio              | `prisma.estadio`     |
+| GET       | `/api/partidas`                    | Public        | Lista de Jogos                   | `prisma.partida`     |
+| PATCH     | `/api/partidas/[id]`               | `verifyAdmin` | Atualização de jogo (Admin)      | `partida.service.ts` |
+| GET       | `/api/figurinhas`                  | Public        | Catálogo Base de Figurinhas      | `prisma.figurinha`   |
+| GET       | `/api/figurinhas/repetidas`        | Public        | Usuários com repetições          | `prisma.figurinha`   |
+| GET       | `/api/figurinhas/repetidas/[slug]` | Public        | Detalhes de repetição específica | `prisma.figurinha`   |
+| GET       | `/api/usuarios/[slug]/repetidas`   | Public        | Estoque de troca de um usuário   | `prisma.figurinha`   |
 
 ### 🖥️ Frontend Pages
 
-| Caminho | Responsabilidade | Dados Consumidos |
-|---------|------------------|------------------|
-| `/(main)/page.tsx` | Home (Landing Page) | Estático / Marketing |
-| `/(main)/tabela/page.tsx` | Classificação de Grupos | `/api/grupos` |
-| `/(main)/tabela/placar/page.tsx` | Listagem de Jogos | `/api/partidas` |
-| `/(main)/tabela/mata-mata/page.tsx`| Bracket / Chaveamento | `/api/partidas` |
-| `/(main)/tabela/ranking/page.tsx` | Leaderboard Palpites | `/api/palpite/ranking` |
-| `/(main)/album/page.tsx` | Álbum e Sorteio (Gacha) | `/api/album`, `/api/figurinhas` |
-| `/(main)/trocas/page.tsx` | Caixa de Entrada de Trocas| `/api/trocas` |
-| `/(main)/trocas/repetidas/[slug]/page.tsx` | Lista de doadores | `/api/figurinhas/repetidas/[slug]` |
-| `/(main)/trocas/nova/.../page.tsx`| Montar Proposta | `/api/usuarios/[slug]/repetidas` |
-| `/(main)/selecoes/page.tsx` | Catálogo de Seleções | `/api/selecoes` |
-| `/(main)/selecoes/[slug]/page.tsx` | Elenco e Info da Seleção | `/api/selecoes/[slug]` |
-| `/(main)/estadios/page.tsx` | Catálogo de Estádios | `/api/estadios` |
-| `/(main)/estadios/[slug]/page.tsx` | Fotos e Info do Estádio | `/api/estadios/[slug]` |
-| `/(main)/perfil/page.tsx` | Dashboard Pessoal | `/api/auth/me` |
-| `/(main)/perfil/[slug]/page.tsx` | Perfil Público de usuário | `/api/usuarios/[slug]` |
-| `/(main)/admin/page.tsx` | Dashboard Admin | Múltiplos endpoints de admin |
-| `/(main)/admin/tabela/oficial/page.tsx`| Editar Placar Real | `/api/resultados-oficiais` |
+| Caminho                                    | Responsabilidade           | Dados Consumidos                   |
+| ------------------------------------------ | -------------------------- | ---------------------------------- |
+| `/(main)/page.tsx`                         | Home (Landing Page)        | Estático / Marketing               |
+| `/(main)/tabela/page.tsx`                  | Classificação de Grupos    | `/api/grupos`                      |
+| `/(main)/tabela/placar/page.tsx`           | Listagem de Jogos          | `/api/partidas`                    |
+| `/(main)/tabela/mata-mata/page.tsx`        | Bracket / Chaveamento      | `/api/partidas`                    |
+| `/(main)/tabela/ranking/page.tsx`          | Leaderboard Palpites       | `/api/palpite/ranking`             |
+| `/(main)/album/page.tsx`                   | Álbum e Sorteio (Gacha)    | `/api/album`, `/api/figurinhas`    |
+| `/(main)/trocas/page.tsx`                  | Caixa de Entrada de Trocas | `/api/trocas`                      |
+| `/(main)/trocas/repetidas/[slug]/page.tsx` | Lista de doadores          | `/api/figurinhas/repetidas/[slug]` |
+| `/(main)/trocas/nova/.../page.tsx`         | Montar Proposta            | `/api/usuarios/[slug]/repetidas`   |
+| `/(main)/selecoes/page.tsx`                | Catálogo de Seleções       | `/api/selecoes`                    |
+| `/(main)/selecoes/[slug]/page.tsx`         | Elenco e Info da Seleção   | `/api/selecoes/[slug]`             |
+| `/(main)/estadios/page.tsx`                | Catálogo de Estádios       | `/api/estadios`                    |
+| `/(main)/estadios/[slug]/page.tsx`         | Fotos e Info do Estádio    | `/api/estadios/[slug]`             |
+| `/(main)/perfil/page.tsx`                  | Dashboard Pessoal          | `/api/auth/me`                     |
+| `/(main)/perfil/[slug]/page.tsx`           | Perfil Público de usuário  | `/api/usuarios/[slug]`             |
+| `/(main)/admin/page.tsx`                   | Dashboard Admin            | Múltiplos endpoints de admin       |
+| `/(main)/admin/tabela/oficial/page.tsx`    | Editar Placar Real         | `/api/resultados-oficiais`         |
