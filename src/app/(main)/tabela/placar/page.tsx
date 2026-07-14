@@ -140,7 +140,7 @@ export default function PlacarPage() {
 
   return (
     <>
-      <main className="mx-auto max-w-5xl px-6 py-8">
+      <main className="mx-auto w-full max-w-[100vw] overflow-x-hidden px-4 py-8 sm:max-w-5xl sm:px-6">
         <a
           href="/tabela"
           className="inline-block text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
@@ -181,7 +181,7 @@ export default function PlacarPage() {
             {grupo && (
               <section className="mt-8">
                 <h2 className="mb-4 text-lg font-bold">{grupo.nome}</h2>
-                <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+                <div className="w-full max-w-full overflow-x-auto mb-8 shadow-sm rounded-xl border border-zinc-200 dark:border-zinc-800">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-zinc-50 text-left text-xs text-zinc-500 dark:bg-zinc-900">
