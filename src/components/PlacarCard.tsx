@@ -28,7 +28,7 @@ export default function PlacarCard({
   const faseFormatada = p.grupoId ? `Grupo ${p.grupoId}` : p.fase.replace(/_/g, " ").toLowerCase();
 
   return (
-    <div className="w-full flex flex-col md:block rounded-xl border border-zinc-200 bg-white p-4 transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
+    <div className="w-full max-w-full overflow-hidden flex flex-col md:block rounded-xl border border-zinc-200 bg-white p-4 transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
       <div className="hidden md:block">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
@@ -81,7 +81,7 @@ export default function PlacarCard({
       </div>
 
       <div className="md:hidden">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex justify-between items-center w-full gap-2">
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
             <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
             <span className="truncate text-sm font-medium">{p.mandante.nome}</span>
@@ -96,7 +96,7 @@ export default function PlacarCard({
             isMobile
           />
         </div>
-        <div className="mt-1 flex items-center justify-between gap-2">
+        <div className="mt-1 flex justify-between items-center w-full gap-2">
           <div className="flex min-w-0 flex-1 items-center gap-1.5">
             <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
             <span className="truncate text-sm font-medium">{p.visitante.nome}</span>
