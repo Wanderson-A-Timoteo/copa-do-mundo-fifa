@@ -238,3 +238,27 @@ export async function calcularClassificacao(usuarioId?: number) {
     selecoes: calcularClassificacaoGrupos(grupo.selecoes, grupo.partidas),
   }));
 }
+
+export async function getRanking() {
+  const rankingRaw = await prisma.palpite.groupBy({
+    by: ["usuarioId"],
+    _sum: { pontos: true },
+    orderBy: { _sum: { pontos: "desc" } },
+  });
+
+  const users = await prisma.user.findMany({
+    where: { id: { in: rankingRaw.map((r) => r.usuarioId) } },
+    select: { id: true, nome: true, slug: true },
+  });
+
+  const userMap = new Map(users.map((u) => [u.id, u]));
+
+  return rankingRaw
+    .map((r, index) => ({
+      posicao: index + 1,
+      usuarioId: r.usuarioId,
+      pontos: r._sum.pontos || 0,
+      usuario: userMap.get(r.usuarioId),
+    }))
+    .filter((r) => r.usuario); // filter out if user was deleted
+}
