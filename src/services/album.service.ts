@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 
 const LIMITE_DIARIO = 10;
-const QTD_PACOTE = 7;
+const QTD_PACOTE = 4;
 
 export interface AlbumResult {
   album: Awaited<ReturnType<typeof getAlbum>>["album"];

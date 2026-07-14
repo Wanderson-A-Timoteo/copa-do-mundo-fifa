@@ -3,6 +3,7 @@
 ## Visão Geral
 
 Este projeto é desenvolvido com as seguintes tecnologias principais:
+
 - **Next.js (App Router)**: Framework React para roteamento e renderização Híbrida (SSR/SSG).
 - **Prisma ORM**: Gerenciamento e modelagem do banco de dados (PostgreSQL).
 - **PostgreSQL**: Banco de dados relacional hospedado (neon/vercel/etc).
@@ -42,30 +43,39 @@ copa-do-mundo-fifa/
 ## Mapeamento de Pastas e Arquivos (Responsabilidades)
 
 ### `src/app/` (Controllers & UI)
+
 A camada mais externa da aplicação, servindo diretamente requisições HTTP e páginas.
-- **`(main)/`**: Pasta de *Route Group* do Next.js. Agrupa visualmente todas as páginas que compartilham o layout principal (Navbar, Sidebar). Aqui temos `tabela/`, `album/`, `trocas/`, etc. Não contém regras de negócio.
+
+- **`(main)/`**: Pasta de _Route Group_ do Next.js. Agrupa visualmente todas as páginas que compartilham o layout principal (Navbar, Sidebar). Aqui temos `tabela/`, `album/`, `trocas/`, etc. Não contém regras de negócio.
 - **`api/`**: Responsável por receber dados do cliente (JSON via POST/PUT), validar a sessão do usuário chamando o `proxy.ts`, e repassar a execução para as funções da camada `services/`.
 
 ### `src/services/` (Casos de Uso)
-O "Coração" do sistema. Todo acesso ao banco de dados e regras cruciais (como a trava de tempo dos jogos, cálculos de álbum) residem aqui. 
+
+O "Coração" do sistema. Todo acesso ao banco de dados e regras cruciais (como a trava de tempo dos jogos, cálculos de álbum) residem aqui.
+
 - `album.service.ts`: Controla pacote diário, gacha system e limite.
 - `palpite.service.ts`: Bloqueio por `dataHora` e upsert de palpites de usuários.
 - `troca.service.ts`: Aceite, rejeição e processamento relacional entre doadores e recebedores.
 - `partida.service.ts`: Helper para acesso a tabelas do mata-mata e grupos.
 
 ### `src/hooks/` (Presentation Logic)
+
 Abstrai a lógica de chamadas (`fetch`) de componentes de UI. Substitui chamadas no-backend por Custom Hooks puros como `useFetch`, `useAuth`, `usePagination`.
 
 ### `src/components/` (Interface)
-Blocos de construção visuais (Tailwind). Componentes burros (recebem `props` e disparam eventos) ou Smart Components que consomem Hooks (ex: `MataMataDesktop`). 
+
+Blocos de construção visuais (Tailwind). Componentes burros (recebem `props` e disparam eventos) ou Smart Components que consomem Hooks (ex: `MataMataDesktop`).
 
 ### `src/lib/` (Infra e Utils)
+
 Ferramentas independentes do contexto de negócio:
+
 - `prisma.ts`: Conexão unificada do Banco.
 - `rate-limit.ts`: Proteção contra DDoS e spam.
 - `auth.ts`: Utilitário de assinatura JWT.
 
 ### `prisma/` (Data & Schema)
+
 - `schema.prisma`: A Fonte da Verdade do modelo relacional (Tabelas).
 - `data/`: Exportação pura dos jogadores e estádios para não poluir o executor.
 - `seed.ts` e `scripts/`: Isolados para garantir que ao rodar `prisma db seed`, o banco sempre tenha um estado inicial conciso, integrando fotos e galerias perfeitamente com os dados brutos.
@@ -74,6 +84,6 @@ Ferramentas independentes do contexto de negócio:
 
 ## Padrões Adotados (Design Patterns)
 
-1. **Service Pattern:** Evitamos o *Anti-pattern* de acessar banco de dados diretamente nos componentes do servidor (RSCs) do Next.js. Funções complexas são extraídas para `services/` permitindo reuso em `API Routes` ou `Server Actions`.
+1. **Service Pattern:** Evitamos o _Anti-pattern_ de acessar banco de dados diretamente nos componentes do servidor (RSCs) do Next.js. Funções complexas são extraídas para `services/` permitindo reuso em `API Routes` ou `Server Actions`.
 2. **Feature Flags / Separation of Concerns:** Rotas de API são adaptadores puros. Elas recebem o `Request`, extraem a autenticação e chamam o `service`.
 3. **Singleton (Prisma):** Garantido pelo uso do `globalThis` em `src/lib/prisma.ts` para que hot-reloads no ambiente de desenvolvimento não estalem o limite de conexões do PostgreSQL.

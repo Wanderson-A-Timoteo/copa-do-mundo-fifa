@@ -20,6 +20,21 @@ interface AlbumItem {
   figurinha: Figurinha;
 }
 
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+    },
+  },
+};
+
+const staggerItem = {
+  hidden: { opacity: 0, scale: 0.8 },
+  show: { opacity: 1, scale: 1 },
+};
+
 export default function AlbumPage() {
   const { user, getAuthHeaders } = useAuth();
   const [figurinhas, setFigurinhas] = useState<Figurinha[]>([]);
@@ -135,85 +150,95 @@ export default function AlbumPage() {
   }, [selecoesFiltradas.length]);
 
   const progresso = figurinhas.length > 0 ? Math.round((album.size / figurinhas.length) * 100) : 0;
+  const pacotesAbertosHoje = limiteDiario - pacotesRestantesHoje;
+  const pctPacotes = limiteDiario > 0 ? (pacotesAbertosHoje / limiteDiario) * 100 : 0;
 
   return (
     <>
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      <main className="mx-auto max-w-6xl p-4 md:p-8 space-y-8">
+        {/* Hero Section */}
+        <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-2xl p-8 text-white shadow-xl flex flex-wrap items-center justify-between gap-6">
           <div>
-            <h1 className="text-3xl font-bold">Álbum de Figurinhas</h1>
-            <p className="mt-1 text-zinc-500">
+            <h1 className="text-3xl sm:text-4xl font-bold">Álbum de Figurinhas</h1>
+            <p className="mt-2 text-blue-200 text-lg">
               {album.size} de {figurinhas.length} figurinhas ({progresso}%)
             </p>
+            <div className="mt-4 h-3 w-full max-w-sm overflow-hidden rounded-full bg-blue-950/50">
+              <div
+                className="h-full rounded-full bg-emerald-400 transition-all duration-500"
+                style={{ width: `${progresso}%` }}
+              />
+            </div>
           </div>
           {user ? (
-            <div className="flex flex-col items-end gap-2">
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col items-end gap-3 min-w-[250px]">
+              <div className="flex items-center gap-3">
                 <Link
                   href="/trocas"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-white/20 backdrop-blur-sm"
                 >
                   <IconRepeat className="h-4 w-4" />
-                  Minhas Trocas
+                  Trocas
                 </Link>
                 <button
                   onClick={abrirPacote}
-                  disabled={abrindo || pacotesRestantesHoje === 0}
-                  className="rounded-lg bg-zinc-900 px-6 py-2.5 text-sm font-medium text-white transition-all hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                  disabled={abrindo || pacotesAbertosHoje >= limiteDiario}
+                  className="rounded-lg bg-emerald-500 hover:bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {abrindo
                     ? "Abrindo..."
-                    : pacotesRestantesHoje === 0
-                      ? "Limite diário atingido"
+                    : pacotesAbertosHoje >= limiteDiario
+                      ? "Limite atingido"
                       : "Abrir Pacotinho"}
                 </button>
               </div>
-              <span className="text-xs text-zinc-400">
-                {pacotesRestantesHoje}/{limiteDiario} pacotes hoje
-              </span>
+              <div className="w-full text-right">
+                <span className="text-sm font-medium text-blue-200 block mb-1">
+                  Pacotes: {pacotesAbertosHoje} / {limiteDiario}
+                </span>
+                <div className="w-full bg-slate-200/20 rounded-full h-2 overflow-hidden backdrop-blur-sm">
+                  <div
+                    className="h-full bg-emerald-500 transition-all duration-500"
+                    style={{ width: `${pctPacotes}%` }}
+                  />
+                </div>
+              </div>
             </div>
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 rounded-lg border border-zinc-300 px-6 py-3 text-sm font-medium transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-medium transition-colors hover:bg-white/20 backdrop-blur-sm"
             >
-              <IconUser className="h-4 w-4 text-zinc-400" />
+              <IconUser className="h-4 w-4" />
               Faça login para abrir pacotinhos
             </Link>
           )}
         </div>
 
-        <div className="mt-4 h-3 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
-          <div
-            className="h-full rounded-full bg-zinc-900 transition-all duration-500 dark:bg-zinc-100"
-            style={{ width: `${progresso}%` }}
-          />
-        </div>
-
         {figurinhas.length > 0 && album.size === figurinhas.length && (
-          <div className="mt-6 flex items-center gap-4 rounded-xl border border-emerald-300 bg-emerald-50 p-5 dark:border-emerald-700 dark:bg-emerald-950">
-            <IconTrophy className="h-8 w-8 shrink-0 text-emerald-600 dark:text-emerald-400" />
+          <div className="flex items-center gap-4 rounded-2xl border border-emerald-300 bg-emerald-50 p-6 shadow-sm dark:border-emerald-700 dark:bg-emerald-950">
+            <IconTrophy className="h-10 w-10 shrink-0 text-emerald-600 dark:text-emerald-400" />
             <div>
-              <h3 className="text-lg font-bold text-emerald-800 dark:text-emerald-200">
+              <h3 className="text-xl font-bold text-emerald-800 dark:text-emerald-200">
                 Álbum Completo!
               </h3>
-              <p className="text-sm text-emerald-600 dark:text-emerald-400">
+              <p className="mt-1 text-emerald-600 dark:text-emerald-400">
                 Parabéns! Você coletou todas as {figurinhas.length} figurinhas!
               </p>
             </div>
           </div>
         )}
 
-        <div className="mt-6 flex flex-wrap gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <div className="flex gap-2">
             {["todas", "tenho", "faltando", "repetida"].map((s) => (
               <button
                 key={s}
                 onClick={() => setFiltroStatus(s)}
-                className={`rounded-lg px-3 py-1.5 text-sm capitalize transition-colors ${
+                className={`rounded-xl px-4 py-2 text-sm font-medium capitalize transition-all ${
                   filtroStatus === s
-                    ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                    : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                    ? "bg-zinc-900 text-white shadow-md dark:bg-zinc-100 dark:text-zinc-900"
+                    : "border border-zinc-200 bg-white hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                 }`}
               >
                 {s === "todas"
@@ -226,17 +251,15 @@ export default function AlbumPage() {
               </button>
             ))}
           </div>
-        </div>
 
-        <div className="mt-4">
-          <div className="relative">
+          <div className="relative flex-grow sm:max-w-xs">
             <IconTrophy className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
               value={filtroNome}
               onChange={(e) => setFiltroNome(e.target.value)}
               placeholder="Buscar seleção..."
-              className="w-full rounded-lg border border-zinc-300 bg-transparent py-2 pl-10 pr-4 text-sm outline-none transition-colors focus:border-zinc-500 dark:border-zinc-700 dark:focus:border-zinc-400"
+              className="w-full rounded-xl border border-zinc-200 bg-white py-2 pl-10 pr-4 text-sm outline-none transition-all focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:border-zinc-600 dark:focus:ring-zinc-800"
             />
           </div>
         </div>
@@ -244,7 +267,7 @@ export default function AlbumPage() {
         {carregando ? (
           <SkeletonAlbum />
         ) : selecoesFiltradas.length > 0 ? (
-          <div className="mt-6">
+          <div>
             <AnimatePresence mode="wait">
               {(() => {
                 const { selecao, figurinhas } = selecoesFiltradas[paginaAtual];
@@ -257,26 +280,31 @@ export default function AlbumPage() {
                 return (
                   <motion.div
                     key={selecaoAtual.id}
-                    initial={{ opacity: 0, x: 50 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -50 }}
-                    transition={{ duration: 0.2 }}
-                    className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
                   >
-                    <div className="mb-4 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
+                    <div className="mb-6 flex items-center justify-between border-b border-zinc-100 pb-4 dark:border-zinc-800">
+                      <div className="flex items-center gap-3">
                         <FlagIcon
                           codigo={selecaoAtual.codigoPais}
-                          className="h-6 w-auto rounded-sm"
+                          className="h-8 w-auto rounded shadow-sm"
                         />
-                        <h2 className="text-lg font-bold">{selecaoAtual.nome}</h2>
+                        <h2 className="text-2xl font-bold">{selecaoAtual.nome}</h2>
                       </div>
-                      <span className="text-sm text-zinc-500">
-                        {coletadas}/{figurinhasAtuais.length}
-                      </span>
+                      <div className="flex flex-col items-end">
+                        <span className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                          {coletadas}/{figurinhasAtuais.length}
+                        </span>
+                        <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
+                          Completas
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                       {figurinhasAtuais.map((fig) => {
                         const status = statusFigurinha(fig.id);
                         const faltando = status === "faltando";
@@ -284,17 +312,21 @@ export default function AlbumPage() {
                           status === "repetida" ? album.get(fig.id)?.quantidade : null;
 
                         return (
-                          <StickerCard
+                          <div
                             key={fig.id}
-                            figurinha={fig}
-                            className={faltando ? "opacity-30 grayscale" : ""}
+                            className="relative transition-all duration-300 hover:scale-105 hover:shadow-2xl rounded-xl"
                           >
-                            {repetidaQtd && (
-                              <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
-                                {repetidaQtd}
-                              </span>
-                            )}
-                          </StickerCard>
+                            <StickerCard
+                              figurinha={fig}
+                              className={faltando ? "opacity-30 grayscale" : ""}
+                            >
+                              {repetidaQtd && (
+                                <span className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-white shadow-md border-2 border-white dark:border-zinc-900">
+                                  {repetidaQtd}
+                                </span>
+                              )}
+                            </StickerCard>
+                          </div>
                         );
                       })}
                     </div>
@@ -303,57 +335,67 @@ export default function AlbumPage() {
               })()}
             </AnimatePresence>
 
-            <div className="mt-6 flex items-center justify-between">
+            <div className="mt-8 flex items-center justify-between">
               <button
                 onClick={() => setPaginaAtual((p) => Math.max(0, p - 1))}
                 disabled={paginaAtual === 0}
-                className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
               >
                 &#9664; Anterior
               </button>
-              <span className="text-sm text-zinc-500">
+              <span className="rounded-lg bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">
                 Página {paginaAtual + 1} de {selecoesFiltradas.length}
               </span>
               <button
                 onClick={() => setPaginaAtual((p) => Math.min(selecoesFiltradas.length - 1, p + 1))}
                 disabled={paginaAtual === selecoesFiltradas.length - 1}
-                className="flex items-center gap-1 rounded-lg border border-zinc-300 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 disabled:opacity-30 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
               >
                 Próxima &#9654;
               </button>
             </div>
           </div>
         ) : (
-          <div className="mt-20 text-center text-zinc-500">Nenhuma seleção encontrada</div>
+          <div className="mt-20 flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-300 py-16 text-zinc-500 dark:border-zinc-700">
+            <IconStar className="mb-4 h-12 w-12 text-zinc-300 dark:text-zinc-700" />
+            <p className="text-lg font-medium">Nenhuma seleção encontrada</p>
+          </div>
         )}
       </main>
 
       {showAnimacao && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 backdrop-blur-sm pt-[10vh] pb-8"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 backdrop-blur-md pt-[10vh] pb-8"
           onClick={() => setShowAnimacao(false)}
         >
-          <div className="w-full max-w-2xl px-4 text-center" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-6 flex items-center justify-center gap-2 text-2xl font-bold text-white">
-              <IconStar className="h-6 w-6 text-amber-400" />
-              Suas novas figurinhas!
+          <div className="w-full max-w-3xl px-4 text-center" onClick={(e) => e.stopPropagation()}>
+            <h2 className="mb-8 flex items-center justify-center gap-3 text-3xl font-extrabold text-white drop-shadow-lg">
+              <IconStar className="h-8 w-8 text-amber-400 animate-pulse" />
+              Novas Figurinhas!
             </h2>
-            <div className="mx-auto grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {novasFigurinhas.slice(0, 4).map((fig, i) => (
-                <div
+
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="show"
+              className="mx-auto grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4"
+            >
+              {novasFigurinhas.map((fig, i) => (
+                <motion.div
                   key={i}
-                  className="animate-bounce mx-auto w-full max-w-[200px] shadow-xl shadow-black/30"
-                  style={{ animationDelay: `${i * 0.1}s`, animationDuration: "0.5s" }}
+                  variants={staggerItem}
+                  className="mx-auto w-full max-w-[220px] transition-all duration-300 hover:-translate-y-2 hover:scale-105"
                 >
                   <StickerCard figurinha={fig} />
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
+
             <button
               onClick={() => setShowAnimacao(false)}
-              className="mt-8 mb-8 rounded-lg bg-white px-8 py-3 font-medium text-black transition-colors hover:bg-zinc-200"
+              className="mt-12 mb-8 rounded-xl bg-white px-10 py-3.5 text-sm font-bold text-black shadow-xl transition-all hover:scale-105 hover:bg-zinc-100"
             >
-              Continuar
+              Continuar Colecionando
             </button>
           </div>
         </div>
