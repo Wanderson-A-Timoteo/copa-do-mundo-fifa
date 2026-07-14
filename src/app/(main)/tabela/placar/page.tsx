@@ -185,8 +185,9 @@ export default function PlacarPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="bg-zinc-50 text-left text-xs text-zinc-500 dark:bg-zinc-900">
-                        <th className="px-3 py-2 font-medium">#</th>
-                        <th className="px-3 py-2 font-medium">Seleção</th>
+                        <th className="px-3 py-2 font-medium sticky left-0 z-20 bg-zinc-50 dark:bg-zinc-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                          Seleção
+                        </th>
                         <th className="px-3 py-2 text-center font-medium">P</th>
                         <th className="px-3 py-2 text-center font-medium">J</th>
                         <th className="px-3 py-2 text-center font-medium">V</th>
@@ -209,9 +210,9 @@ export default function PlacarPage() {
                                 : "border-l-red-500"
                           }`}
                         >
-                          <td className="px-3 py-3 font-bold text-zinc-400">{idx + 1}</td>
-                          <td className="px-3 py-3">
+                          <td className="px-3 py-3 sticky left-0 z-10 bg-white dark:bg-zinc-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                             <div className="flex items-center gap-2">
+                              <span className="font-bold text-zinc-400 w-4">{idx + 1}</span>
                               <FlagIcon codigo={sel.codigoPais} className="h-5 w-auto rounded-sm" />
                               <span className="font-medium">{sel.nome}</span>
                             </div>
