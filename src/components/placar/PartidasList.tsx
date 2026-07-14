@@ -8,7 +8,11 @@ interface PartidasListProps {
   partidas: PartidaResumo[];
   placares: Record<number, { golsMandante: string; golsVisitante: string }>;
   token: string | null;
-  onScoreChange: (partidaId: number, campo: "golsMandante" | "golsVisitante", valor: string) => void;
+  onScoreChange: (
+    partidaId: number,
+    campo: "golsMandante" | "golsVisitante",
+    valor: string,
+  ) => void;
   onAutoSalvar: (partidaId: number) => void;
   onOpenModal: () => void;
 }
@@ -42,9 +46,7 @@ export default function PartidasList({
                     codigo={p.mandante.codigoPais}
                     className="h-6 w-auto rounded-sm sm:h-8"
                   />
-                  <span className="truncate font-medium sm:text-base">
-                    {p.mandante.nome}
-                  </span>
+                  <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
                 </div>
 
                 <div className="flex items-center gap-2 sm:gap-3">
@@ -104,9 +106,7 @@ export default function PartidasList({
                     codigo={p.mandante.codigoPais}
                     className="h-5 w-auto shrink-0 rounded-sm"
                   />
-                  <span className="truncate text-sm font-medium">
-                    {p.mandante.nome}
-                  </span>
+                  <span className="truncate text-sm font-medium">{p.mandante.nome}</span>
                 </div>
                 <ScoreInput
                   disabled={!token}
@@ -125,9 +125,7 @@ export default function PartidasList({
                     codigo={p.visitante.codigoPais}
                     className="h-5 w-auto shrink-0 rounded-sm"
                   />
-                  <span className="truncate text-sm font-medium">
-                    {p.visitante.nome}
-                  </span>
+                  <span className="truncate text-sm font-medium">{p.visitante.nome}</span>
                 </div>
                 <ScoreInput
                   disabled={!token}

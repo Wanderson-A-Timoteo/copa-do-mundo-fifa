@@ -10,7 +10,7 @@ export function useAdminAuth() {
 
   useEffect(() => {
     if (authLoading) return;
-    
+
     if (!token || !user) {
       router.push("/login");
       return;

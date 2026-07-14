@@ -11,7 +11,10 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const partidaId = searchParams.get("partidaId");
 
-  const palpites = await listarPalpitesMataMata(usuarioId, partidaId ? Number(partidaId) : undefined);
+  const palpites = await listarPalpitesMataMata(
+    usuarioId,
+    partidaId ? Number(partidaId) : undefined,
+  );
   return NextResponse.json({ palpites });
 }
 

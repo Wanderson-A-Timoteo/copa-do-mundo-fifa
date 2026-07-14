@@ -1,4 +1,3 @@
-
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { checkRateLimit, getRateLimitHeaders, getClientIp } from "@/lib/rate-limit";
 

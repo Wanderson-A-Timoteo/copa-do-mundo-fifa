@@ -87,7 +87,9 @@ export async function main() {
         ).map((f) => f.id);
         if (idsFig.length > 0) {
           await prisma.albumFigurinha.deleteMany({ where: { figurinhaId: { in: idsFig } } });
-          await prisma.trocaFigurinhaOferecida.deleteMany({ where: { figurinhaId: { in: idsFig } } });
+          await prisma.trocaFigurinhaOferecida.deleteMany({
+            where: { figurinhaId: { in: idsFig } },
+          });
           await prisma.troca.deleteMany({ where: { figurinhaDesejadaId: { in: idsFig } } });
         }
         await prisma.figurinha.deleteMany({ where: { selecaoId: selecao.id } });

@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 
-
 interface MatchScore {
   golsMandante: number;
   golsVisitante: number;

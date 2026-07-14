@@ -7,9 +7,5 @@ export function FrozenRoute({ children }: { children: React.ReactNode }) {
   const context = useContext(LayoutRouterContext);
   const [frozen] = useState(context);
 
-  return (
-    <LayoutRouterContext.Provider value={frozen}>
-      {children}
-    </LayoutRouterContext.Provider>
-  );
+  return <LayoutRouterContext.Provider value={frozen}>{children}</LayoutRouterContext.Provider>;
 }

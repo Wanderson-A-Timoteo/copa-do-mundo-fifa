@@ -67,7 +67,10 @@ export default function PlacarPage() {
           .then((palData) => {
             const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
             for (const partida of d.partidas) {
-              const palpite = palData.palpites?.find((pp: { partidaId: number; golsMandante: number; golsVisitante: number }) => pp.partidaId === partida.id);
+              const palpite = palData.palpites?.find(
+                (pp: { partidaId: number; golsMandante: number; golsVisitante: number }) =>
+                  pp.partidaId === partida.id,
+              );
               if (palpite) {
                 p[partida.id] = {
                   golsMandante: String(palpite.golsMandante),

@@ -95,7 +95,6 @@ export default function AlbumPage() {
     [album],
   );
 
-
   const selecoesAgrupadas = useMemo(() => {
     const map = new Map<number, { selecao: Figurinha["selecao"]; figurinhas: Figurinha[] }>();
     for (const fig of figurinhas) {

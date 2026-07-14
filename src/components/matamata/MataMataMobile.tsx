@@ -7,7 +7,12 @@ interface MataMataMobileProps {
   resultado: BracketResult;
   placares: Record<
     number,
-    { golsMandante: string; golsVisitante: string; penaltisMandante: string; penaltisVisitante: string }
+    {
+      golsMandante: string;
+      golsVisitante: string;
+      penaltisMandante: string;
+      penaltisVisitante: string;
+    }
   >;
   salvando: Set<number>;
   onChangePlacar: (
@@ -43,7 +48,7 @@ export default function MataMataMobile({
                 placar.golsMandante !== "" &&
                 placar.golsVisitante !== "" &&
                 Number(placar.golsMandante) === Number(placar.golsVisitante);
-                
+
               const jogoIniciado = p.dataHora ? new Date() >= new Date(p.dataHora) : false;
 
               return (
@@ -123,9 +128,7 @@ export default function MataMataMobile({
                       </div>
                       {empate && (
                         <>
-                          <div className="mt-1 text-center text-[11px] text-zinc-400">
-                            Penaltis
-                          </div>
+                          <div className="mt-1 text-center text-[11px] text-zinc-400">Penaltis</div>
                           <div className="flex items-center justify-center gap-1.5">
                             {p.mandante && (
                               <FlagIcon

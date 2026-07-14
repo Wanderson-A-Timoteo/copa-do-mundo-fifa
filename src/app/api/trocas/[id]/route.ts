@@ -26,7 +26,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     }
 
     await responderTroca(usuarioId, trocaId, acao);
-    return NextResponse.json({ mensagem: acao === "aceitar" ? "Troca aceita com sucesso!" : "Troca recusada com sucesso" });
+    return NextResponse.json({
+      mensagem: acao === "aceitar" ? "Troca aceita com sucesso!" : "Troca recusada com sucesso",
+    });
   } catch (e) {
     if (e instanceof Error) {
       const msg = e.message;
@@ -44,7 +46,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       }
       if (msg === "SENDER_NO_DUPLICATES") {
         return NextResponse.json(
-          { erro: "O remetente não tem mais todas as figurinhas repetidas. Troca recusada automaticamente." },
+          {
+            erro: "O remetente não tem mais todas as figurinhas repetidas. Troca recusada automaticamente.",
+          },
           { status: 400 },
         );
       }

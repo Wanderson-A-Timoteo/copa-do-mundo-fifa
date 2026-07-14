@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 
 export async function GET(request: Request) {
-  
   try {
     await requireAdmin(request);
   } catch (e) {

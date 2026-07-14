@@ -9,7 +9,6 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  
   try {
     const { requireAdmin } = await import("@/lib/auth");
     await requireAdmin(request);

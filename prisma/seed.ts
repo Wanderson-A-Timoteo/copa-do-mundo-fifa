@@ -16,8 +16,6 @@ async function main() {
   const { main: seedEstadiosFotos } = await import("./seed-estadios-fotos");
   await seedEstadiosFotos();
 
-
-
   console.log("\n=== Seed completo! ===");
 }
 

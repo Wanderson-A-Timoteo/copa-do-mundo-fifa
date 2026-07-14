@@ -28,9 +28,7 @@ export default function FilterTabBar({
           }`}
         >
           {tab.label}
-          {tab.count !== undefined && (
-            <span className="ml-1 text-xs opacity-60">{tab.count}</span>
-          )}
+          {tab.count !== undefined && <span className="ml-1 text-xs opacity-60">{tab.count}</span>}
         </button>
       ))}
     </div>

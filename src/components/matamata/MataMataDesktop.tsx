@@ -110,7 +110,12 @@ interface MataMataDesktopProps {
   resultado: BracketResult;
   placares: Record<
     number,
-    { golsMandante: string; golsVisitante: string; penaltisMandante: string; penaltisVisitante: string }
+    {
+      golsMandante: string;
+      golsVisitante: string;
+      penaltisMandante: string;
+      penaltisVisitante: string;
+    }
   >;
   salvando: Set<number>;
   onChangePlacar: (
@@ -223,7 +228,7 @@ export default function MataMataDesktop({
             placar.golsMandante !== "" &&
             placar.golsVisitante !== "" &&
             Number(placar.golsMandante) === Number(placar.golsVisitante);
-          
+
           const jogoIniciado = p.dataHora ? new Date() >= new Date(p.dataHora) : false;
 
           return (
@@ -236,9 +241,7 @@ export default function MataMataDesktop({
                 <div
                   className={`flex h-full flex-col gap-0.5 text-[13px] ${empate ? "" : "justify-center"}`}
                 >
-                  <div
-                    className={`flex items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}
-                  >
+                  <div className={`flex items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
                     <div
                       className={`flex min-w-0 flex-1 items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}
                     >
@@ -265,9 +268,7 @@ export default function MataMataDesktop({
                         maxLength={2}
                         disabled={jogoIniciado}
                         value={placar.golsMandante}
-                        onChange={(e) =>
-                          onChangePlacar(p.numero, "golsMandante", e.target.value)
-                        }
+                        onChange={(e) => onChangePlacar(p.numero, "golsMandante", e.target.value)}
                         className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                       />
                     ) : (
@@ -276,9 +277,7 @@ export default function MataMataDesktop({
                       </span>
                     )}
                   </div>
-                  <div
-                    className={`flex items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}
-                  >
+                  <div className={`flex items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}>
                     <div
                       className={`flex min-w-0 flex-1 items-center gap-1.5 ${isRight ? "flex-row-reverse" : ""}`}
                     >
@@ -305,9 +304,7 @@ export default function MataMataDesktop({
                         maxLength={2}
                         disabled={jogoIniciado}
                         value={placar.golsVisitante}
-                        onChange={(e) =>
-                          onChangePlacar(p.numero, "golsVisitante", e.target.value)
-                        }
+                        onChange={(e) => onChangePlacar(p.numero, "golsVisitante", e.target.value)}
                         className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                       />
                     ) : (

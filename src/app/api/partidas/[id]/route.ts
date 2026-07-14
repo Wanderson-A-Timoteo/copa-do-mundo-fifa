@@ -3,7 +3,6 @@ import { requireAdmin } from "@/lib/auth";
 import { atualizarPartida } from "@/services/partida.service";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  
   try {
     await requireAdmin(request);
   } catch (e) {

@@ -110,8 +110,8 @@ export async function main() {
   }
 
   console.log("Criando partidas da fase de grupos em lote...");
-  
-  const dadosPartidas = jogos.map(j => ({
+
+  const dadosPartidas = jogos.map((j) => ({
     fase: "GRUPOS" as const,
     grupoId: todasSelecoes[j.mand].grupoId,
     selecaoMandanteId: todasSelecoes[j.mand].id,
