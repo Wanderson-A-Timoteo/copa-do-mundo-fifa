@@ -1,4 +1,4 @@
-import type { Prisma } from "@/generated/prisma";
+import type { Prisma } from "@/generated/prisma/client";
 
 export const figurinhaInclude = {
   selecao: { select: { id: true, nome: true, codigoPais: true, corPrimaria: true } },

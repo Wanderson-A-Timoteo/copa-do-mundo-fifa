@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { figurinhaInclude } from "@/lib/prisma-selects";
+
 
 interface MatchScore {
   golsMandante: number;

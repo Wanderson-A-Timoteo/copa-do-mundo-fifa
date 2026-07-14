@@ -3,9 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 
 export async function POST(request: Request) {
-  let usuarioId: number;
+  
   try {
-    usuarioId = await requireAdmin(request);
+    await requireAdmin(request);
   } catch (e) {
     if (e instanceof Error && e.message === "UNAUTHORIZED") {
       return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });

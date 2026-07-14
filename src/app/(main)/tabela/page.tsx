@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { FlagIcon } from "@/components/FlagIcon";
 import { SkeletonTabela } from "@/components/Skeleton";
-import type { ClassificacaoSelecao, GrupoComClassificacao } from "@/types";
+import type { GrupoComClassificacao } from "@/types";
 
 export default function TabelaPage() {
   const router = useRouter();

@@ -1,5 +1,5 @@
 import React from "react";
-import { IconShield } from "@tabler/icons-react";
+import { IconShield } from "@/components/Icons";
 
 export default function AdminGuard({ children }: { children: React.ReactNode }) {
   return (

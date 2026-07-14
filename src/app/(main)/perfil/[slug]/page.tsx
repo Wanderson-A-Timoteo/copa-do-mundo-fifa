@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useMemo } from "react";
 import { useParams } from "next/navigation";
@@ -8,7 +8,7 @@ import { IconRepeat, IconArrowLeft, IconUser } from "@/components/Icons";
 import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import Pagination from "@/components/Pagination";
-import type { FigurinhaResumo, RepetidaItem } from "@/types";
+import type { RepetidaItem } from "@/types";
 
 const ITENS_POR_PAGINA = 10;
 

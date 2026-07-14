@@ -1,4 +1,5 @@
 import { prisma } from "./lib";
+import { PosicaoJogador, RaridadeFigurinha } from "../src/generated/prisma/client";
 import { JOGADORES_POR_SELECAO, TECNICOS_POR_SELECAO } from "./data/dados-jogadores";
 import { FISICOS_POR_SELECAO } from "./data/dados-fisicos-jogadores";
 
@@ -21,7 +22,7 @@ function gerarAltura(posicao: string): number {
   }
 }
 
-function gerarPeso(_posicao: string, _altura: number): number {
+function gerarPeso(): number {
   return randomInt(65, 85);
 }
 
@@ -119,14 +120,14 @@ export async function main() {
 
       if (!altura || !peso || !dataNascimento) {
         altura = gerarAltura(j.posicao);
-        peso = gerarPeso(j.posicao, altura);
+        peso = gerarPeso();
         dataNascimento = gerarDataNascimento();
       }
 
       return {
         selecaoId: selecao.id,
         nome: j.nome,
-        posicao: j.posicao as any,
+        posicao: j.posicao as PosicaoJogador,
         numeroCamisa: Math.floor(Math.random() * 30) + 1,
         altura,
         peso,
@@ -136,14 +137,14 @@ export async function main() {
 
     const criados = await prisma.jogador.createManyAndReturn({ data: jogadoresData });
 
-    const figurinhasData = criados.map((jogador, index) => {
+    const figurinhasData = criados.map((jogador) => {
       const num = numFigurinha++;
       return {
         numero: num,
         selecaoId: selecao.id,
         jogadorId: jogador.id,
         tipo: "jogador" as const,
-        raridade: (Math.random() < 0.1 ? "rara" : "comum") as any,
+        raridade: (Math.random() < 0.1 ? "rara" : "comum") as RaridadeFigurinha,
         slug: `fig-${num}-${jogador.nome.toLowerCase().replace(/[^a-z0-9]/g, "-")}`,
       };
     });

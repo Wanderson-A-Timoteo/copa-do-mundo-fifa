@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { IconShield, IconTrophy, IconUser } from "@/components/Icons";
+import { IconShield, IconUser } from "@/components/Icons";
 import { SkeletonAdmin } from "@/components/Skeleton";
 import type { UserProfileAdmin } from "@/types";
 
@@ -49,7 +49,7 @@ export default function AdminPage() {
         if (d) setUsuarios(d.usuarios);
       })
       .finally(() => setCarregando(false));
-  }, [user]);
+  }, [user, router]);
 
   async function promover(id: number) {
     setPromovendo(id);

@@ -8,7 +8,7 @@ import { IconStar, IconUser, IconTrophy, IconRepeat } from "@/components/Icons";
 import StickerCard from "@/components/StickerCard";
 import { SkeletonAlbum } from "@/components/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
-import type { FigurinhaResumo, FigurinhaAlbum } from "@/types";
+import type { FigurinhaResumo } from "@/types";
 
 interface Figurinha extends FigurinhaResumo {
   tipo: string;
@@ -85,19 +85,16 @@ export default function AlbumPage() {
     await carregarDados();
   };
 
-  const statusFigurinha = (figId: number) => {
-    const item = album.get(figId);
-    if (!item) return "faltando";
-    if (item.quantidade > 1) return "repetida";
-    return "tenho";
-  };
+  const statusFigurinha = useCallback(
+    (figId: number) => {
+      const item = album.get(figId);
+      if (!item) return "faltando";
+      if (item.quantidade > 1) return "repetida";
+      return "tenho";
+    },
+    [album],
+  );
 
-  const getStatusStyle = (figId: number) => {
-    const status = statusFigurinha(figId);
-    if (status === "faltando") return "opacity-30 grayscale";
-    if (status === "repetida") return "ring-2 ring-amber-400";
-    return "";
-  };
 
   const selecoesAgrupadas = useMemo(() => {
     const map = new Map<number, { selecao: Figurinha["selecao"]; figurinhas: Figurinha[] }>();
@@ -122,7 +119,7 @@ export default function AlbumPage() {
         return true;
       });
     });
-  }, [selecoesAgrupadas, filtroStatus, filtroNome]);
+  }, [selecoesAgrupadas, filtroStatus, filtroNome, statusFigurinha]);
 
   useEffect(() => {
     setPaginaAtual(0);

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { extractUserIdFromRequest } from "@/lib/auth";
+
 import { salvarResultadoOficial } from "@/services/palpite.service";
 
 export async function GET() {
@@ -9,10 +9,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  let usuarioId: number;
+  
   try {
     const { requireAdmin } = await import("@/lib/auth");
-    usuarioId = await requireAdmin(request);
+    await requireAdmin(request);
   } catch (e) {
     if (e instanceof Error && e.message === "UNAUTHORIZED") {
       return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });

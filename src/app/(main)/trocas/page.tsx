@@ -7,7 +7,7 @@ import StickerCard from "@/components/StickerCard";
 import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import Pagination from "@/components/Pagination";
-import type { FigurinhaResumo, TrocaItem, RepetidaGrupo, Aba } from "@/types";
+import type { TrocaItem, RepetidaGrupo, Aba } from "@/types";
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {

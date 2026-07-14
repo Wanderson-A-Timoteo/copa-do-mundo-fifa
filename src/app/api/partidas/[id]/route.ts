@@ -3,9 +3,9 @@ import { requireAdmin } from "@/lib/auth";
 import { atualizarPartida } from "@/services/partida.service";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  let usuarioId: number;
+  
   try {
-    usuarioId = await requireAdmin(request);
+    await requireAdmin(request);
   } catch (e) {
     if (e instanceof Error && e.message === "UNAUTHORIZED") {
       return NextResponse.json({ erro: "Não autorizado" }, { status: 401 });

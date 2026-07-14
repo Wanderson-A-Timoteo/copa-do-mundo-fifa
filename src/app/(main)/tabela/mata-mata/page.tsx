@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import { FlagIcon } from "@/components/FlagIcon";
 
 import { IconTrophy, IconClock, IconMapPin } from "@/components/Icons";
@@ -153,7 +152,6 @@ function matchDependents(matchNum: number): number[] {
 }
 
 export default function TabelaMataMataPage() {
-  const router = useRouter();
   const [resultado, setResultado] = useState<BracketResult | null>(null);
   const [placares, setPlacares] = useState<PlacaresState>({});
   const [salvando, setSalvando] = useState<Set<number>>(new Set());
@@ -222,7 +220,7 @@ export default function TabelaMataMataPage() {
       }
     }
     setPlacares(ps);
-  }, []);
+  }, [token, user?.id]);
 
   useEffect(() => {
     if (user) carregar();
@@ -413,7 +411,7 @@ export default function TabelaMataMataPage() {
               <div className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900">
                 <h3 className="mb-2 text-sm font-semibold">8 melhores 3º colocados</h3>
                 <div className="flex flex-wrap gap-2">
-                  {resultado.classificadosTerceiros.map((s, i) => (
+                  {resultado.classificadosTerceiros.map((s) => (
                     <span
                       key={s.id}
                       className="flex items-center gap-1 rounded bg-zinc-200 px-2 py-0.5 text-xs dark:bg-zinc-800"

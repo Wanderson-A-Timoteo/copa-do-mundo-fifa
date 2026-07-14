@@ -7,13 +7,13 @@ export interface JogadorCard {
   numeroCamisa: number | null;
   posicao: string;
   fotoUrl: string | null;
-  dataNascimento: string | null;
+  dataNascimento: string | Date | null;
   altura: number | null;
   peso: number | null;
   figurinha: { raridade: string } | null;
 }
 
-function calcIdade(dataNasc: string): number {
+function calcIdade(dataNasc: string | Date): number {
   const hoje = new Date();
   const nasc = new Date(dataNasc);
   let idade = hoje.getFullYear() - nasc.getFullYear();

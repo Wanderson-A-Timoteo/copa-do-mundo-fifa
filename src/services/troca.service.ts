@@ -124,7 +124,8 @@ export async function responderTroca(
     throw new Error("RECIPIENT_NO_DESIRED");
   }
 
-  const operacoes: Parameters<typeof prisma.$transaction>[0] = [
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const operacoes: any[] = [
     prisma.troca.update({ where: { id: trocaId }, data: { status: "aceita" } }),
   ];
 
