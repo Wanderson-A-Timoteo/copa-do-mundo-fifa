@@ -74,7 +74,7 @@ export default function UserMenu() {
                 {isAdmin ? (
                   <span className="inline-flex items-center gap-1">
                     <IconShield className="h-3.5 w-3.5" />
-                    Admin
+                    Administrador
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1">
