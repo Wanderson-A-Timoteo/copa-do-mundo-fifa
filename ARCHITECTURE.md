@@ -166,3 +166,24 @@ Ferramentas independentes do contexto de negócio:
 - A árvore do Mata-Mata é gerada 100% de forma reativa pelo **Frontend**!
 - Em `carregar()`, a UI faz requisições paralelas (Promise.all) para `/api/grupos` (para saber o estado atual das seleções nos grupos) e `/api/palpites/mata-mata` (para ler os placares que o usuário preencheu na árvore).
 - Esses dados são jogados na função de helper `computeBracket(formatoCopa, grupos, palpites)`. Essa função simula e resolve todo o torneio na hora, deduzindo os classificados dos grupos e injetando as Seleções automaticamente nas partidas subsequentes (ex: Oitavas -> Quartas) com base nos gols salvos.
+
+---
+
+## Fluxo Atual de Dados: Classificação Oficial e Admin
+
+### Visão do Usuário (Tabela)
+
+- **Interface:** O usuário visualiza a classificação real na página `/tabela/page.tsx`, que consome o endpoint `GET /api/grupos`.
+- **Cálculo (Backend):** A API delega a lógica para `calcularClassificacao()` em `palpite.service.ts`. A pontuação de grupo (Vitórias, Empates, Derrotas, Saldo de Gols) é **calculada integralmente no backend**, baseando-se nas partidas da tabela `Partida` que possuem a _flag_ `encerrada: true`. Não há salvamento fixo de pontos para as seleções; tudo é derivado em tempo real a partir dos jogos encerrados.
+
+### Visão do Admin (Lançamento)
+
+- A tela oficial `/admin/tabela/oficial/page.tsx` permite ao Administrador preencher os resultados reais do torneio.
+- **Fase de Grupos:** Ao preencher os gols, o formulário faz um `PATCH /api/partidas/[id]`. A rota chama `atualizarPartida` no serviço de `partida.service.ts`.
+- **Fase Eliminatória (Mata-Mata):** Utiliza-se um endpoint separado: `POST /api/resultados-oficiais`, que é processado por `salvarResultadoOficial`.
+
+### Persistência Oficial e Impacto no Sistema
+
+- **Grupos (Verdade Absoluta):** As edições da fase de grupos alteram diretamente a tabela `Partida`, sobrescrevendo `golsMandante`, `golsVisitante`, atualizando `encerrada = true` e setando quem é o `vencedorId` (caso aplicável).
+- **Mata-Mata (Verdade Absoluta):** Os jogos de mata-mata não alteram a `Partida` diretamente. Eles são salvos em uma tabela espelho separada chamada `ResultadoOficial`, que registra os pênaltis.
+- **O Que Falta Acontecer (Gatilho de Pontos):** Atualmente, o serviço salva o resultado (real oficial), **mas não dispara um _trigger_ ou recálculo para pontuar os palpites dos usuários**. O sistema salva a Verdade Absoluta, mas os usuários ainda têm seus `pontos` como `null` ou desatualizados, já que falta uma lógica que cruze o palpite do usuário com o `ResultadoOficial` para atualizar a tabela `Palpite`!
