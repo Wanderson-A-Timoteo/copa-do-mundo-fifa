@@ -141,3 +141,28 @@ Ferramentas independentes do contexto de negócio:
 | `/(main)/perfil/[slug]/page.tsx`           | Perfil Público de usuário  | `/api/usuarios/[slug]`             |
 | `/(main)/admin/page.tsx`                   | Dashboard Admin            | Múltiplos endpoints de admin       |
 | `/(main)/admin/tabela/oficial/page.tsx`    | Editar Placar Real         | `/api/resultados-oficiais`         |
+
+---
+
+## Fluxo Atual de Dados: Tabela e Mata-Mata
+
+### Camada de UI (Frontend)
+
+- **Placar de Grupos (`/tabela/placar/page.tsx`):** Os inputs de gol utilizam o evento `onBlur` para acionar a função `autoSalvar()`. Isso envia o novo placar (ou nulo, para limpar) como um payload JSON via `POST /api/palpite`.
+- **Mata-Mata (`/tabela/mata-mata/page.tsx`):** O layout escuta mudanças nos inputs com um _debounce_ (via `setTimeout` de 800ms em `handleChange()`). Quando o usuário altera um placar ou pênalti de uma partida eliminatória, a UI envia silenciosamente um `POST /api/palpites/mata-mata`.
+
+### Camada de API (Backend)
+
+- **Rotas de Roteamento:** As APIs `/api/palpite` e `/api/palpites/mata-mata` recebem as requisições `POST`. Elas validam a autorização do usuário (via `extractUserIdFromRequest`), verificam o payload e passam para a camada de serviços.
+- **Service (`src/services/palpite.service.ts`):** O serviço possui as funções `salvarPalpite` e `salvarPalpiteMataMata`. Elas conferem regras cruciais de domínio, por exemplo: _se a partida oficial já começou (baseado em `dataHora`), o sistema rejeita a alteração (lança exceção "O jogo já começou!")_.
+
+### Persistência (Prisma)
+
+- No banco de dados, a gravação ocorre de forma idempotente usando a função `prisma.palpite.upsert` e `prisma.palpiteMataMata.upsert`.
+- Os dados não alteram a tabela global `Partida` em si (pois isso seria o resultado oficial real). Em vez disso, ficam salvos individualmente por usuário (`usuarioId_partidaId`) nas tabelas `Palpite` e `PalpiteMataMata`, isolando o estado da simulação de cada torcedor.
+
+### Montagem do Chaveamento (Mata-Mata)
+
+- A árvore do Mata-Mata é gerada 100% de forma reativa pelo **Frontend**!
+- Em `carregar()`, a UI faz requisições paralelas (Promise.all) para `/api/grupos` (para saber o estado atual das seleções nos grupos) e `/api/palpites/mata-mata` (para ler os placares que o usuário preencheu na árvore).
+- Esses dados são jogados na função de helper `computeBracket(formatoCopa, grupos, palpites)`. Essa função simula e resolve todo o torneio na hora, deduzindo os classificados dos grupos e injetando as Seleções automaticamente nas partidas subsequentes (ex: Oitavas -> Quartas) com base nos gols salvos.
