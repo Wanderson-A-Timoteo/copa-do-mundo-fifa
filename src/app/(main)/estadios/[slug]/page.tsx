@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import ListaPartidas from "@/components/estadios/ListaPartidas";
 import type { PartidaResumida } from "@/components/estadios/PartidaResumidaCard";
 import { SkeletonCard } from "@/components/Skeleton";
@@ -21,6 +22,7 @@ interface EstadioDetalhado {
   latitude: number | null;
   longitude: number | null;
   partidas: PartidaResumida[];
+  galeria: string[];
 }
 
 function capacidadeBadge(capacidade: number): { label: string; cor: string } | null {
@@ -58,7 +60,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
 
   if (loading) {
     return (
-      <main className="mx-auto max-w-3xl px-6 py-8">
+      <main className="mx-auto max-w-5xl px-6 py-8">
         <SkeletonCard />
       </main>
     );
@@ -91,104 +93,159 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
   const badge = capacidadeBadge(estadio.capacidade);
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-8">
-      <nav className="mb-4 text-sm text-zinc-400">
-        <Link href="/estadios" className="hover:text-zinc-800 dark:hover:text-zinc-200">
-          Estádios
-        </Link>
-        <span className="mx-2">&rsaquo;</span>
-        <span className="text-zinc-500">{estadio.nome}</span>
-      </nav>
-
-      <div className="flex flex-wrap items-start gap-3">
-        <h1 className="text-3xl font-bold">{estadio.nome}</h1>
-        {badge && (
-          <span className={`mt-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold ${badge.cor}`}>
-            <IconStar className="mr-0.5 inline h-3 w-3" />
-            {badge.label}
-          </span>
+    <main className="pb-12">
+      {/* Hero Section */}
+      <section className="relative flex min-h-[60vh] w-full flex-col justify-end">
+        {estadio.fotoUrl ? (
+          <Image src={estadio.fotoUrl} alt={estadio.nome} fill className="object-cover" priority />
+        ) : (
+          <div className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800" />
         )}
-      </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
-      <p className="mt-1 flex items-center gap-1 text-zinc-500">
-        <IconMapPin className="h-4 w-4" />
-        {estadio.cidade}, {estadio.pais} &middot; {estadio.capacidade.toLocaleString()} lugares
-      </p>
+        <div className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-12 pt-32">
+          <nav className="mb-4 text-sm text-zinc-300">
+            <Link href="/estadios" className="hover:text-white transition-colors">
+              Estádios
+            </Link>
+            <span className="mx-2">&rsaquo;</span>
+            <span className="text-zinc-400">{estadio.nome}</span>
+          </nav>
 
-      {estadio.fotoUrl && (
-        <div className="relative mt-6 h-64 w-full sm:h-96">
-          <Image
-            src={estadio.fotoUrl}
-            alt={estadio.nome}
-            fill
-            className="rounded-xl object-cover"
-            sizes="(max-width: 768px) 100vw, 768px"
-          />
-        </div>
-      )}
-
-      {estadio.descricao && (
-        <section className="mt-8">
-          <h2 className="text-lg font-bold">Sobre o estádio</h2>
-          <p className="mt-2 leading-relaxed text-zinc-600 dark:text-zinc-400">
-            {estadio.descricao}
-          </p>
-        </section>
-      )}
-
-      {estadio.historia && (
-        <section className="mt-6">
-          <h2 className="text-lg font-bold">História</h2>
-          <p className="mt-2 leading-relaxed text-zinc-600 dark:text-zinc-400">
-            {estadio.historia}
-          </p>
-        </section>
-      )}
-
-      {estadio.latitude && estadio.longitude && (
-        <div className="mt-6">
-          <h2 className="mb-2 text-lg font-bold">Localização</h2>
-          <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800">
-            <iframe
-              title={`Mapa do ${estadio.nome}`}
-              width="100%"
-              height="300"
-              frameBorder="0"
-              scrolling="no"
-              src={`https://www.openstreetmap.org/export/embed.html?bbox=${estadio.longitude - 0.02}%2C${estadio.latitude - 0.02}%2C${estadio.longitude + 0.02}%2C${estadio.latitude + 0.02}&layer=mapnik&marker=${estadio.latitude}%2C${estadio.longitude}`}
-            />
+          <div className="flex flex-wrap items-end gap-4">
+            <h1 className="text-4xl font-extrabold text-white sm:text-6xl drop-shadow-lg">
+              {estadio.nome}
+            </h1>
+            {badge && (
+              <span
+                className={`mb-2 rounded-full px-3 py-1 text-sm font-semibold shadow-lg ${badge.cor}`}
+              >
+                <IconStar className="mr-1 inline h-4 w-4" />
+                {badge.label}
+              </span>
+            )}
           </div>
-          <a
-            href={`https://www.google.com/maps?q=${estadio.latitude},${estadio.longitude}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-1 text-sm text-zinc-500 underline hover:text-zinc-800 dark:hover:text-zinc-200"
-          >
-            <IconMapPin className="h-4 w-4" />
-            Abrir no Google Maps
-          </a>
         </div>
-      )}
+      </section>
 
-      {estadio.partidas.length === 0 ? (
-        <section className="mt-10">
-          <h2 className="text-lg font-bold">Jogos neste estádio</h2>
-          <p className="mt-3 text-sm text-zinc-400">Nenhuma partida programada neste estádio.</p>
+      <div className="mx-auto max-w-5xl px-6">
+        {/* Grid de Info */}
+        <section className="relative z-20 -mt-8 mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/80">
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Localização</h3>
+            <p className="mt-2 flex items-center gap-1.5 text-lg font-semibold">
+              <IconMapPin className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              {estadio.cidade}, {estadio.pais}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/80">
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Capacidade</h3>
+            <p className="mt-2 text-lg font-semibold">
+              {estadio.capacidade.toLocaleString()} lugares
+            </p>
+          </div>
+          <div className="rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/80">
+            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+              Jogos Programados
+            </h3>
+            <p className="mt-2 text-lg font-semibold">{estadio.partidas.length} partidas</p>
+          </div>
         </section>
-      ) : (
-        <>
-          <ListaPartidas
-            titulo="Próximas Partidas"
-            partidas={partidasFuturas}
-            vazia="Nenhuma partida futura."
-          />
-          <ListaPartidas
-            titulo="Partidas Realizadas"
-            partidas={partidasPassadas}
-            vazia="Nenhuma partida realizada."
-          />
-        </>
-      )}
+
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
+          <div className="space-y-12 lg:col-span-2">
+            {estadio.descricao && (
+              <section>
+                <h2 className="text-2xl font-bold">Sobre o estádio</h2>
+                <p className="mt-4 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+                  {estadio.descricao}
+                </p>
+              </section>
+            )}
+
+            {estadio.historia && (
+              <section>
+                <h2 className="text-2xl font-bold">História</h2>
+                <p className="mt-4 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+                  {estadio.historia}
+                </p>
+              </section>
+            )}
+
+            {estadio.galeria && estadio.galeria.length > 0 && (
+              <section>
+                <h2 className="mb-6 text-2xl font-bold">Galeria de Fotos</h2>
+                <motion.div
+                  className="columns-1 gap-4 space-y-4 md:columns-2 lg:columns-3"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  {estadio.galeria.map((url, i) => (
+                    <div key={i} className="break-inside-avoid overflow-hidden rounded-xl">
+                      <Image
+                        src={url}
+                        alt={`${estadio.nome} - Foto ${i + 1}`}
+                        width={600}
+                        height={400}
+                        className="h-auto w-full object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
+                  ))}
+                </motion.div>
+              </section>
+            )}
+
+            <section>
+              <h2 className="mb-6 text-2xl font-bold">Jogos neste estádio</h2>
+              {estadio.partidas.length === 0 ? (
+                <p className="text-zinc-500">Nenhuma partida programada neste estádio.</p>
+              ) : (
+                <div className="space-y-8">
+                  <ListaPartidas
+                    titulo="Próximas Partidas"
+                    partidas={partidasFuturas}
+                    vazia="Nenhuma partida futura."
+                  />
+                  <ListaPartidas
+                    titulo="Partidas Realizadas"
+                    partidas={partidasPassadas}
+                    vazia="Nenhuma partida realizada."
+                  />
+                </div>
+              )}
+            </section>
+          </div>
+
+          <div className="lg:col-span-1">
+            {estadio.latitude && estadio.longitude && (
+              <div className="sticky top-24">
+                <h2 className="mb-4 text-xl font-bold">Localização</h2>
+                <div className="overflow-hidden rounded-2xl border border-zinc-200 shadow-md dark:border-zinc-800">
+                  <iframe
+                    title={`Mapa do ${estadio.nome}`}
+                    width="100%"
+                    height="300"
+                    frameBorder="0"
+                    scrolling="no"
+                    src={`https://www.openstreetmap.org/export/embed.html?bbox=${estadio.longitude - 0.02}%2C${estadio.latitude - 0.02}%2C${estadio.longitude + 0.02}%2C${estadio.latitude + 0.02}&layer=mapnik&marker=${estadio.latitude}%2C${estadio.longitude}`}
+                  />
+                </div>
+                <a
+                  href={`https://www.google.com/maps?q=${estadio.latitude},${estadio.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-100 p-3 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                >
+                  <IconMapPin className="h-5 w-5" />
+                  Abrir no Google Maps
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
