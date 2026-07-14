@@ -40,3 +40,6 @@ declare module 'next/types.js' {
 declare module 'next/server.js' {
   export type NextRequest = any;
 }
+declare module 'next/dist/shared/lib/app-router-context.shared-runtime' {
+  export const LayoutRouterContext: any;
+}
