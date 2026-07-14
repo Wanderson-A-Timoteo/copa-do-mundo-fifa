@@ -18,7 +18,7 @@ export async function GET(request: Request) {
       estadio: true,
       grupo: true,
     },
-    orderBy: { dataHora: "asc" },
+    orderBy: [{ dataHora: "asc" }, { id: "asc" }],
   });
 
   return NextResponse.json({ partidas });

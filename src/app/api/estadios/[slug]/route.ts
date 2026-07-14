@@ -17,7 +17,7 @@ export async function GET(
           mandante: { select: { id: true, nome: true, codigoPais: true } },
           visitante: { select: { id: true, nome: true, codigoPais: true } },
         },
-        orderBy: { dataHora: "asc" },
+        orderBy: [{ dataHora: "asc" }, { id: "asc" }],
       },
     },
   });

@@ -58,10 +58,7 @@ export default function AdminOficialPage() {
     fetch("/api/partidas?fase=GRUPOS")
       .then((r) => r.json())
       .then((d) => {
-        const ordenadas = (d.partidas ?? []).sort(
-          (a: GrupoPartida, b: GrupoPartida) =>
-            new Date(a.dataHora).getTime() - new Date(b.dataHora).getTime(),
-        );
+        const ordenadas = d.partidas ?? [];
         setPartidas(ordenadas);
         const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
         for (const partida of ordenadas) {
