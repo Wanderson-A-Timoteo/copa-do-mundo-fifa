@@ -95,7 +95,7 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-8">
+    <main className="mx-auto w-full max-w-3xl overflow-x-hidden px-6 py-8">
       <h1 className="text-3xl font-bold">
         <IconShield className="mr-2 inline-block h-7 w-7" />
         Admin
@@ -104,7 +104,7 @@ export default function AdminPage() {
 
       <section className="mt-8">
         <h2 className="mb-4 text-lg font-bold">Usuários</h2>
-        <div className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-zinc-50 text-left text-xs text-zinc-500 dark:bg-zinc-900">
@@ -155,6 +155,49 @@ export default function AdminPage() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile View */}
+        <div className="md:hidden space-y-4">
+          {usuarios.map((u) => (
+            <div
+              key={u.id}
+              className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm"
+            >
+              <div className="font-bold">{u.nome}</div>
+              <div className="text-sm text-zinc-500">{u.email}</div>
+              <div className="flex justify-between items-center mt-3">
+                <span
+                  className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                    u.role === "ADMIN"
+                      ? "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                      : "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
+                  }`}
+                >
+                  {u.role === "ADMIN" ? (
+                    <span className="inline-flex items-center gap-1">
+                      <IconShield className="h-3.5 w-3.5" />
+                      Admin
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1">
+                      <IconUser className="h-3.5 w-3.5" />
+                      Torcedor
+                    </span>
+                  )}
+                </span>
+                {u.role !== "ADMIN" && (
+                  <button
+                    onClick={() => promover(u.id)}
+                    disabled={promovendo === u.id}
+                    className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs text-white transition-colors hover:bg-zinc-700 disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                  >
+                    {promovendo === u.id ? "..." : "Promover"}
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </main>
