@@ -15,7 +15,15 @@ export default function BolaoPage() {
   const [partidas, setPartidas] = useState<PartidaResumo[]>([]);
   const [bracket, setBracket] = useState<BracketResult | null>(null);
   const [placares, setPlacares] = useState<
-    Record<number, { golsMandante: string; golsVisitante: string }>
+    Record<
+      number,
+      {
+        golsMandante: string;
+        golsVisitante: string;
+        penaltisMandante?: string;
+        penaltisVisitante?: string;
+      }
+    >
   >({});
   const [token, setToken] = useState<string | null>(null);
   const [showModalLogin, setShowModalLogin] = useState(false);
@@ -76,7 +84,15 @@ export default function BolaoPage() {
           fetch("/api/palpite", { headers }).then((r) => r.json()),
           fetch("/api/palpites/mata-mata", { headers }).then((r) => r.json()),
         ]).then(([palpiteData, palpiteMataData]) => {
-          const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
+          const p: Record<
+            number,
+            {
+              golsMandante: string;
+              golsVisitante: string;
+              penaltisMandante?: string;
+              penaltisVisitante?: string;
+            }
+          > = {};
           for (const partida of d.partidas) {
             const palpite = palpiteData.palpites?.find(
               (pp: { partidaId: number; golsMandante: number; golsVisitante: number }) =>
@@ -106,8 +122,16 @@ export default function BolaoPage() {
           if (palpiteMataData.palpites) {
             for (const palpite of palpiteMataData.palpites) {
               p[palpite.partidaId] = {
-                golsMandante: String(palpite.golsMandante),
-                golsVisitante: String(palpite.golsVisitante),
+                golsMandante: palpite.golsMandante !== null ? String(palpite.golsMandante) : "",
+                golsVisitante: palpite.golsVisitante !== null ? String(palpite.golsVisitante) : "",
+                penaltisMandante:
+                  palpite.penaltisMandante !== null && palpite.penaltisMandante !== undefined
+                    ? String(palpite.penaltisMandante)
+                    : undefined,
+                penaltisVisitante:
+                  palpite.penaltisVisitante !== null && palpite.penaltisVisitante !== undefined
+                    ? String(palpite.penaltisVisitante)
+                    : undefined,
               };
             }
           }
@@ -143,6 +167,9 @@ export default function BolaoPage() {
     if (!p) return;
     const golsMandante = parseInt(p.golsMandante);
     const golsVisitante = parseInt(p.golsVisitante);
+    const penaltisMandante = p.penaltisMandante ? parseInt(p.penaltisMandante) : undefined;
+    const penaltisVisitante = p.penaltisVisitante ? parseInt(p.penaltisVisitante) : undefined;
+
     const isLimpar = isNaN(golsMandante) && isNaN(golsVisitante);
 
     if (!isLimpar && (isNaN(golsMandante) || isNaN(golsVisitante))) return;
@@ -158,7 +185,7 @@ export default function BolaoPage() {
         body: JSON.stringify(
           isLimpar
             ? { partidaId, golsMandante: null, golsVisitante: null }
-            : { partidaId, golsMandante, golsVisitante },
+            : { partidaId, golsMandante, golsVisitante, penaltisMandante, penaltisVisitante },
         ),
       });
       if (res.status === 401) {
@@ -323,7 +350,11 @@ export default function BolaoPage() {
 
                         const golsM = placares[p.numero]?.golsMandante ?? "";
                         const golsV = placares[p.numero]?.golsVisitante ?? "";
+                        const penM = placares[p.numero]?.penaltisMandante ?? "";
+                        const penV = placares[p.numero]?.penaltisVisitante ?? "";
                         const isBloqueado = new Date(p.dataHora) <= new Date();
+                        const isEmpate =
+                          golsM !== "" && golsV !== "" && Number(golsM) === Number(golsV);
 
                         return (
                           <div key={p.numero} className="relative">
@@ -343,6 +374,7 @@ export default function BolaoPage() {
                                 setPlacares((prev) => ({
                                   ...prev,
                                   [p.numero]: {
+                                    ...prev[p.numero],
                                     golsMandante: v,
                                     golsVisitante: prev[p.numero]?.golsVisitante ?? "",
                                   },
@@ -352,8 +384,34 @@ export default function BolaoPage() {
                                 setPlacares((prev) => ({
                                   ...prev,
                                   [p.numero]: {
+                                    ...prev[p.numero],
                                     golsMandante: prev[p.numero]?.golsMandante ?? "",
                                     golsVisitante: v,
+                                  },
+                                }))
+                              }
+                              empate={isEmpate}
+                              penaltisMandante={penM}
+                              penaltisVisitante={penV}
+                              onChangePenaltisMandante={(v) =>
+                                setPlacares((prev) => ({
+                                  ...prev,
+                                  [p.numero]: {
+                                    ...prev[p.numero],
+                                    golsMandante: prev[p.numero]?.golsMandante ?? "",
+                                    golsVisitante: prev[p.numero]?.golsVisitante ?? "",
+                                    penaltisMandante: v,
+                                  },
+                                }))
+                              }
+                              onChangePenaltisVisitante={(v) =>
+                                setPlacares((prev) => ({
+                                  ...prev,
+                                  [p.numero]: {
+                                    ...prev[p.numero],
+                                    golsMandante: prev[p.numero]?.golsMandante ?? "",
+                                    golsVisitante: prev[p.numero]?.golsVisitante ?? "",
+                                    penaltisVisitante: v,
                                   },
                                 }))
                               }

@@ -15,6 +15,11 @@ interface Props {
   disabled?: boolean;
   onOverlayClick?: () => void;
   salvando?: boolean;
+  penaltisMandante?: string | number;
+  penaltisVisitante?: string | number;
+  onChangePenaltisMandante?: (valor: string) => void;
+  onChangePenaltisVisitante?: (valor: string) => void;
+  empate?: boolean;
 }
 
 export default function PlacarCard({
@@ -28,8 +33,15 @@ export default function PlacarCard({
   disabled,
   onOverlayClick,
   salvando,
+  penaltisMandante,
+  penaltisVisitante,
+  onChangePenaltisMandante,
+  onChangePenaltisVisitante,
+  empate,
 }: Props) {
   const faseFormatada = p.grupoId ? `Grupo ${p.grupoId}` : p.fase.replace(/_/g, " ").toLowerCase();
+
+  const penInputClass = `w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-14 sm:text-sm`;
 
   return (
     <div className="w-full max-w-full overflow-hidden flex flex-col md:block rounded-xl border border-zinc-200 bg-white p-4 transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
@@ -67,6 +79,53 @@ export default function PlacarCard({
             <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
           </div>
         </div>
+
+        {empate &&
+          p.mandante &&
+          p.visitante &&
+          onChangePenaltisMandante &&
+          onChangePenaltisVisitante && (
+            <div className="mt-4 flex flex-col items-center justify-center border-t border-dashed border-zinc-200 pt-4 dark:border-zinc-800">
+              <span className="mb-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                Pênaltis
+              </span>
+              <div className="flex items-center justify-center gap-3">
+                <div className="flex items-center gap-2">
+                  <FlagIcon
+                    codigo={p.mandante.codigoPais}
+                    className="h-5 w-auto rounded-sm shadow-sm"
+                  />
+                  <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    value={penaltisMandante ?? ""}
+                    onChange={(e) => onChangePenaltisMandante(e.target.value)}
+                    onBlur={onBlur}
+                    disabled={disabled}
+                    className={penInputClass}
+                  />
+                </div>
+                <span className="text-xs font-bold text-zinc-300">X</span>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    value={penaltisVisitante ?? ""}
+                    onChange={(e) => onChangePenaltisVisitante(e.target.value)}
+                    onBlur={onBlur}
+                    disabled={disabled}
+                    className={penInputClass}
+                  />
+                  <FlagIcon
+                    codigo={p.visitante.codigoPais}
+                    className="h-5 w-auto rounded-sm shadow-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
 
         <div className="mt-4 border-t border-zinc-300/30 dark:border-zinc-700/30" />
         <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
@@ -119,6 +178,54 @@ export default function PlacarCard({
             isMobile
           />
         </div>
+
+        {empate &&
+          p.mandante &&
+          p.visitante &&
+          onChangePenaltisMandante &&
+          onChangePenaltisVisitante && (
+            <div className="mt-4 flex flex-col items-center justify-center border-t border-dashed border-zinc-200 pt-3 dark:border-zinc-800">
+              <span className="mb-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                Pênaltis
+              </span>
+              <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <FlagIcon
+                    codigo={p.mandante.codigoPais}
+                    className="h-4 w-auto rounded-sm shadow-sm"
+                  />
+                  <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    value={penaltisMandante ?? ""}
+                    onChange={(e) => onChangePenaltisMandante(e.target.value)}
+                    onBlur={onBlur}
+                    disabled={disabled}
+                    className={penInputClass}
+                  />
+                </div>
+                <span className="text-[10px] font-bold text-zinc-300">X</span>
+                <div className="flex items-center gap-1.5">
+                  <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    value={penaltisVisitante ?? ""}
+                    onChange={(e) => onChangePenaltisVisitante(e.target.value)}
+                    onBlur={onBlur}
+                    disabled={disabled}
+                    className={penInputClass}
+                  />
+                  <FlagIcon
+                    codigo={p.visitante.codigoPais}
+                    className="h-4 w-auto rounded-sm shadow-sm"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
         <div className="my-2 border-t border-zinc-300/30 dark:border-zinc-700/30" />
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
           <span className="font-mono">J{numero ?? p.id}</span>
