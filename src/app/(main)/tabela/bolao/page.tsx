@@ -72,42 +72,49 @@ export default function BolaoPage() {
           })
           .catch(() => {});
 
-        fetch("/api/palpite", { headers })
-          .then((r) => r.json())
-          .then((palpiteData) => {
-            const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
-            for (const partida of d.partidas) {
-              const palpite = palpiteData.palpites?.find(
-                (pp: { partidaId: number; golsMandante: number; golsVisitante: number }) =>
-                  pp.partidaId === partida.id,
-              );
-              if (palpite) {
-                p[partida.id] = {
+        Promise.all([
+          fetch("/api/palpite", { headers }).then((r) => r.json()),
+          fetch("/api/palpites/mata-mata", { headers }).then((r) => r.json()),
+        ]).then(([palpiteData, palpiteMataData]) => {
+          const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
+          for (const partida of d.partidas) {
+            const palpite = palpiteData.palpites?.find(
+              (pp: { partidaId: number; golsMandante: number; golsVisitante: number }) =>
+                pp.partidaId === partida.id,
+            );
+            if (palpite) {
+              p[partida.id] = {
+                golsMandante: String(palpite.golsMandante),
+                golsVisitante: String(palpite.golsVisitante),
+              };
+            } else {
+              p[partida.id] = { golsMandante: "", golsVisitante: "" };
+            }
+          }
+
+          if (palpiteData.palpites) {
+            for (const palpite of palpiteData.palpites) {
+              if (!p[palpite.partidaId]) {
+                p[palpite.partidaId] = {
                   golsMandante: String(palpite.golsMandante),
                   golsVisitante: String(palpite.golsVisitante),
                 };
-              } else {
-                p[partida.id] = { golsMandante: "", golsVisitante: "" };
               }
             }
+          }
 
-            // Map palpites for bracket matches as well (we need the actual IDs of the matches)
-            // But we don't have all IDs easily without parsing the bracket. Let's do it when the bracket is loaded, or just rely on API palpite data.
-            // Since api/palpite returns ALL palpites, we can just populate all of them!
-            if (palpiteData.palpites) {
-              for (const palpite of palpiteData.palpites) {
-                if (!p[palpite.partidaId]) {
-                  p[palpite.partidaId] = {
-                    golsMandante: String(palpite.golsMandante),
-                    golsVisitante: String(palpite.golsVisitante),
-                  };
-                }
-              }
+          if (palpiteMataData.palpites) {
+            for (const palpite of palpiteMataData.palpites) {
+              p[palpite.partidaId] = {
+                golsMandante: String(palpite.golsMandante),
+                golsVisitante: String(palpite.golsVisitante),
+              };
             }
+          }
 
-            setPlacares(p);
-            setLoading(false);
-          });
+          setPlacares(p);
+          setLoading(false);
+        });
       });
   }, []);
 
@@ -142,7 +149,10 @@ export default function BolaoPage() {
 
     setSalvandoPartida(partidaId);
     try {
-      const res = await fetch("/api/palpite", {
+      const isMataMata = partidaId > 48; // A simple heuristic: groups are 1-48, knockout are 49-64
+      const url = isMataMata ? "/api/palpites/mata-mata" : "/api/palpite";
+
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${t}` },
         body: JSON.stringify(
