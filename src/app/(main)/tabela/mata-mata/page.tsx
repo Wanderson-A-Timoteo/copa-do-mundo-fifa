@@ -179,7 +179,7 @@ export default function TabelaMataMataPage() {
 
     const [resGrupos, resPalpites] = await Promise.all([
       fetch(`/api/grupos?usuarioId=${usuarioId}`, { headers }),
-      fetch("/api/palpites/mata-mata", { headers }),
+      fetch("/api/simulacao/mata-mata", { headers }),
     ]);
 
     const dataGrupos = await resGrupos.json();
@@ -187,7 +187,7 @@ export default function TabelaMataMataPage() {
 
     const grupos: GrupoStanding[] = dataGrupos.grupos;
     gruposRef.current = grupos;
-    const palpites = dataPalpites.palpites.map(
+    const palpites = dataPalpites.simulacoes.map(
       (p: {
         partidaId: number;
         golsMandante: number | null;
@@ -238,7 +238,7 @@ export default function TabelaMataMataPage() {
       const body: Record<string, unknown> = { partidaId, golsMandante, golsVisitante };
       if (penaltisMandante !== null) body.penaltisMandante = penaltisMandante;
       if (penaltisVisitante !== null) body.penaltisVisitante = penaltisVisitante;
-      await fetch("/api/palpites/mata-mata", {
+      await fetch("/api/simulacao/mata-mata", {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -312,7 +312,7 @@ export default function TabelaMataMataPage() {
         setSalvando((prev) => new Set([...prev, ...ids]));
         try {
           for (const id of ids) {
-            await fetch("/api/palpites/mata-mata", {
+            await fetch("/api/simulacao/mata-mata", {
               method: "POST",
               headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
               body: JSON.stringify({ partidaId: id, golsMandante: null, golsVisitante: null }),
