@@ -193,6 +193,13 @@ Ferramentas independentes do contexto de negócio:
 Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/oficial/page.tsx`), a engine de transição entre Fase de Grupos e Fase Eliminatória opera da seguinte forma:
 
 - **Caminho do Service:** A lógica de transição **não** persiste os novos confrontos no banco de dados através de um serviço backend tradicional. A promoção das seleções ocorre de forma 100% dinâmica e em tempo real através da função de domínio `computeBracket` (localizada em `src/lib/compute-bracket.ts`).
-- **Método de Persistência:** O sistema não cria novas linhas na tabela `Partida`, nem preenche colunas `mandanteId` ou `visitanteId` no banco para os jogos de mata-mata. As partidas da fase eliminatória já existem mapeadas (no formato da Copa) e os placares do mata-mata são gravados separadamente através de *Upserts* na tabela-espelho `ResultadoOficial`.
+- **Método de Persistência:** O sistema não cria novas linhas na tabela `Partida`, nem preenche colunas `mandanteId` ou `visitanteId` no banco para os jogos de mata-mata. As partidas da fase eliminatória já existem mapeadas (no formato da Copa) e os placares do mata-mata são gravados separadamente através de _Upserts_ na tabela-espelho `ResultadoOficial`.
 - **Gatilho:** Não existe um endpoint dedicado como `/api/admin/promover`. O gatilho é puramente reativo: ao salvar um jogo da Fase de Grupos via `PATCH /api/partidas/[id]`, a API recalcula a classificação (`calcularClassificacaoGrupos`). O frontend consome essa nova tabela, executa o `computeBracket` localmente, deduz os classificados (incluindo a repescagem dos terceiros colocados) e monta a árvore de mata-mata automaticamente na tela do Admin. Ao lançar um placar do mata-mata, o Admin dispara um `POST /api/resultados-oficiais`.
 - **Regras de Bloqueio:** Atualmente, **não** existe uma regra de negócio ou bloqueio no backend que impeça a transição ou o lançamento de resultados no mata-mata caso existam jogos da fase de grupos pendentes. A transição reflete a pontuação parcial.
+
+## Registro de Alterações (14-15/07/2026)
+
+- **Correção de Persistência (IDs):** Ajuste na estratégia de auto-incremento de IDs de partidas para separar logicamente o domínio de Grupos do domínio de Mata-Mata.
+- **Isolamento de Domínio:** Migração das rotas de testes para namespace `simulacao-*` para garantir conformidade com o Bolão Oficial.
+- **Motor de Pênaltis:** Implementação de lógica condicional no `PlacarCard` para exibição dinâmica de inputs de pênaltis baseada na paridade de gols em partidas de Mata-Mata.
+- **Renderização de Fases Avançadas:** Refatoração do componente de exibição para suportar estados de equipes indefinidas (`A definir`) em partidas de semifinal e final.
