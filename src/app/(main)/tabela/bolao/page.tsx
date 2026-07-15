@@ -7,10 +7,12 @@ import ModalLogin from "@/components/ModalLogin";
 import { IconClock, IconMapPin, IconLock } from "@/components/Icons";
 import { formatarData, formatarHora } from "@/lib/format";
 import type { ClassificacaoSelecao, PartidaResumo } from "@/types";
+import type { BracketResult } from "@/lib/compute-bracket";
 import PlacarCard from "@/components/PlacarCard";
 
 export default function BolaoPage() {
   const [partidas, setPartidas] = useState<PartidaResumo[]>([]);
+  const [bracket, setBracket] = useState<BracketResult | null>(null);
   const [placares, setPlacares] = useState<
     Record<number, { golsMandante: string; golsVisitante: string }>
   >({});
@@ -52,6 +54,15 @@ export default function BolaoPage() {
       .then((r) => r.json())
       .then((d) => {
         setPartidas(d.partidas);
+
+        // Also fetch Mata-Mata bracket
+        fetch("/api/bracket/oficial")
+          .then((rb) => rb.json())
+          .then((db) => {
+            if (db.bracket) setBracket(db.bracket);
+          })
+          .catch(() => {});
+
         fetch("/api/palpite", { headers })
           .then((r) => r.json())
           .then((palpiteData) => {
@@ -70,6 +81,21 @@ export default function BolaoPage() {
                 p[partida.id] = { golsMandante: "", golsVisitante: "" };
               }
             }
+
+            // Map palpites for bracket matches as well (we need the actual IDs of the matches)
+            // But we don't have all IDs easily without parsing the bracket. Let's do it when the bracket is loaded, or just rely on API palpite data.
+            // Since api/palpite returns ALL palpites, we can just populate all of them!
+            if (palpiteData.palpites) {
+              for (const palpite of palpiteData.palpites) {
+                if (!p[palpite.partidaId]) {
+                  p[palpite.partidaId] = {
+                    golsMandante: String(palpite.golsMandante),
+                    golsVisitante: String(palpite.golsVisitante),
+                  };
+                }
+              }
+            }
+
             setPlacares(p);
           });
       });
@@ -210,6 +236,110 @@ export default function BolaoPage() {
                 </section>
               ))
             )}
+          </div>
+        )}
+
+        {bracket && (
+          <div className="mt-16 border-t border-zinc-200 pt-10 dark:border-zinc-800">
+            <h2 className="mb-4 mt-10 text-xl font-bold">Fase Eliminatória</h2>
+            <div className="space-y-10">
+              {bracket.fases.map((fase) => {
+                const temPartidas = fase.partidas.some((p) => true);
+                if (!temPartidas) return null;
+
+                return (
+                  <section key={fase.key}>
+                    <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-200">
+                      {fase.label}
+                    </h3>
+                    <div className="space-y-3">
+                      {fase.partidas.map((p) => {
+                        if (!p.mandante || !p.visitante) {
+                          return (
+                            <div
+                              key={p.numero}
+                              className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center dark:border-zinc-700 dark:bg-zinc-900/50"
+                            >
+                              <span className="font-mono text-sm text-zinc-400">J{p.numero}</span>
+                              <p className="mt-2 text-sm text-zinc-500">
+                                Aguardando definição das equipes
+                              </p>
+                            </div>
+                          );
+                        }
+
+                        // Parse into PartidaResumo shape for PlacarCard
+                        const partidaFake = {
+                          id: p.numero, // Assuming ID is same as numero for saving
+                          fase: p.fase,
+                          dataHora: p.dataHora,
+                          estadio: {
+                            nome: p.estadio?.nome || "",
+                            cidade: p.estadio?.cidade || "",
+                            pais: "",
+                          },
+                          mandante: {
+                            id: p.mandante.id,
+                            nome: p.mandante.nome,
+                            codigoPais: p.mandante.codigoPais,
+                          },
+                          visitante: {
+                            id: p.visitante.id,
+                            nome: p.visitante.nome,
+                            codigoPais: p.visitante.codigoPais,
+                          },
+                          grupoId: null,
+                          encerrada: p.resolvida,
+                        } as unknown as PartidaResumo;
+
+                        const golsM = placares[p.numero]?.golsMandante ?? "";
+                        const golsV = placares[p.numero]?.golsVisitante ?? "";
+                        const isBloqueado = new Date(p.dataHora) <= new Date();
+
+                        return (
+                          <div key={p.numero} className="relative">
+                            {isBloqueado && (
+                              <div className="absolute -top-3 right-2 z-10 flex items-center gap-1 rounded-full bg-zinc-800 px-2 py-1 text-[10px] text-zinc-200">
+                                <IconLock className="h-3 w-3" />
+                                <span>Encerrado</span>
+                              </div>
+                            )}
+                            <PlacarCard
+                              partida={partidaFake}
+                              numero={p.numero}
+                              golsMandante={golsM}
+                              golsVisitante={golsV}
+                              disabled={!token || isBloqueado}
+                              onChangeMandante={(v) =>
+                                setPlacares((prev) => ({
+                                  ...prev,
+                                  [p.numero]: {
+                                    golsMandante: v,
+                                    golsVisitante: prev[p.numero]?.golsVisitante ?? "",
+                                  },
+                                }))
+                              }
+                              onChangeVisitante={(v) =>
+                                setPlacares((prev) => ({
+                                  ...prev,
+                                  [p.numero]: {
+                                    golsMandante: prev[p.numero]?.golsMandante ?? "",
+                                    golsVisitante: v,
+                                  },
+                                }))
+                              }
+                              onBlur={() => autoSalvar(p.numero)}
+                              onOverlayClick={() => setShowModalLogin(true)}
+                              salvando={salvandoPartida === p.numero}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
           </div>
         )}
       </main>
