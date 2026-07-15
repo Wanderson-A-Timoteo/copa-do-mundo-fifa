@@ -6,6 +6,7 @@ import { formatarData, formatarHora } from "@/lib/format";
 import type { PartidaResolvida } from "@/lib/compute-bracket";
 import ScoreInput from "@/components/ScoreInput";
 import { useState } from "react";
+import { useToast } from "@/contexts/ToastContext";
 
 interface Props {
   partida: PartidaResolvida;
@@ -35,6 +36,7 @@ export default function MataMataPartidaEditor({
   const penV = placar.penaltisVisitante;
 
   const [isApurando, setIsApurando] = useState(false);
+  const toast = useToast();
 
   const handleApurar = async () => {
     setIsApurando(true);
@@ -46,9 +48,9 @@ export default function MataMataPartidaEditor({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.erro || "Erro ao apurar");
-      alert(`${data.palpitesApurados} palpites apurados com sucesso!`);
+      toast.success(`${data.palpitesApurados} palpites apurados com sucesso!`);
     } catch (e: any) {
-      alert(e.message);
+      toast.error(e.message);
     } finally {
       setIsApurando(false);
     }

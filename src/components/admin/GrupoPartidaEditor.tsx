@@ -3,6 +3,7 @@ import { IconClock, IconMapPin } from "@/components/Icons";
 import { formatarData, formatarHora, formatarDataLonga } from "@/lib/format";
 import ScoreInput from "@/components/ScoreInput";
 import { useState } from "react";
+import { useToast } from "@/contexts/ToastContext";
 
 export interface GrupoPartida {
   id: number;
@@ -39,6 +40,7 @@ export default function GrupoPartidaEditor({
   const golsV = placar.golsVisitante;
 
   const [isApurando, setIsApurando] = useState(false);
+  const toast = useToast();
 
   const handleApurar = async () => {
     setIsApurando(true);
@@ -50,9 +52,9 @@ export default function GrupoPartidaEditor({
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.erro || "Erro ao apurar");
-      alert(`${data.palpitesApurados} palpites apurados com sucesso!`);
+      toast.success(`${data.palpitesApurados} palpites apurados com sucesso!`);
     } catch (e: any) {
-      alert(e.message);
+      toast.error(e.message);
     } finally {
       setIsApurando(false);
     }
