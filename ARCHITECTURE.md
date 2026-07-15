@@ -239,3 +239,13 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
   - `src/app/(main)/tabela/simulacao-grupos/page.tsx` (UI do Simulador)
   - `src/services/simulacao.service.ts` (Regras de negócio isoladas)
   - `src/app/api/simulacao/**` (Endpoints de simulação)
+
+## Fluxo Operacional: /tabela/simulacao-mata-mata
+
+- **Visão Geral:** Ambiente de sandbox avançado para simulação de chaveamentos eliminatórios.
+- **Renderização Dinâmica:** A árvore de confrontos é montada reativamente no cliente. A página lê os resultados de grupos simulados e utiliza lógica de domínio para calcular os próximos confrontos, permitindo ao usuário testar diferentes 'caminhos' até a final.
+- **Isolamento de Persistência:** Dados de placares e pênaltis salvos aqui são armazenados exclusivamente nas tabelas de simulação. Isso assegura que o ambiente de teste nunca colida com o fluxo oficial de palpites ou com a verdade oficial do torneio.
+- **Arquivos Envolvidos:**
+  - `src/app/(main)/tabela/simulacao-mata-mata/page.tsx` (Interface do Chaveamento)
+  - `src/services/simulacao.service.ts` (Persistência isolada)
+  - `src/lib/compute-bracket.ts` (Lógica de montagem da árvore)
