@@ -6,6 +6,7 @@ import type { PartidaResumo } from "@/types";
 
 interface Props {
   partida: PartidaResumo;
+  numero?: number;
   golsMandante: string | number;
   golsVisitante: string | number;
   onChangeMandante: (valor: string) => void;
@@ -18,6 +19,7 @@ interface Props {
 
 export default function PlacarCard({
   partida: p,
+  numero,
   golsMandante,
   golsVisitante,
   onChangeMandante,
@@ -68,7 +70,7 @@ export default function PlacarCard({
 
         <div className="mt-4 border-t border-zinc-300/30 dark:border-zinc-700/30" />
         <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
-          <span className="font-mono">J{p.id}</span>
+          <span className="font-mono">J{numero ?? p.id}</span>
           <span className="text-zinc-300">|</span>
           <span className="capitalize">{faseFormatada}</span>
           <span className="text-zinc-300">|</span>
@@ -119,7 +121,7 @@ export default function PlacarCard({
         </div>
         <div className="my-2 border-t border-zinc-300/30 dark:border-zinc-700/30" />
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
-          <span className="font-mono">J{p.id}</span>
+          <span className="font-mono">J{numero ?? p.id}</span>
           <span className="text-zinc-300">|</span>
           <span className="capitalize">{faseFormatada}</span>
           <span className="text-zinc-300">|</span>

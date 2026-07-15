@@ -165,6 +165,8 @@ export default function BolaoPage() {
                       const golsV = placares[p.id]?.golsVisitante ?? "";
                       const isBloqueado = new Date(p.dataHora) <= new Date();
 
+                      const numeroJogo = partidas.findIndex((x) => x.id === p.id) + 1;
+
                       return (
                         <div key={p.id} className="relative">
                           {isBloqueado && (
@@ -175,6 +177,7 @@ export default function BolaoPage() {
                           )}
                           <PlacarCard
                             partida={p}
+                            numero={numeroJogo}
                             golsMandante={golsM}
                             golsVisitante={golsV}
                             disabled={!token || isBloqueado}

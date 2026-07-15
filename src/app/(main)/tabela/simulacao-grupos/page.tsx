@@ -262,35 +262,38 @@ export default function PlacarPage() {
                   {partidasGrupo.map((p) => {
                     const golsM = placares[p.id]?.golsMandante ?? "";
                     const golsV = placares[p.id]?.golsVisitante ?? "";
+                    const numeroJogo = partidas.findIndex((x) => x.id === p.id) + 1;
                     return (
-                      <PlacarCard
-                        key={p.id}
-                        partida={p}
-                        golsMandante={golsM}
-                        golsVisitante={golsV}
-                        disabled={!token}
-                        onChangeMandante={(v) =>
-                          setPlacares((prev) => ({
-                            ...prev,
-                            [p.id]: {
-                              golsMandante: v,
-                              golsVisitante: prev[p.id]?.golsVisitante ?? "",
-                            },
-                          }))
-                        }
-                        onChangeVisitante={(v) =>
-                          setPlacares((prev) => ({
-                            ...prev,
-                            [p.id]: {
-                              golsMandante: prev[p.id]?.golsMandante ?? "",
-                              golsVisitante: v,
-                            },
-                          }))
-                        }
-                        onBlur={() => autoSalvar(p.id)}
-                        onOverlayClick={() => setShowModalLogin(true)}
-                        salvando={salvandoPartida === p.id}
-                      />
+                      <div key={p.id} className="relative">
+                        <PlacarCard
+                          partida={p}
+                          numero={numeroJogo}
+                          golsMandante={golsM}
+                          golsVisitante={golsV}
+                          disabled={!token}
+                          onChangeMandante={(v) =>
+                            setPlacares((prev) => ({
+                              ...prev,
+                              [p.id]: {
+                                golsMandante: v,
+                                golsVisitante: prev[p.id]?.golsVisitante ?? "",
+                              },
+                            }))
+                          }
+                          onChangeVisitante={(v) =>
+                            setPlacares((prev) => ({
+                              ...prev,
+                              [p.id]: {
+                                golsMandante: prev[p.id]?.golsMandante ?? "",
+                                golsVisitante: v,
+                              },
+                            }))
+                          }
+                          onBlur={() => autoSalvar(p.id)}
+                          onOverlayClick={() => setShowModalLogin(true)}
+                          salvando={salvandoPartida === p.id}
+                        />
+                      </div>
                     );
                   })}
                 </div>

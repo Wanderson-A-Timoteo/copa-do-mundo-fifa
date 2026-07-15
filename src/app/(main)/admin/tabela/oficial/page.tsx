@@ -216,9 +216,10 @@ export default function AdminOficialPage() {
     }
   }
 
-  const partidasPorDia = partidas.reduce<Record<string, GrupoPartida[]>>((acc, p) => {
+  const partidasPorDia = partidas.reduce<Record<string, GrupoPartida[]>>((acc, p, index) => {
     const chave = formatarData(p.dataHora);
     if (!acc[chave]) acc[chave] = [];
+    p.numero = index + 1;
     acc[chave].push(p);
     return acc;
   }, {});
@@ -305,7 +306,7 @@ export default function AdminOficialPage() {
               <section key={fase.key} id={`fase-${fase.key}`}>
                 <h3 className="mb-4 text-lg font-bold">{fase.label}</h3>
                 <div className="space-y-3">
-                  {fase.partidas.map((p) => {
+                  {fase.partidas.map((p, index) => {
                     if (!p.mandante && !p.visitante) return null;
                     return (
                       <MataMataPartidaEditor
