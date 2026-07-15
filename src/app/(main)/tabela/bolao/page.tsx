@@ -176,7 +176,7 @@ export default function BolaoPage() {
 
     setSalvandoPartida(partidaId);
     try {
-      const isMataMata = partidaId > 48; // A simple heuristic: groups are 1-48, knockout are 49-64
+      const isMataMata = !partidas.some((p) => p.id === partidaId);
       const url = isMataMata ? "/api/palpites/mata-mata" : "/api/palpite";
 
       const res = await fetch(url, {
@@ -310,20 +310,6 @@ export default function BolaoPage() {
                     </h3>
                     <div className="space-y-3">
                       {fase.partidas.map((p) => {
-                        if (!p.mandante || !p.visitante) {
-                          return (
-                            <div
-                              key={p.numero}
-                              className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center dark:border-zinc-700 dark:bg-zinc-900/50"
-                            >
-                              <span className="font-mono text-sm text-zinc-400">J{p.numero}</span>
-                              <p className="mt-2 text-sm text-zinc-500">
-                                Aguardando definição das equipes
-                              </p>
-                            </div>
-                          );
-                        }
-
                         // Parse into PartidaResumo shape for PlacarCard
                         const partidaFake = {
                           id: p.numero, // Assuming ID is same as numero for saving
@@ -334,16 +320,16 @@ export default function BolaoPage() {
                             cidade: p.estadio?.cidade || "",
                             pais: "",
                           },
-                          mandante: {
+                          mandante: p.mandante ? {
                             id: p.mandante.id,
                             nome: p.mandante.nome,
                             codigoPais: p.mandante.codigoPais,
-                          },
-                          visitante: {
+                          } : undefined,
+                          visitante: p.visitante ? {
                             id: p.visitante.id,
                             nome: p.visitante.nome,
                             codigoPais: p.visitante.codigoPais,
-                          },
+                          } : undefined,
                           grupoId: null,
                           encerrada: p.resolvida,
                         } as unknown as PartidaResumo;

@@ -48,35 +48,47 @@ export default function PlacarCard({
       <div className="hidden md:block">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-            <FlagIcon codigo={p.mandante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
-            <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
+            {p.mandante ? (
+              <>
+                <FlagIcon codigo={p.mandante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                <span className="truncate font-medium sm:text-base">{p.mandante.nome}</span>
+              </>
+            ) : (
+              <span className="truncate text-sm text-zinc-400">A definir</span>
+            )}
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
             <ScoreInput
-              disabled={disabled}
+              disabled={disabled || !p.mandante || !p.visitante}
               value={golsMandante.toString()}
               onChange={onChangeMandante}
               onBlur={onBlur}
-              showOverlay={disabled}
+              showOverlay={disabled || !p.mandante || !p.visitante}
               onOverlayClick={onOverlayClick}
               salvando={salvando}
             />
             <span className="text-sm text-zinc-400 sm:text-base">x</span>
             <ScoreInput
-              disabled={disabled}
+              disabled={disabled || !p.mandante || !p.visitante}
               value={golsVisitante.toString()}
               onChange={onChangeVisitante}
               onBlur={onBlur}
-              showOverlay={disabled}
+              showOverlay={disabled || !p.mandante || !p.visitante}
               onOverlayClick={onOverlayClick}
               salvando={salvando}
             />
           </div>
 
           <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
-            <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
-            <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+            {p.visitante ? (
+              <>
+                <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
+                <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+              </>
+            ) : (
+              <span className="truncate text-right text-sm text-zinc-400">A definir</span>
+            )}
           </div>
         </div>
 
@@ -146,33 +158,45 @@ export default function PlacarCard({
       </div>
 
       <div className="md:hidden">
-        <div className="flex justify-between items-center w-full gap-2">
-          <div className="flex min-w-0 flex-1 items-center gap-1.5">
-            <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
-            <span className="truncate text-sm font-medium">{p.mandante.nome}</span>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5">
+            {p.mandante ? (
+              <>
+                <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                <span className="truncate text-sm font-medium">{p.mandante.nome}</span>
+              </>
+            ) : (
+              <span className="truncate text-xs text-zinc-400">A definir</span>
+            )}
           </div>
           <ScoreInput
-            disabled={disabled}
+            disabled={disabled || !p.mandante || !p.visitante}
             value={golsMandante.toString()}
             onChange={onChangeMandante}
             onBlur={onBlur}
-            showOverlay={disabled}
+            showOverlay={disabled || !p.mandante || !p.visitante}
             onOverlayClick={onOverlayClick}
             salvando={salvando}
             isMobile
           />
         </div>
-        <div className="mt-1 flex justify-between items-center w-full gap-2">
-          <div className="flex min-w-0 flex-1 items-center gap-1.5">
-            <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
-            <span className="truncate text-sm font-medium">{p.visitante.nome}</span>
+        <div className="mt-1 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5">
+            {p.visitante ? (
+              <>
+                <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                <span className="truncate text-sm font-medium">{p.visitante.nome}</span>
+              </>
+            ) : (
+              <span className="truncate text-xs text-zinc-400">A definir</span>
+            )}
           </div>
           <ScoreInput
-            disabled={disabled}
+            disabled={disabled || !p.mandante || !p.visitante}
             value={golsVisitante.toString()}
             onChange={onChangeVisitante}
             onBlur={onBlur}
-            showOverlay={disabled}
+            showOverlay={disabled || !p.mandante || !p.visitante}
             onOverlayClick={onOverlayClick}
             salvando={salvando}
             isMobile

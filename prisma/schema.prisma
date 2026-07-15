@@ -153,10 +153,10 @@ model Partida {
   fase                FasePartida
   grupoId             String?
   grupo               Grupo?   @relation(fields: [grupoId], references: [id])
-  selecaoMandanteId   Int
-  selecaoVisitanteId  Int
-  mandante            Selecao  @relation("mandante", fields: [selecaoMandanteId], references: [id])
-  visitante           Selecao  @relation("visitante", fields: [selecaoVisitanteId], references: [id])
+  selecaoMandanteId   Int?
+  selecaoVisitanteId  Int?
+  mandante            Selecao?  @relation("mandante", fields: [selecaoMandanteId], references: [id])
+  visitante           Selecao?  @relation("visitante", fields: [selecaoVisitanteId], references: [id])
   dataHora            DateTime
   estadioId           Int
   estadio             Estadio  @relation(fields: [estadioId], references: [id])
