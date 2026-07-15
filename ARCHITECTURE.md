@@ -211,6 +211,19 @@ A lógica de distribuição de pontos do Bolão Oficial foi desenhada focando em
 - **Tipagem Estrita e Guardas de Tipo:** Como a engine lida com duas fases distintas do torneio na mesma visualização de tabela, a tipagem de confrontos indefinidos (Mata-Mata) exige que `selecaoMandanteId` e `selecaoVisitanteId` aceitem `null`. A engine de grupos implementa _Type Guards_ (`if (partida.selecaoMandanteId === null) continue;`), instruindo o compilador a descartar cenários de indefinição durante o cálculo da classificação de grupos.
 - **Agregação de Ranking:** O Leaderboard (`/palpites/bolao/ranking`) realiza um `Promise.all` para ler e somar os valores das colunas `pontos` das tabelas separadas `Palpite` e `PalpiteMataMata`, consolidando a pontuação global em tempo real na memória.
 
+## Ecossistema: Álbum de Figurinhas e Trocas
+
+O sistema de figurinhas atua como um metagame (Gacha) paralelo ao Bolão, focado em coleção e negociação P2P.
+
+- **Modelagem de Dados (Inventário):** A relação N:M entre Usuário e Figurinha é tratada através da tabela pivot `AlbumFigurinha`, que armazena a `quantidade`. Isso determina de forma simples que uma figurinha repetida é caracterizada por `quantidade >= 2`, e a aquisição de novas figurinhas apenas incrementa esse contador. O modelo `Troca` contém referências para `remetenteId`, `destinatarioId`, `figurinhaDesejadaId`, e se relaciona 1:N com `TrocaFigurinhaOferecida`.
+- **Motor do Gacha (Pacote Diário):** O fluxo central (`src/services/album.service.ts`) controla a limitação diária de pacotes (`LIMITE_DIARIO = 10` pacotes de `4` figurinhas). O serviço verifica os campos `ultimoDiaAbertura` e `pacotesAbertosHoje` no registro do `User`. O sorteio é executado através de uma query de performance via `prisma.$queryRawUnsafe("SELECT id FROM figurinhas ORDER BY RANDOM() LIMIT $1")`. A gravação no inventário e a atualização do relógio do usuário ocorrem estritamente dentro de uma transação atômica (`prisma.$transaction`) com `upsert`.
+- **Máquina de Estados de Troca:** O ciclo de vida da negociação (`src/services/troca.service.ts`) transita entre os status de `pendente`, `aceita`, e `recusada` no modelo `Troca`.
+  - _Validação Antecipada:_ Na criação da proposta, o backend valida se o remetente realmente possui duplicatas (`quantidade >= 2`) das cartas oferecidas e não possui a desejada.
+  - _Liquidação (Settlement):_ Ao `responderTroca` como "aceitar", uma transação atômica massiva aplica uma cascata de `decrement` e `upsert` no inventário (`AlbumFigurinha`) de ambos os usuários, debitando e creditando as cartas trocadas simultaneamente. Se as quantidades mudaram no meio tempo, a transação reverte com erro e a troca é recusada por segurança.
+- **Fluxo Operacional de UI:**
+  - `/album/page.tsx`: Interface visual de abertura (Gacha), que realiza o fetch do pacote via API e aciona as animações de cartas, além de exibir a grade de figurinhas agrupadas por seleções.
+  - `/trocas/page.tsx` (e rotas filhas): Gestão da caixa de entrada, permitindo o administrador das propostas (recebidas e enviadas) e a construção de novas propostas (exploração de repetidas da comunidade).
+
 ## Registro de Alterações (14-15/07/2026)
 
 - **Correção de Persistência (IDs):** Ajuste na estratégia de auto-incremento de IDs de partidas para separar logicamente o domínio de Grupos do domínio de Mata-Mata.
@@ -270,17 +283,21 @@ A lógica de distribuição de pontos do Bolão Oficial foi desenhada focando em
 
 ## Mapeamento Estrutural e Grafo de Dependências
 
-| Camada / Arquivo         | Responsabilidade      | Depende de         | É Dependido por       | Motivo da Dependência                   |
-| :----------------------- | :-------------------- | :----------------- | :-------------------- | :-------------------------------------- |
-| `lib/prisma.ts`          | Conexão Única com BD  | -                  | Todos os `services`   | Singleton para evitar estouro de pools. |
-| `services/*.service.ts`  | Regras de Negócio     | `lib/prisma.ts`    | `api/` routes         | Centralizar regra e isolar DB da UI.    |
-| `app/api/`               | Adaptadores REST      | `services/`        | `hooks/`              | Separar request/response da lógica.     |
-| `components/`            | Interface (UI)        | `types/`           | `app/pages`           | Modularização de visual (Tailwind).     |
-| `lib/compute-bracket.ts` | Lógica de Chaveamento | -                  | `simulacao-mata-mata` | Abstrair cálculo complexo da UI.        |
-| `/tabela/grupos`         | Visualização Grupos   | `palpite.service`  | UI / Next.js          | Exibir classificação atualizada.        |
-| `/tabela/oficial`        | Resultados Oficiais   | `ResultadoOficial` | UI / Next.js          | Acesso público à verdade oficial.       |
-| `apurador.service.ts`    | Cálculo de Pontos     | Função Pura (Math) | `api/admin/apurar`    | Isolar regra de pontuação do DB (SoC).  |
-| `/admin/tabela/oficial`  | Gatilho de Apuração   | `apurador.service` | UI / Next.js          | Controle de distribuição de pontos.     |
+| Camada / Arquivo         | Responsabilidade      | Depende de         | É Dependido por       | Motivo da Dependência                            |
+| :----------------------- | :-------------------- | :----------------- | :-------------------- | :----------------------------------------------- |
+| `lib/prisma.ts`          | Conexão Única com BD  | -                  | Todos os `services`   | Singleton para evitar estouro de pools.          |
+| `services/*.service.ts`  | Regras de Negócio     | `lib/prisma.ts`    | `api/` routes         | Centralizar regra e isolar DB da UI.             |
+| `app/api/`               | Adaptadores REST      | `services/`        | `hooks/`              | Separar request/response da lógica.              |
+| `components/`            | Interface (UI)        | `types/`           | `app/pages`           | Modularização de visual (Tailwind).              |
+| `lib/compute-bracket.ts` | Lógica de Chaveamento | -                  | `simulacao-mata-mata` | Abstrair cálculo complexo da UI.                 |
+| `/tabela/grupos`         | Visualização Grupos   | `palpite.service`  | UI / Next.js          | Exibir classificação atualizada.                 |
+| `/tabela/oficial`        | Resultados Oficiais   | `ResultadoOficial` | UI / Next.js          | Acesso público à verdade oficial.                |
+| `apurador.service.ts`    | Cálculo de Pontos     | Função Pura (Math) | `api/admin/apurar`    | Isolar regra de pontuação do DB (SoC).           |
+| `/admin/tabela/oficial`  | Gatilho de Apuração   | `apurador.service` | UI / Next.js          | Controle de distribuição de pontos.              |
+| `album.service.ts`       | Motor Gacha e Limites | Função Pura / DB   | `/album`              | Controle de limite diário e sorteio aleatório.   |
+| `troca.service.ts`       | Transações Atômicas   | DB                 | `/trocas`             | Máquina de estados de inventário entre usuários. |
+| `/album`                 | UI do Gacha           | `album.service`    | UI / Next.js          | Visualização do álbum e animação de abertura.    |
+| `/trocas`                | Gestão de Propostas   | `troca.service`    | UI / Next.js          | Caixa de entrada de negociações de cartas.       |
 
 ### Pontos de Ruptura (God Objects)
 
