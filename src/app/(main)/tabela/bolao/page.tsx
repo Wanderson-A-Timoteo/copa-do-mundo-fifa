@@ -19,17 +19,22 @@ export default function BolaoPage() {
   const [token, setToken] = useState<string | null>(null);
   const [showModalLogin, setShowModalLogin] = useState(false);
   const [salvandoPartida, setSalvandoPartida] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const t = localStorage.getItem("token");
     if (t) setToken(t);
   }, []);
 
-  const carregar = useCallback(() => {
+  const carregar = useCallback((silent = false) => {
     const t = localStorage.getItem("token");
+    setToken(t);
+
+    if (!silent) setLoading(true);
     if (!t) {
       setPartidas([]);
       setPlacares({});
+      setLoading(false);
       return;
     }
 
@@ -40,6 +45,7 @@ export default function BolaoPage() {
     if (!usuarioSalvo) {
       setPartidas([]);
       setPlacares({});
+      setLoading(false);
       return;
     }
 
@@ -47,6 +53,7 @@ export default function BolaoPage() {
     if (!user?.id) {
       setPartidas([]);
       setPlacares({});
+      setLoading(false);
       return;
     }
 
@@ -97,6 +104,7 @@ export default function BolaoPage() {
             }
 
             setPlacares(p);
+            setLoading(false);
           });
       });
   }, []);
@@ -105,9 +113,12 @@ export default function BolaoPage() {
     carregar();
   }, [carregar]);
 
-  const atualizarPlacares = useCallback(() => {
-    carregar();
-  }, [carregar]);
+  const atualizarPlacares = useCallback(
+    (silent = false) => {
+      carregar(silent);
+    },
+    [carregar],
+  );
 
   const partidasPorDia = partidas.reduce<Record<string, PartidaResumo[]>>((acc, p) => {
     const chave = formatarData(p.dataHora);

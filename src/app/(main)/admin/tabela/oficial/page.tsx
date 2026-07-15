@@ -71,8 +71,8 @@ export default function AdminOficialPage() {
       });
   }, []);
 
-  const recalcularMataMata = useCallback(() => {
-    setLoadingKnockout(true);
+  const recalcularMataMata = useCallback((silent = false) => {
+    if (!silent) setLoadingKnockout(true);
 
     Promise.all([fetch("/api/grupos"), fetch("/api/resultados-oficiais")])
       .then(([rGrupos, rResultados]) => Promise.all([rGrupos.json(), rResultados.json()]))
@@ -165,7 +165,7 @@ export default function AdminOficialPage() {
             : pa,
         ),
       );
-      recalcularMataMata();
+      recalcularMataMata(true);
     } catch {
       // ignore
     } finally {
@@ -204,7 +204,7 @@ export default function AdminOficialPage() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(body),
       });
-      recalcularMataMata();
+      recalcularMataMata(true);
     } catch {
       // ignore
     } finally {
