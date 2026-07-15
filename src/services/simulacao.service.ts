@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { calcularClassificacaoGrupos, type MatchScore } from "./palpite.service";
 
 export async function getSimulacoes(usuarioId: number, partidaId?: number) {
   const where: Record<string, unknown> = { usuarioId };
@@ -72,5 +73,46 @@ export async function salvarSimulacaoMataMata(
     where: { usuarioId_partidaId: { usuarioId, partidaId } },
     create: { usuarioId, partidaId, ...data },
     update: data,
+  });
+}
+
+export async function calcularClassificacaoSimulacao(usuarioId: number) {
+  const grupos = await prisma.grupo.findMany({
+    include: { selecoes: true },
+    orderBy: { id: "asc" },
+  });
+
+  const simulacoes = await prisma.simulacao.findMany({ where: { usuarioId } });
+  const simulacoesPorPartida = new Map<number, MatchScore>();
+  for (const p of simulacoes) {
+    simulacoesPorPartida.set(p.partidaId, {
+      golsMandante: p.golsMandante,
+      golsVisitante: p.golsVisitante,
+    });
+  }
+
+  const todasPartidas = await prisma.partida.findMany({
+    where: { fase: "GRUPOS" },
+    select: { id: true, grupoId: true, selecaoMandanteId: true, selecaoVisitanteId: true },
+  });
+
+  const partidasPorGrupo: Record<string, typeof todasPartidas> = {};
+  for (const p of todasPartidas) {
+    if (!partidasPorGrupo[p.grupoId!]) partidasPorGrupo[p.grupoId!] = [];
+    partidasPorGrupo[p.grupoId!].push(p);
+  }
+
+  return grupos.map((grupo) => {
+    const partidasComPalpites = (partidasPorGrupo[grupo.id] || []).map((p) => ({
+      selecaoMandanteId: p.selecaoMandanteId,
+      selecaoVisitanteId: p.selecaoVisitanteId,
+      ...(simulacoesPorPartida.get(p.id) ?? { golsMandante: null, golsVisitante: null }),
+    }));
+
+    return {
+      id: grupo.id,
+      nome: grupo.nome,
+      selecoes: calcularClassificacaoGrupos(grupo.selecoes, partidasComPalpites),
+    };
   });
 }

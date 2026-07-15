@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-interface MatchScore {
+export interface MatchScore {
   golsMandante: number;
   golsVisitante: number;
 }
@@ -115,19 +115,19 @@ export async function salvarResultadoOficial(
   });
 }
 
-interface MatchRow {
+export interface MatchRow {
   selecaoMandanteId: number;
   selecaoVisitanteId: number;
   golsMandante: number | null;
   golsVisitante: number | null;
 }
 
-interface SelecaoGrupo {
+export interface SelecaoGrupo {
   id: number;
   nome: string;
 }
 
-function calcularClassificacaoGrupos(selecoes: SelecaoGrupo[], partidas: MatchRow[]) {
+export function calcularClassificacaoGrupos(selecoes: SelecaoGrupo[], partidas: MatchRow[]) {
   const pontos: Record<
     number,
     { p: number; j: number; v: number; e: number; d: number; gp: number; gc: number; sg: number }
@@ -181,7 +181,7 @@ export async function calcularClassificacao(usuarioId?: number) {
       orderBy: { id: "asc" },
     });
 
-    const palpites = await prisma.simulacao.findMany({ where: { usuarioId } });
+    const palpites = await prisma.palpite.findMany({ where: { usuarioId } });
     const palpitesPorPartida = new Map<number, MatchScore>();
     for (const p of palpites) {
       palpitesPorPartida.set(p.partidaId, {
