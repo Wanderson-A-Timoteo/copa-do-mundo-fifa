@@ -31,7 +31,7 @@ export default function ScoreInput({
     ? "w-12 px-2 py-1 text-sm"
     : "w-14 px-2 py-1.5 text-sm sm:w-16 sm:text-lg";
 
-  const opacityClasses = disabled || salvando || jogoIniciado ? "opacity-50" : "";
+  const opacityClasses = disabled || jogoIniciado ? "opacity-50" : "";
   const cursorClass = jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : "";
 
   const inputElement = (
