@@ -86,7 +86,7 @@ export default function MataMataMobile({
                             onChange={(e) =>
                               onChangePlacar(p.numero, "golsMandante", e.target.value)
                             }
-                            className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                            className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${jogoIniciado ? "opacity-50 cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                           />
                         ) : (
                           <span className="text-sm font-bold">{p.golsMandante ?? ""}</span>
@@ -120,7 +120,7 @@ export default function MataMataMobile({
                             onChange={(e) =>
                               onChangePlacar(p.numero, "golsVisitante", e.target.value)
                             }
-                            className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                            className={`w-8 rounded border px-1 py-0.5 text-center text-sm ${jogoIniciado ? "opacity-50 cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                           />
                         ) : (
                           <span className="text-sm font-bold">{p.golsVisitante ?? ""}</span>
@@ -145,7 +145,7 @@ export default function MataMataMobile({
                               onChange={(e) =>
                                 onChangePlacar(p.numero, "penaltisMandante", e.target.value)
                               }
-                              className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                              className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${jogoIniciado ? "opacity-50 cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                             />
                             <span className="text-xs text-zinc-400">x</span>
                             <input
@@ -157,7 +157,7 @@ export default function MataMataMobile({
                               onChange={(e) =>
                                 onChangePlacar(p.numero, "penaltisVisitante", e.target.value)
                               }
-                              className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora || jogoIniciado ? "opacity-50" : ""} ${jogoIniciado ? "cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                              className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${jogoIniciado ? "opacity-50 cursor-not-allowed bg-zinc-200 dark:bg-zinc-700" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
                             />
                             {p.visitante && (
                               <FlagIcon
