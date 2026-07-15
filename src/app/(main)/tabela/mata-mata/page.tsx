@@ -26,11 +26,11 @@ type PlacaresState = Record<
   }
 >;
 
-const CARD_W = 200;
-const CARD_H = 134;
+const CARD_W = 220;
+const CARD_H = 156;
 const COL_GAP = 48;
 const PITCH = CARD_W + COL_GAP;
-const ROW_UNIT = 158;
+const ROW_UNIT = 176;
 const TOP_OFFSET = 48;
 
 const LABELS: { col: number; label: string }[] = [
@@ -587,7 +587,7 @@ export default function TabelaMataMataPage() {
                                   Penaltis
                                 </div>
                                 <div
-                                  className={`flex items-center justify-center gap-1 ${isRight ? "flex-row-reverse" : ""}`}
+                                  className="flex items-center justify-center gap-1"
                                 >
                                   {p.mandante && (
                                     <FlagIcon
