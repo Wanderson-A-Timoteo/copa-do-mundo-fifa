@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { FlagIcon } from "@/components/FlagIcon";
 import ModalLogin from "@/components/ModalLogin";
+import ModalAlert from "@/components/ModalAlert";
 
 import { IconClock, IconMapPin, IconLock } from "@/components/Icons";
 import { formatarData, formatarHora } from "@/lib/format";
@@ -18,6 +19,7 @@ export default function BolaoPage() {
   >({});
   const [token, setToken] = useState<string | null>(null);
   const [showModalLogin, setShowModalLogin] = useState(false);
+  const [showModalClosed, setShowModalClosed] = useState(false);
   const [salvandoPartida, setSalvandoPartida] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -239,7 +241,7 @@ export default function BolaoPage() {
                             onBlur={() => autoSalvar(p.id)}
                             onOverlayClick={() => {
                               if (isBloqueado) {
-                                alert("Os palpites para este jogo foram encerrados.");
+                                setShowModalClosed(true);
                               } else if (!token) {
                                 setShowModalLogin(true);
                               }
@@ -348,7 +350,7 @@ export default function BolaoPage() {
                               onBlur={() => autoSalvar(p.numero)}
                               onOverlayClick={() => {
                                 if (isBloqueado) {
-                                  alert("Os palpites para este jogo foram encerrados.");
+                                  setShowModalClosed(true);
                                 } else if (!token) {
                                   setShowModalLogin(true);
                                 }
@@ -368,6 +370,13 @@ export default function BolaoPage() {
       </main>
 
       {showModalLogin && <ModalLogin onClose={() => setShowModalLogin(false)} />}
+      {showModalClosed && (
+        <ModalAlert
+          title="Acesso negado"
+          message="Os palpites para este jogo já foram encerrados."
+          onClose={() => setShowModalClosed(false)}
+        />
+      )}
     </>
   );
 }
