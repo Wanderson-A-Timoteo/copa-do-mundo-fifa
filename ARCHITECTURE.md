@@ -229,3 +229,13 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
   - `src/app/(main)/tabela/simulacao-grupos/page.tsx` (Simulador)
   - `src/app/(main)/tabela/bolao/page.tsx` (Bolão Oficial)
   - `src/services/partida.service.ts` (Fornecedor de dados para as tabelas)
+
+## Fluxo Operacional: /tabela/simulacao-grupos
+
+- **Visão Geral:** Ambiente de sandbox (playground) para testes de cenários. Totalmente desacoplado do Bolão Oficial.
+- **Processamento:** A renderização consome o estado base via `GET /api/simulacao`. As alterações de placar disparam salvamentos locais via `PATCH` ou `POST` direcionados para o serviço de simulação.
+- **Isolamento de Dados:** O sistema garante que nenhum palpite ou resultado gerado aqui interfira na tabela `Palpite` (usuário) ou `ResultadoOficial` (admin). O estado é persistido em tabelas exclusivas de simulação.
+- **Arquivos Envolvidos:**
+  - `src/app/(main)/tabela/simulacao-grupos/page.tsx` (UI do Simulador)
+  - `src/services/simulacao.service.ts` (Regras de negócio isoladas)
+  - `src/app/api/simulacao/**` (Endpoints de simulação)
