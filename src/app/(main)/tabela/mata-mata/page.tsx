@@ -627,24 +627,29 @@ export default function TabelaMataMataPage() {
                             )}
                           <div className="my-1 border-t border-zinc-300/30 dark:border-zinc-700/30" />
                           <div
-                            className={`flex items-center gap-2 text-[10px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}
+                            className={`flex flex-col gap-0.5 text-[10px] text-zinc-400 ${isRight ? "items-end" : "items-start"}`}
                           >
-                            <span className="font-mono">J{num}</span>
-                            <span>{faseNome.get(num) ?? ""}</span>
-                          </div>
-                          <div
-                            className={`flex items-center gap-2 text-[10px] text-zinc-400 ${isRight ? "flex-row-reverse" : ""}`}
-                          >
+                            <div
+                              className={`flex items-center gap-2 ${isRight ? "flex-row-reverse" : ""}`}
+                            >
+                              <span className="font-mono">J{num}</span>
+                              <span>{faseNome.get(num) ?? ""}</span>
+                            </div>
                             {p.dataHora && (
-                              <span>
-                                {formatarData(p.dataHora)} {formatarHora(p.dataHora)}
-                              </span>
+                              <div
+                                className={`flex items-center gap-2 ${isRight ? "flex-row-reverse" : ""}`}
+                              >
+                                <span>{formatarData(p.dataHora)}</span>
+                                <span>{formatarHora(p.dataHora)}</span>
+                              </div>
                             )}
                             {p.estadio && (
-                              <>
-                                <IconMapPin className="h-3 w-3" />
+                              <div
+                                className={`flex items-center gap-1 min-w-0 w-full ${isRight ? "flex-row-reverse" : ""}`}
+                              >
+                                <IconMapPin className="h-3 w-3 shrink-0" />
                                 <span className="truncate">{p.estadio.nome}</span>
-                              </>
+                              </div>
                             )}
                           </div>
                         </div>
