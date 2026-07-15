@@ -210,3 +210,11 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
 - **Gerenciamento de Dados:** Os dados brutos estão centralizados em `prisma/data/`, permitindo edições fora do código executável.
 - **Idempotência:** Os scripts de seed utilizam `prisma.upsert` para garantir que a execução múltipla não crie registros duplicados ou quebre as chaves primárias (UUIDs).
 - **Script de Execução:** O comando padrão é `npx prisma db seed`.
+
+## Fluxo Operacional: /admin/tabela/oficial
+
+- **Renderização:** A página consome o estado atual da competição via endpoint de listagem, renderizando cards de edição para cada partida, com estados distintos para Grupos (Editáveis) e Mata-Mata (Restritos à definição oficial).
+- **Ciclo de Vida de Escrita:**
+  - **Fase de Grupos:** O salvamento ocorre via `PATCH`, atualizando diretamente a entidade `Partida` no banco, disparando o cálculo reativo de classificação via `computeBracket`.
+  - **Fase Mata-Mata:** O salvamento ocorre via `POST /api/resultados-oficiais`, populando a tabela espelho `ResultadoOficial`, isolada da entidade de partida para auditoria.
+- **Dependências de Arquivos:** Principais arquivos no fluxo: `page.tsx` (UI), `partida.service.ts` (lógica de atualização), `ResultadoOficial` (tabela de persistência).
