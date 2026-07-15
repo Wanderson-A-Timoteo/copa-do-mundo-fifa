@@ -187,7 +187,7 @@ export default function TabelaMataMataPage() {
 
     const grupos: GrupoStanding[] = dataGrupos.grupos;
     gruposRef.current = grupos;
-    const palpites = dataPalpites.simulacoes.map(
+    const simulacoes = dataPalpites.simulacoes.map(
       (p: {
         partidaId: number;
         golsMandante: number | null;
@@ -203,7 +203,7 @@ export default function TabelaMataMataPage() {
       }),
     );
 
-    const r = computeBracket(formatoCopa, grupos, palpites);
+    const r = computeBracket(formatoCopa, grupos, simulacoes);
     setResultado(r);
 
     const ps: PlacaresState = {};
@@ -226,7 +226,7 @@ export default function TabelaMataMataPage() {
     if (user) carregar();
   }, [carregar, user]);
 
-  const salvarPalpite = async (
+  const salvarSimulacaoMataMata = async (
     partidaId: number,
     golsMandante: number | null,
     golsVisitante: number | null,
@@ -254,7 +254,7 @@ export default function TabelaMataMataPage() {
 
   function bracketFromPlacares(ps: PlacaresState): BracketResult | null {
     if (gruposRef.current.length === 0) return null;
-    const palpitesInput = Object.entries(ps)
+    const simulacoesInput = Object.entries(ps)
       .filter(([, v]) => v.golsMandante !== "" && v.golsVisitante !== "")
       .map(([id, v]) => ({
         partidaId: Number(id),
@@ -263,7 +263,7 @@ export default function TabelaMataMataPage() {
         penaltisMandante: v.penaltisMandante !== "" ? Number(v.penaltisMandante) : undefined,
         penaltisVisitante: v.penaltisVisitante !== "" ? Number(v.penaltisVisitante) : undefined,
       }));
-    return computeBracket(formatoCopa, gruposRef.current, palpitesInput);
+    return computeBracket(formatoCopa, gruposRef.current, simulacoesInput);
   }
 
   const handleChange = (
@@ -297,7 +297,7 @@ export default function TabelaMataMataPage() {
       const pM = placar.penaltisMandante !== "" ? Number(placar.penaltisMandante) : null;
       const pV = placar.penaltisVisitante !== "" ? Number(placar.penaltisVisitante) : null;
       timers.current[partidaId] = setTimeout(() => {
-        salvarPalpite(partidaId, gM, gV, pM, pV);
+        salvarSimulacaoMataMata(partidaId, gM, gV, pM, pV);
       }, 800);
 
       const r = bracketFromPlacares(updated);
@@ -370,8 +370,8 @@ export default function TabelaMataMataPage() {
         >
           ← Voltar
         </a>
-        <h1 className="mt-2 text-3xl font-bold">Mata-Mata</h1>
-        <p className="mt-1 text-zinc-500">Chaveamento eliminatório</p>
+        <h1 className="mt-2 text-3xl font-bold">Simulador de Mata-Mata</h1>
+        <p className="mt-1 text-zinc-500">Simule o chaveamento eliminatório</p>
 
         {!token ? (
           <div className="py-16 text-center">
@@ -397,10 +397,10 @@ export default function TabelaMataMataPage() {
               O mata-mata é preenchido automaticamente conforme você registra os resultados na
               página{" "}
               <a
-                href="/tabela/placar"
+                href="/tabela/simulacao-grupos"
                 className="underline hover:text-zinc-600 dark:hover:text-zinc-300"
               >
-                Adicionar Placar
+                Simulador de Grupos
               </a>
               .
             </p>
@@ -586,9 +586,7 @@ export default function TabelaMataMataPage() {
                                 <div className="text-center text-[10px] text-zinc-400">
                                   Penaltis
                                 </div>
-                                <div
-                                  className="flex items-center justify-center gap-1"
-                                >
+                                <div className="flex items-center justify-center gap-1">
                                   {p.mandante && (
                                     <FlagIcon
                                       codigo={p.mandante.codigoPais}

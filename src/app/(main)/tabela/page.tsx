@@ -35,24 +35,24 @@ export default function TabelaPage() {
             Grupos
           </button>
           <button
-            onClick={() => router.push("/tabela/placar")}
+            onClick={() => router.push("/tabela/simulacao-grupos")}
             className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm transition-colors ${
-              pathname === "/tabela/placar"
+              pathname === "/tabela/simulacao-grupos"
                 ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
                 : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
             }`}
           >
-            Adicionar Placar
+            Simulador de Grupos
           </button>
           <button
-            onClick={() => router.push("/tabela/mata-mata")}
+            onClick={() => router.push("/tabela/simulacao-mata-mata")}
             className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm transition-colors ${
-              pathname === "/tabela/mata-mata"
+              pathname === "/tabela/simulacao-mata-mata"
                 ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
                 : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
             }`}
           >
-            Adicionar Mata-Mata
+            Simulador Mata-Mata
           </button>
         </div>
       </div>

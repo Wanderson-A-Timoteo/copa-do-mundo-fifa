@@ -65,17 +65,17 @@ export default function PlacarPage() {
         setPartidas(d.partidas);
         fetch("/api/simulacao", { headers })
           .then((r) => r.json())
-          .then((palData) => {
+          .then((simData) => {
             const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
             for (const partida of d.partidas) {
-              const palpite = palData.simulacoes?.find(
+              const simulacao = simData.simulacoes?.find(
                 (pp: { partidaId: number; golsMandante: number; golsVisitante: number }) =>
                   pp.partidaId === partida.id,
               );
-              if (palpite) {
+              if (simulacao) {
                 p[partida.id] = {
-                  golsMandante: String(palpite.golsMandante),
-                  golsVisitante: String(palpite.golsVisitante),
+                  golsMandante: String(simulacao.golsMandante),
+                  golsVisitante: String(simulacao.golsVisitante),
                 };
               } else {
                 p[partida.id] = { golsMandante: "", golsVisitante: "" };
@@ -151,8 +151,8 @@ export default function PlacarPage() {
         >
           ← Voltar
         </a>
-        <h1 className="mt-2 text-3xl font-bold">Placar</h1>
-        <p className="mt-1 text-zinc-500">Registre os resultados dos jogos da fase de grupos</p>
+        <h1 className="mt-2 text-3xl font-bold">Simulador de Grupos</h1>
+        <p className="mt-1 text-zinc-500">Simule os resultados dos jogos da fase de grupos</p>
 
         {!token ? (
           <div className="py-16 text-center">
