@@ -1,14 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+
 import { FlagIcon } from "@/components/FlagIcon";
 import { SkeletonTabela } from "@/components/Skeleton";
 import type { GrupoComClassificacao } from "@/types";
 
 export default function TabelaPage() {
-  const router = useRouter();
-  const pathname = usePathname();
+
   const [grupos, setGrupos] = useState<GrupoComClassificacao[]>([]);
   const [carregando, setCarregando] = useState(true);
 
@@ -23,48 +22,6 @@ export default function TabelaPage() {
     <main className="mx-auto max-w-7xl px-6 py-8">
       <div className="mb-6 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
         <h1 className="text-3xl font-bold">Tabela de Jogos</h1>
-        <div className="flex gap-2">
-          <button
-            onClick={() => router.push("/tabela")}
-            className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm transition-colors ${
-              pathname === "/tabela"
-                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-            }`}
-          >
-            Grupos
-          </button>
-          <button
-            onClick={() => router.push("/tabela/bolao")}
-            className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm transition-colors ${
-              pathname === "/tabela/bolao"
-                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-            }`}
-          >
-            Bolão Oficial
-          </button>
-          <button
-            onClick={() => router.push("/tabela/simulacao-grupos")}
-            className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm transition-colors ${
-              pathname === "/tabela/simulacao-grupos"
-                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-            }`}
-          >
-            Simulador de Grupos
-          </button>
-          <button
-            onClick={() => router.push("/tabela/simulacao-mata-mata")}
-            className={`cursor-pointer rounded-lg px-4 py-1.5 text-sm transition-colors ${
-              pathname === "/tabela/simulacao-mata-mata"
-                ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
-            }`}
-          >
-            Simulador Mata-Mata
-          </button>
-        </div>
       </div>
 
       {carregando ? (

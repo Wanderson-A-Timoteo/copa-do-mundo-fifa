@@ -10,7 +10,8 @@ import { IconTrophy, IconBook, IconRepeat } from "./Icons";
 export default function NavHeader({ transparent }: { transparent?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [albumOpen, setAlbumOpen] = useState(false);
-  const [tabelaOpen, setTabelaOpen] = useState(false);
+  const [simulacaoOpen, setSimulacaoOpen] = useState(false);
+  const [bolaoOpen, setBolaoOpen] = useState(false);
 
   const headerClass = transparent
     ? "absolute inset-x-0 top-0 z-30 flex items-center justify-between bg-transparent px-6 py-4 text-white"
@@ -29,9 +30,10 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
         <nav className="hidden items-center gap-4 text-sm md:flex">
           <ActiveLink href="/">Início</ActiveLink>
           <ActiveLink href="/selecoes">Seleções</ActiveLink>
+          <ActiveLink href="/tabela">Classificação</ActiveLink>
           <div className="relative group">
             <button className="flex cursor-pointer items-center gap-1 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
-              Classificação
+              Simulação
               <svg
                 className="h-3 w-3"
                 viewBox="0 0 24 24"
@@ -46,18 +48,50 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
             </button>
             <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
               <Link
-                href="/tabela"
+                href="/tabela/simulacao-grupos"
                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
               >
                 <IconTrophy className="h-4 w-4 shrink-0 text-zinc-400" />
-                <span>Classificação Geral</span>
+                <span>Simulador de Grupos</span>
               </Link>
               <Link
-                href="/tabela/ranking"
+                href="/tabela/simulacao-mata-mata"
                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
               >
                 <IconTrophy className="h-4 w-4 shrink-0 text-zinc-400" />
-                <span>Ranking de Palpites</span>
+                <span>Simulador Mata-Mata</span>
+              </Link>
+            </div>
+          </div>
+          <div className="relative group">
+            <button className="flex cursor-pointer items-center gap-1 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+              Bolão Oficial
+              <svg
+                className="h-3 w-3"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+            <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
+              <Link
+                href="/palpites/bolao"
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                <IconTrophy className="h-4 w-4 shrink-0 text-zinc-400" />
+                <span>Palpites do Bolão</span>
+              </Link>
+              <Link
+                href="/palpites/bolao/ranking"
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              >
+                <IconTrophy className="h-4 w-4 shrink-0 text-zinc-400" />
+                <span>Ranking do Bolão</span>
               </Link>
             </div>
           </div>
@@ -168,14 +202,17 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
         <ActiveLink href="/selecoes" onClick={() => setMobileOpen(false)}>
           Seleções
         </ActiveLink>
+        <ActiveLink href="/tabela" onClick={() => setMobileOpen(false)}>
+          Classificação
+        </ActiveLink>
         <div>
           <button
-            onClick={() => setTabelaOpen(!tabelaOpen)}
+            onClick={() => setSimulacaoOpen(!simulacaoOpen)}
             className="flex w-full items-center justify-between text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
-            Classificação
+            Simulação
             <svg
-              className={`h-3 w-3 transition-transform ${tabelaOpen ? "rotate-180" : ""}`}
+              className={`h-3 w-3 transition-transform ${simulacaoOpen ? "rotate-180" : ""}`}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -186,23 +223,62 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
               <polyline points="6 9 12 15 18 9" />
             </svg>
           </button>
-          {tabelaOpen && (
+          {simulacaoOpen && (
             <div className="ml-4 mt-3 flex flex-col gap-3">
               <Link
-                href="/tabela"
+                href="/tabela/simulacao-grupos"
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-3 text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
               >
                 <IconTrophy className="h-4 w-4 shrink-0 text-zinc-400" />
-                <span>Classificação Geral</span>
+                <span>Simulador de Grupos</span>
               </Link>
               <Link
-                href="/tabela/ranking"
+                href="/tabela/simulacao-mata-mata"
                 onClick={() => setMobileOpen(false)}
                 className="flex items-center gap-3 text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
               >
                 <IconTrophy className="h-4 w-4 shrink-0 text-zinc-400" />
-                <span>Ranking de Palpites</span>
+                <span>Simulador Mata-Mata</span>
+              </Link>
+            </div>
+          )}
+        </div>
+        <div>
+          <button
+            onClick={() => setBolaoOpen(!bolaoOpen)}
+            className="flex w-full items-center justify-between text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+          >
+            Bolão Oficial
+            <svg
+              className={`h-3 w-3 transition-transform ${bolaoOpen ? "rotate-180" : ""}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </button>
+          {bolaoOpen && (
+            <div className="ml-4 mt-3 flex flex-col gap-3">
+              <Link
+                href="/palpites/bolao"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-3 text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              >
+                <IconTrophy className="h-4 w-4 shrink-0 text-zinc-400" />
+                <span>Palpites do Bolão</span>
+              </Link>
+              <Link
+                href="/palpites/bolao/ranking"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center gap-3 text-sm text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+              >
+                <IconTrophy className="h-4 w-4 shrink-0 text-zinc-400" />
+                <span>Ranking do Bolão</span>
               </Link>
             </div>
           )}
