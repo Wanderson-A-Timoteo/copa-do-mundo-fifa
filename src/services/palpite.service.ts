@@ -116,8 +116,8 @@ export async function salvarResultadoOficial(
 }
 
 export interface MatchRow {
-  selecaoMandanteId: number;
-  selecaoVisitanteId: number;
+  selecaoMandanteId: number | null;
+  selecaoVisitanteId: number | null;
   golsMandante: number | null;
   golsVisitante: number | null;
 }
@@ -138,6 +138,8 @@ export function calcularClassificacaoGrupos(selecoes: SelecaoGrupo[], partidas: 
   }
 
   for (const partida of partidas) {
+    if (partida.selecaoMandanteId === null || partida.selecaoVisitanteId === null) continue;
+
     const m = pontos[partida.selecaoMandanteId];
     const v = pontos[partida.selecaoVisitanteId];
     if (!m || !v || partida.golsMandante === null || partida.golsVisitante === null) continue;
