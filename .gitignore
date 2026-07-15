@@ -51,3 +51,5 @@ dead-files/
 .vscode/
 root-audit.md
 tsconfig.tsbuildinfo
+
+.agents/*
