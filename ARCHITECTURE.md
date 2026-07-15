@@ -122,25 +122,26 @@ Ferramentas independentes do contexto de negócio:
 
 ### 🖥️ Frontend Pages
 
-| Caminho                                    | Responsabilidade           | Dados Consumidos                   |
-| ------------------------------------------ | -------------------------- | ---------------------------------- |
-| `/(main)/page.tsx`                         | Home (Landing Page)        | Estático / Marketing               |
-| `/(main)/tabela/page.tsx`                  | Classificação de Grupos    | `/api/grupos`                      |
-| `/(main)/tabela/placar/page.tsx`           | Listagem de Jogos          | `/api/partidas`                    |
-| `/(main)/tabela/mata-mata/page.tsx`        | Bracket / Chaveamento      | `/api/partidas`                    |
-| `/(main)/tabela/ranking/page.tsx`          | Leaderboard Palpites       | `/api/palpite/ranking`             |
-| `/(main)/album/page.tsx`                   | Álbum e Sorteio (Gacha)    | `/api/album`, `/api/figurinhas`    |
-| `/(main)/trocas/page.tsx`                  | Caixa de Entrada de Trocas | `/api/trocas`                      |
-| `/(main)/trocas/repetidas/[slug]/page.tsx` | Lista de doadores          | `/api/figurinhas/repetidas/[slug]` |
-| `/(main)/trocas/nova/.../page.tsx`         | Montar Proposta            | `/api/usuarios/[slug]/repetidas`   |
-| `/(main)/selecoes/page.tsx`                | Catálogo de Seleções       | `/api/selecoes`                    |
-| `/(main)/selecoes/[slug]/page.tsx`         | Elenco e Info da Seleção   | `/api/selecoes/[slug]`             |
-| `/(main)/estadios/page.tsx`                | Catálogo de Estádios       | `/api/estadios`                    |
-| `/(main)/estadios/[slug]/page.tsx`         | Fotos e Info do Estádio    | `/api/estadios/[slug]`             |
-| `/(main)/perfil/page.tsx`                  | Dashboard Pessoal          | `/api/auth/me`                     |
-| `/(main)/perfil/[slug]/page.tsx`           | Perfil Público de usuário  | `/api/usuarios/[slug]`             |
-| `/(main)/admin/page.tsx`                   | Dashboard Admin            | Múltiplos endpoints de admin       |
-| `/(main)/admin/tabela/oficial/page.tsx`    | Editar Placar Real         | `/api/resultados-oficiais`         |
+| Caminho                                    | Responsabilidade             | Dados Consumidos                            |
+| ------------------------------------------ | ---------------------------- | ------------------------------------------- |
+| `/(main)/page.tsx`                         | Home (Landing Page)          | Estático / Marketing                        |
+| `/(main)/tabela/grupos/page.tsx`           | Classificação de Grupos      | `/api/grupos`                               |
+| `/(main)/tabela/placar/page.tsx`           | Listagem de Jogos            | `/api/partidas`                             |
+| `/(main)/tabela/mata-mata/page.tsx`        | Bracket / Chaveamento        | `/api/partidas`                             |
+| `/(main)/tabela/oficial/page.tsx`          | Resultados Oficiais Públicos | `/api/partidas`, `/api/resultados-oficiais` |
+| `/(main)/palpites/bolao/page.tsx`          | Leaderboard Palpites         | `/api/palpite/ranking`                      |
+| `/(main)/album/page.tsx`                   | Álbum e Sorteio (Gacha)      | `/api/album`, `/api/figurinhas`             |
+| `/(main)/trocas/page.tsx`                  | Caixa de Entrada de Trocas   | `/api/trocas`                               |
+| `/(main)/trocas/repetidas/[slug]/page.tsx` | Lista de doadores            | `/api/figurinhas/repetidas/[slug]`          |
+| `/(main)/trocas/nova/.../page.tsx`         | Montar Proposta              | `/api/usuarios/[slug]/repetidas`            |
+| `/(main)/selecoes/page.tsx`                | Catálogo de Seleções         | `/api/selecoes`                             |
+| `/(main)/selecoes/[slug]/page.tsx`         | Elenco e Info da Seleção     | `/api/selecoes/[slug]`                      |
+| `/(main)/estadios/page.tsx`                | Catálogo de Estádios         | `/api/estadios`                             |
+| `/(main)/estadios/[slug]/page.tsx`         | Fotos e Info do Estádio      | `/api/estadios/[slug]`                      |
+| `/(main)/perfil/page.tsx`                  | Dashboard Pessoal            | `/api/auth/me`                              |
+| `/(main)/perfil/[slug]/page.tsx`           | Perfil Público de usuário    | `/api/usuarios/[slug]`                      |
+| `/(main)/admin/page.tsx`                   | Dashboard Admin              | Múltiplos endpoints de admin                |
+| `/(main)/admin/tabela/oficial/page.tsx`    | Editar Placar Real           | `/api/resultados-oficiais`                  |
 
 ---
 
@@ -221,14 +222,18 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
 
 ## Fluxo Operacional: /tabela (Hub Central)
 
-- **Visão Geral:** Página estática e dinâmica que atua como Hub central. Responsável pela estruturação do acesso às áreas de Bolão e Simulações.
-- **Renderização e Consumo:** Ao ser renderizada, a página orquestra a exibição dos cards de navegação e, dependendo da rota filha, inicia o consumo reativo de `/api/grupos` e `/api/partidas`.
-- **Responsabilidade:** Centralizar a experiência do usuário, garantindo o isolamento entre o Bolão Oficial (competição) e as áreas de Simulação (aprendizado/estudo).
+- **Visão Geral:** A rota original `/tabela` atua como hub lógico (Dropdown Menu). Ela agora redireciona visualmente as navegações diretas para `/tabela/grupos` e `/tabela/oficial`.
+- **Renderização e Consumo:** Centraliza as exibições da fase de grupos e dos resultados consolidados da copa.
+- **Responsabilidade:** Garantir a separação entre simulações/bolão (estado isolado) e a exibição oficial (estado read-only ou estático).
 - **Arquivos Envolvidos:**
-  - `src/app/(main)/tabela/page.tsx` (Hub principal)
-  - `src/app/(main)/tabela/simulacao-grupos/page.tsx` (Simulador)
-  - `src/app/(main)/tabela/bolao/page.tsx` (Bolão Oficial)
+  - `src/app/(main)/tabela/grupos/page.tsx` (Grade Original de Grupos)
+  - `src/app/(main)/tabela/oficial/page.tsx` (Grade de Resultados ReadOnly)
   - `src/services/partida.service.ts` (Fornecedor de dados para as tabelas)
+
+## Fluxo Operacional: /tabela/oficial (ReadOnly)
+
+- **Descrição:** View pública de resultados consolidados. Reutiliza componentes de edição do Admin, mas com a flag `isAdmin={false}` para remover qualquer interatividade de escrita ou inputs de formulário.
+- **Arquivos:** `src/app/(main)/tabela/oficial/page.tsx`.
 
 ## Fluxo Operacional: /tabela/simulacao-grupos
 
@@ -252,13 +257,15 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
 
 ## Mapeamento Estrutural e Grafo de Dependências
 
-| Camada / Arquivo         | Responsabilidade      | Depende de      | É Dependido por       | Motivo da Dependência                   |
-| :----------------------- | :-------------------- | :-------------- | :-------------------- | :-------------------------------------- |
-| `lib/prisma.ts`          | Conexão Única com BD  | -               | Todos os `services`   | Singleton para evitar estouro de pools. |
-| `services/*.service.ts`  | Regras de Negócio     | `lib/prisma.ts` | `api/` routes         | Centralizar regra e isolar DB da UI.    |
-| `app/api/`               | Adaptadores REST      | `services/`     | `hooks/`              | Separar request/response da lógica.     |
-| `components/`            | Interface (UI)        | `types/`        | `app/pages`           | Modularização de visual (Tailwind).     |
-| `lib/compute-bracket.ts` | Lógica de Chaveamento | -               | `simulacao-mata-mata` | Abstrair cálculo complexo da UI.        |
+| Camada / Arquivo         | Responsabilidade      | Depende de         | É Dependido por       | Motivo da Dependência                   |
+| :----------------------- | :-------------------- | :----------------- | :-------------------- | :-------------------------------------- |
+| `lib/prisma.ts`          | Conexão Única com BD  | -                  | Todos os `services`   | Singleton para evitar estouro de pools. |
+| `services/*.service.ts`  | Regras de Negócio     | `lib/prisma.ts`    | `api/` routes         | Centralizar regra e isolar DB da UI.    |
+| `app/api/`               | Adaptadores REST      | `services/`        | `hooks/`              | Separar request/response da lógica.     |
+| `components/`            | Interface (UI)        | `types/`           | `app/pages`           | Modularização de visual (Tailwind).     |
+| `lib/compute-bracket.ts` | Lógica de Chaveamento | -                  | `simulacao-mata-mata` | Abstrair cálculo complexo da UI.        |
+| `/tabela/grupos`         | Visualização Grupos   | `palpite.service`  | UI / Next.js          | Exibir classificação atualizada.        |
+| `/tabela/oficial`        | Resultados Oficiais   | `ResultadoOficial` | UI / Next.js          | Acesso público à verdade oficial.       |
 
 ### Pontos de Ruptura (God Objects)
 
