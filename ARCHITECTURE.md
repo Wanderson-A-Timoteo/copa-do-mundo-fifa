@@ -198,6 +198,19 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
 - **Gatilho:** Não existe um endpoint dedicado como `/api/admin/promover`. O gatilho é puramente reativo: ao salvar um jogo da Fase de Grupos via `PATCH /api/partidas/[id]`, a API recalcula a classificação (`calcularClassificacaoGrupos`). O frontend consome essa nova tabela, executa o `computeBracket` localmente, deduz os classificados (incluindo a repescagem dos terceiros colocados) e monta a árvore de mata-mata automaticamente na tela do Admin. Ao lançar um placar do mata-mata, o Admin dispara um `POST /api/resultados-oficiais`.
 - **Regras de Bloqueio:** Atualmente, **não** existe uma regra de negócio ou bloqueio no backend que impeça a transição ou o lançamento de resultados no mata-mata caso existam jogos da fase de grupos pendentes. A transição reflete a pontuação parcial.
 
+## Engine de Apuração (Scoring System)
+
+A lógica de distribuição de pontos do Bolão Oficial foi desenhada focando em separação de responsabilidades e integridade de dados.
+
+- **Módulo Matemático (Função Pura):** A regra de negócio de pontuação reside em `calcularPontuacaoDaPartida` (`src/services/apurador.service.ts`). É uma função pura, totalmente desacoplada do banco de dados, o que a torna previsível e altamente testável (Unit Tests).
+  - _Regras Tempo Normal:_ Acerto Exato (5 pts), Acerto de Vencedor + Saldo ou Empate Inexato (3 pts), Acerto Simples de Vencedor (1 pt).
+  - _Bônus Mata-Mata:_ Acerto do Classificado nos Pênaltis (+2 pts) e Placar Exato dos Pênaltis (+1 pt).
+- **Processamento e Persistência:** A consolidação dos pontos não ocorre de forma passiva (automática a cada gol). Ela é controlada ativamente pelo Administrador através de um gatilho manual (`POST /api/admin/apurar`).
+  - O serviço busca todos os palpites ligados à partida informada, aplica a função pura e realiza a gravação em lote utilizando `prisma.$transaction`.
+  - O uso de transações garante a atomicidade: se o servidor falhar durante o processamento de centenas de palpites, um _rollback_ é acionado, prevenindo que o ranking fique inconsistente.
+- **Tipagem Estrita e Guardas de Tipo:** Como a engine lida com duas fases distintas do torneio na mesma visualização de tabela, a tipagem de confrontos indefinidos (Mata-Mata) exige que `selecaoMandanteId` e `selecaoVisitanteId` aceitem `null`. A engine de grupos implementa _Type Guards_ (`if (partida.selecaoMandanteId === null) continue;`), instruindo o compilador a descartar cenários de indefinição durante o cálculo da classificação de grupos.
+- **Agregação de Ranking:** O Leaderboard (`/palpites/bolao/ranking`) realiza um `Promise.all` para ler e somar os valores das colunas `pontos` das tabelas separadas `Palpite` e `PalpiteMataMata`, consolidando a pontuação global em tempo real na memória.
+
 ## Registro de Alterações (14-15/07/2026)
 
 - **Correção de Persistência (IDs):** Ajuste na estratégia de auto-incremento de IDs de partidas para separar logicamente o domínio de Grupos do domínio de Mata-Mata.
@@ -266,6 +279,8 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
 | `lib/compute-bracket.ts` | Lógica de Chaveamento | -                  | `simulacao-mata-mata` | Abstrair cálculo complexo da UI.        |
 | `/tabela/grupos`         | Visualização Grupos   | `palpite.service`  | UI / Next.js          | Exibir classificação atualizada.        |
 | `/tabela/oficial`        | Resultados Oficiais   | `ResultadoOficial` | UI / Next.js          | Acesso público à verdade oficial.       |
+| `apurador.service.ts`    | Cálculo de Pontos     | Função Pura (Math) | `api/admin/apurar`    | Isolar regra de pontuação do DB (SoC).  |
+| `/admin/tabela/oficial`  | Gatilho de Apuração   | `apurador.service` | UI / Next.js          | Controle de distribuição de pontos.     |
 
 ### Pontos de Ruptura (God Objects)
 
