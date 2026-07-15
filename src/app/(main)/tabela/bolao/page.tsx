@@ -237,7 +237,13 @@ export default function BolaoPage() {
                               }))
                             }
                             onBlur={() => autoSalvar(p.id)}
-                            onOverlayClick={() => setShowModalLogin(true)}
+                            onOverlayClick={() => {
+                              if (isBloqueado) {
+                                alert("Os palpites para este jogo foram encerrados.");
+                              } else if (!token) {
+                                setShowModalLogin(true);
+                              }
+                            }}
                             salvando={salvandoPartida === p.id}
                           />
                         </div>
@@ -340,7 +346,13 @@ export default function BolaoPage() {
                                 }))
                               }
                               onBlur={() => autoSalvar(p.numero)}
-                              onOverlayClick={() => setShowModalLogin(true)}
+                              onOverlayClick={() => {
+                                if (isBloqueado) {
+                                  alert("Os palpites para este jogo foram encerrados.");
+                                } else if (!token) {
+                                  setShowModalLogin(true);
+                                }
+                              }}
                               salvando={salvandoPartida === p.numero}
                             />
                           </div>
