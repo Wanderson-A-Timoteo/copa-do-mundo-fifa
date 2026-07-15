@@ -13,6 +13,7 @@ interface Props {
   onBlur?: () => void;
   disabled?: boolean;
   onOverlayClick?: () => void;
+  salvando?: boolean;
 }
 
 export default function PlacarCard({
@@ -24,6 +25,7 @@ export default function PlacarCard({
   onBlur,
   disabled,
   onOverlayClick,
+  salvando,
 }: Props) {
   const faseFormatada = p.grupoId ? `Grupo ${p.grupoId}` : p.fase.replace(/_/g, " ").toLowerCase();
 
@@ -44,6 +46,7 @@ export default function PlacarCard({
               onBlur={onBlur}
               showOverlay={disabled}
               onOverlayClick={onOverlayClick}
+              salvando={salvando}
             />
             <span className="text-sm text-zinc-400 sm:text-base">x</span>
             <ScoreInput
@@ -53,6 +56,7 @@ export default function PlacarCard({
               onBlur={onBlur}
               showOverlay={disabled}
               onOverlayClick={onOverlayClick}
+              salvando={salvando}
             />
           </div>
 
@@ -93,6 +97,7 @@ export default function PlacarCard({
             onBlur={onBlur}
             showOverlay={disabled}
             onOverlayClick={onOverlayClick}
+            salvando={salvando}
             isMobile
           />
         </div>
@@ -108,6 +113,7 @@ export default function PlacarCard({
             onBlur={onBlur}
             showOverlay={disabled}
             onOverlayClick={onOverlayClick}
+            salvando={salvando}
             isMobile
           />
         </div>

@@ -20,6 +20,7 @@ export default function PlacarPage() {
   >({});
   const [token, setToken] = useState<string | null>(null);
   const [showModalLogin, setShowModalLogin] = useState(false);
+  const [salvandoPartida, setSalvandoPartida] = useState<number | null>(null);
 
   useEffect(() => {
     const t = localStorage.getItem("token");
@@ -62,12 +63,12 @@ export default function PlacarPage() {
       .then((r) => r.json())
       .then((d) => {
         setPartidas(d.partidas);
-        fetch("/api/palpite", { headers })
+        fetch("/api/simulacao", { headers })
           .then((r) => r.json())
           .then((palData) => {
             const p: Record<number, { golsMandante: string; golsVisitante: string }> = {};
             for (const partida of d.partidas) {
-              const palpite = palData.palpites?.find(
+              const palpite = palData.simulacoes?.find(
                 (pp: { partidaId: number; golsMandante: number; golsVisitante: number }) =>
                   pp.partidaId === partida.id,
               );
@@ -115,8 +116,9 @@ export default function PlacarPage() {
 
     if (!isLimpar && (isNaN(golsMandante) || isNaN(golsVisitante))) return;
 
+    setSalvandoPartida(partidaId);
     try {
-      const res = await fetch("/api/palpite", {
+      const res = await fetch("/api/simulacao", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${t}` },
         body: JSON.stringify(
@@ -135,6 +137,8 @@ export default function PlacarPage() {
       atualizarGrupos();
     } catch {
       // ignore
+    } finally {
+      setSalvandoPartida(null);
     }
   }
 
@@ -285,6 +289,7 @@ export default function PlacarPage() {
                         }
                         onBlur={() => autoSalvar(p.id)}
                         onOverlayClick={() => setShowModalLogin(true)}
+                        salvando={salvandoPartida === p.id}
                       />
                     );
                   })}
