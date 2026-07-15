@@ -207,7 +207,7 @@ export default function BolaoPage() {
     <>
       <main className="mx-auto w-full max-w-[100vw] overflow-x-hidden px-4 py-8 sm:max-w-5xl sm:px-6">
         <a
-          href="/tabela"
+          href="/tabela/grupos"
           className="inline-block text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
         >
           ← Voltar

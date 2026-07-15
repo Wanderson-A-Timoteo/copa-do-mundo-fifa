@@ -365,7 +365,7 @@ export default function TabelaMataMataPage() {
     <>
       <main className="mx-auto max-w-7xl px-6 py-8">
         <a
-          href="/tabela"
+          href="/tabela/grupos"
           className="inline-block text-sm text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
         >
           ← Voltar

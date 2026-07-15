@@ -108,7 +108,7 @@ export default async function DetalheSelecaoPage({
             .map((p) => (
               <Link
                 key={p.id}
-                href={`/tabela`}
+                href={`/tabela/grupos`}
                 className="flex items-center justify-between rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
               >
                 <div className="flex items-center gap-3 text-sm">
@@ -116,7 +116,7 @@ export default async function DetalheSelecaoPage({
                     {p.fase === "GRUPOS" ? "F. Grupos" : p.fase}
                   </span>
                   <span className="text-zinc-500">
-                    {p.mandante.nome} vs {p.visitante.nome}
+                    {p.mandante?.nome ?? "A definir"} vs {p.visitante?.nome ?? "A definir"}
                   </span>
                 </div>
                 <div className="text-sm">

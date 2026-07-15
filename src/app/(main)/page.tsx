@@ -30,7 +30,7 @@ export default function Home() {
             Ver Seleções
           </Link>
           <Link
-            href="/tabela"
+            href="/tabela/grupos"
             className="rounded-lg border border-zinc-300 px-6 py-3 text-sm font-medium transition-all duration-200 hover:border-zinc-400 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:border-zinc-500 dark:hover:bg-zinc-800"
           >
             Tabela de Jogos
