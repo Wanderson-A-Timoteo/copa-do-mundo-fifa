@@ -5,6 +5,7 @@ import { IconClock, IconMapPin } from "@/components/Icons";
 import { formatarData, formatarHora } from "@/lib/format";
 import type { PartidaResolvida } from "@/lib/compute-bracket";
 import ScoreInput from "@/components/ScoreInput";
+import { useState } from "react";
 
 interface Props {
   partida: PartidaResolvida;
@@ -32,6 +33,26 @@ export default function MataMataPartidaEditor({
   const golsV = placar.golsVisitante;
   const penM = placar.penaltisMandante;
   const penV = placar.penaltisVisitante;
+
+  const [isApurando, setIsApurando] = useState(false);
+
+  const handleApurar = async () => {
+    setIsApurando(true);
+    try {
+      const res = await fetch("/api/admin/apurar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ partidaId: p.numero }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.erro || "Erro ao apurar");
+      alert(`${data.palpitesApurados} palpites apurados com sucesso!`);
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setIsApurando(false);
+    }
+  };
 
   const empate = golsM !== "" && golsV !== "" && Number(golsM) === Number(golsV);
 
@@ -185,6 +206,15 @@ export default function MataMataPartidaEditor({
               Encerrada
             </span>
           )}
+          {isAdmin && p.resolvida && (
+            <button
+              onClick={handleApurar}
+              disabled={isApurando}
+              className="ml-auto flex items-center gap-1 rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              {isApurando ? "Apurando..." : "Apurar Pontos"}
+            </button>
+          )}
         </div>
       </div>
 
@@ -327,6 +357,15 @@ export default function MataMataPartidaEditor({
             <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
               Encerrada
             </span>
+          )}
+          {isAdmin && p.resolvida && (
+            <button
+              onClick={handleApurar}
+              disabled={isApurando}
+              className="ml-auto flex items-center gap-1 rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              {isApurando ? "Apurando..." : "Apurar Pontos"}
+            </button>
           )}
         </div>
       </div>

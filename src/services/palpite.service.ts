@@ -240,25 +240,47 @@ export async function calcularClassificacao(usuarioId?: number) {
 }
 
 export async function getRanking() {
-  const rankingRaw = await prisma.palpite.groupBy({
-    by: ["usuarioId"],
-    _sum: { pontos: true },
-    orderBy: { _sum: { pontos: "desc" } },
-  });
+  const [rankingGrupos, rankingMataMata] = await Promise.all([
+    prisma.palpite.groupBy({
+      by: ["usuarioId"],
+      _sum: { pontos: true },
+    }),
+    prisma.palpiteMataMata.groupBy({
+      by: ["usuarioId"],
+      _sum: { pontos: true },
+    })
+  ]);
+
+  const mapPontos = new Map<number, number>();
+
+  for (const r of rankingGrupos) {
+    mapPontos.set(r.usuarioId, r._sum.pontos || 0);
+  }
+
+  for (const r of rankingMataMata) {
+    const atual = mapPontos.get(r.usuarioId) || 0;
+    mapPontos.set(r.usuarioId, atual + (r._sum.pontos || 0));
+  }
+
+  const userIds = Array.from(mapPontos.keys());
 
   const users = await prisma.user.findMany({
-    where: { id: { in: rankingRaw.map((r) => r.usuarioId) } },
+    where: { id: { in: userIds } },
     select: { id: true, nome: true, slug: true },
   });
 
   const userMap = new Map(users.map((u) => [u.id, u]));
 
-  return rankingRaw
-    .map((r, index) => ({
-      posicao: index + 1,
-      usuarioId: r.usuarioId,
-      pontos: r._sum.pontos || 0,
-      usuario: userMap.get(r.usuarioId),
+  return Array.from(mapPontos.entries())
+    .map(([usuarioId, pontos]) => ({
+      usuarioId,
+      pontos,
+      usuario: userMap.get(usuarioId),
     }))
-    .filter((r) => r.usuario); // filter out if user was deleted
+    .filter((r) => r.usuario) // filter out if user was deleted
+    .sort((a, b) => b.pontos - a.pontos)
+    .map((r, index) => ({
+      ...r,
+      posicao: index + 1,
+    }));
 }
