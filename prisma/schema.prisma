@@ -61,6 +61,8 @@ model User {
   trocasRecebidas Troca[]         @relation("troca_destinatario")
   palpites            Palpite[]
   palpitesMataMata    PalpiteMataMata[]
+  simulacoes          Simulacao[]
+  simulacoesMataMata  SimulacaoMataMata[]
 
   @@index([role])
   @@map("users")
@@ -166,6 +168,8 @@ model Partida {
 
   palpites            Palpite[]
   palpitesMataMata    PalpiteMataMata[]
+  simulacoes          Simulacao[]
+  simulacoesMataMata  SimulacaoMataMata[]
   resultadoOficial    ResultadoOficial?
 
   @@index([selecaoMandanteId])
@@ -296,4 +300,38 @@ model PalpiteMataMata {
   @@unique([usuarioId, partidaId])
   @@index([partidaId])
   @@map("palpites_mata_mata")
+}
+
+model Simulacao {
+  id            Int      @id @default(autoincrement())
+  usuarioId     Int
+  usuario       User     @relation(fields: [usuarioId], references: [id])
+  partidaId     Int
+  partida       Partida  @relation(fields: [partidaId], references: [id])
+  golsMandante  Int
+  golsVisitante Int
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([usuarioId, partidaId])
+  @@index([partidaId])
+  @@map("simulacoes")
+}
+
+model SimulacaoMataMata {
+  id                Int      @id @default(autoincrement())
+  usuarioId         Int
+  usuario           User     @relation(fields: [usuarioId], references: [id])
+  partidaId         Int
+  partida           Partida  @relation(fields: [partidaId], references: [id])
+  golsMandante      Int?
+  golsVisitante     Int?
+  penaltisMandante  Int?
+  penaltisVisitante Int?
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([usuarioId, partidaId])
+  @@index([partidaId])
+  @@map("simulacoes_mata_mata")
 }
