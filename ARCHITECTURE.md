@@ -218,3 +218,14 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
   - **Fase de Grupos:** O salvamento ocorre via `PATCH`, atualizando diretamente a entidade `Partida` no banco, disparando o cálculo reativo de classificação via `computeBracket`.
   - **Fase Mata-Mata:** O salvamento ocorre via `POST /api/resultados-oficiais`, populando a tabela espelho `ResultadoOficial`, isolada da entidade de partida para auditoria.
 - **Dependências de Arquivos:** Principais arquivos no fluxo: `page.tsx` (UI), `partida.service.ts` (lógica de atualização), `ResultadoOficial` (tabela de persistência).
+
+## Fluxo Operacional: /tabela (Hub Central)
+
+- **Visão Geral:** Página estática e dinâmica que atua como Hub central. Responsável pela estruturação do acesso às áreas de Bolão e Simulações.
+- **Renderização e Consumo:** Ao ser renderizada, a página orquestra a exibição dos cards de navegação e, dependendo da rota filha, inicia o consumo reativo de `/api/grupos` e `/api/partidas`.
+- **Responsabilidade:** Centralizar a experiência do usuário, garantindo o isolamento entre o Bolão Oficial (competição) e as áreas de Simulação (aprendizado/estudo).
+- **Arquivos Envolvidos:**
+  - `src/app/(main)/tabela/page.tsx` (Hub principal)
+  - `src/app/(main)/tabela/simulacao-grupos/page.tsx` (Simulador)
+  - `src/app/(main)/tabela/bolao/page.tsx` (Bolão Oficial)
+  - `src/services/partida.service.ts` (Fornecedor de dados para as tabelas)
