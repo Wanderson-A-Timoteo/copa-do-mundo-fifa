@@ -70,17 +70,17 @@ export default function PlacarCard({
         <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-xs text-zinc-500 sm:gap-4 sm:text-sm">
           <span className="font-mono">J{p.id}</span>
           <span className="text-zinc-300">|</span>
-          <span>{formatarData(p.dataHora)}</span>
+          <span className="capitalize">{faseFormatada}</span>
+          <span className="text-zinc-300">|</span>
           <span className="inline-flex items-center gap-1">
             <IconClock className="h-3.5 w-3.5" />
-            {formatarHora(p.dataHora)}
+            {formatarData(p.dataHora)} - {formatarHora(p.dataHora)}
           </span>
           <span className="text-zinc-300">|</span>
           <span className="inline-flex items-center gap-1">
             <IconMapPin className="h-3.5 w-3.5" />
             {p.estadio.nome}
           </span>
-          <span className="text-zinc-400 capitalize">{faseFormatada}</span>
         </div>
       </div>
 
@@ -121,17 +121,17 @@ export default function PlacarCard({
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
           <span className="font-mono">J{p.id}</span>
           <span className="text-zinc-300">|</span>
-          <span>{formatarData(p.dataHora)}</span>
-          <span className="inline-flex items-center gap-1">
-            <IconClock className="h-3 w-3" />
-            {formatarHora(p.dataHora)}
-          </span>
+          <span className="capitalize">{faseFormatada}</span>
           <span className="text-zinc-300">|</span>
           <span className="inline-flex items-center gap-1">
+            <IconClock className="h-3 w-3" />
+            {formatarData(p.dataHora)} - {formatarHora(p.dataHora)}
+          </span>
+          <span className="text-zinc-300 hidden sm:inline">|</span>
+          <span className="inline-flex items-center gap-1 w-full sm:w-auto">
             <IconMapPin className="h-3 w-3" />
             {p.estadio.nome}
           </span>
-          <span className="text-zinc-400 capitalize">{faseFormatada}</span>
         </div>
       </div>
     </div>
