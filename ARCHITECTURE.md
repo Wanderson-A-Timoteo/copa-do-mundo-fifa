@@ -224,6 +224,17 @@ O sistema de figurinhas atua como um metagame (Gacha) paralelo ao Bolão, focado
   - `/album/page.tsx`: Interface visual de abertura (Gacha), que realiza o fetch do pacote via API e aciona as animações de cartas, além de exibir a grade de figurinhas agrupadas por seleções.
   - `/trocas/page.tsx` (e rotas filhas): Gestão da caixa de entrada, permitindo o administrador das propostas (recebidas e enviadas) e a construção de novas propostas (exploração de repetidas da comunidade).
 
+## Ecossistema: Perfil Público e Vitrine P2P
+
+O sistema fomenta o aspecto social do Bolão, permitindo que os usuários acessem os perfis uns dos outros para propor negociações diretas.
+
+- **Visão Pública e Privacidade:** A API de fornecimento (`/api/usuarios/[slug]/repetidas/route.ts` e afins) atua como um DTO sanitizador. O Prisma é instruído via `select: { id: true, nome: true, slug: true }` a não propagar dados sensíveis como `senha`, `email` ou histórico administrativo do usuário.
+- **Motor da Vitrine:** O acesso público ao inventário de um usuário é estritamente limitado à visualização de sua Vitrine de Trocas. O backend aplica um filtro de domínio (`quantidade: { gte: 2 }`), impedindo que outros usuários visualizem as cartas únicas (coleção pessoal intransferível) do alvo.
+- **Funil de Negociação (UX/UI):** A jornada P2P foi construída focada em fricção zero:
+  - **1. Descoberta:** Ao navegar pelo perfil público de um adversário (`/perfil/[slug]`), o usuário pode visualizar todas as repetidas e clicar em "Solicitar Troca".
+  - **2. Montagem da Oferta:** O usuário é levado à rota especializada `/trocas/nova/[slug]/[figurinhaId]`. A tela paraleliza _fetches_ para obter a carta desejada do alvo e o inventário pessoal (`minhasRepetidas`) do visitante logado.
+  - **3. Disparo (Checkout):** O visitante seleciona no mínimo 1 figurinha própria para oferecer e dispara um `POST /api/trocas`, finalizando o funil de P2P e repassando o fluxo para a Máquina de Estados (gerando status `PENDENTE` para o alvo).
+
 ## Registro de Alterações (14-15/07/2026)
 
 - **Correção de Persistência (IDs):** Ajuste na estratégia de auto-incremento de IDs de partidas para separar logicamente o domínio de Grupos do domínio de Mata-Mata.
@@ -298,6 +309,8 @@ O sistema de figurinhas atua como um metagame (Gacha) paralelo ao Bolão, focado
 | `troca.service.ts`       | Transações Atômicas   | DB                 | `/trocas`             | Máquina de estados de inventário entre usuários. |
 | `/album`                 | UI do Gacha           | `album.service`    | UI / Next.js          | Visualização do álbum e animação de abertura.    |
 | `/trocas`                | Gestão de Propostas   | `troca.service`    | UI / Next.js          | Caixa de entrada de negociações de cartas.       |
+| `/perfil/[slug]`         | Vitrine Pública       | API de Usuários    | UI / Next.js          | Exibição sanitizada e acesso às repetidas.       |
+| `/trocas/nova/...`       | Funil de Troca (P2P)  | API de Trocas      | UI / Next.js          | Orquestração visual da montagem de proposta.     |
 
 ### Pontos de Ruptura (God Objects)
 
