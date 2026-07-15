@@ -203,3 +203,10 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
 - **Isolamento de Domínio:** Migração das rotas de testes para namespace `simulacao-*` para garantir conformidade com o Bolão Oficial.
 - **Motor de Pênaltis:** Implementação de lógica condicional no `PlacarCard` para exibição dinâmica de inputs de pênaltis baseada na paridade de gols em partidas de Mata-Mata.
 - **Renderização de Fases Avançadas:** Refatoração do componente de exibição para suportar estados de equipes indefinidas (`A definir`) em partidas de semifinal e final.
+
+## Fluxo de Semeadura (Seed Process)
+
+- **Ordem de Execução:** O processo de seed segue uma dependência relacional estrita: (1) Entidades base (Estádios, Seleções), (2) Estruturas de competição (Grupos), (3) Agendas (Partidas).
+- **Gerenciamento de Dados:** Os dados brutos estão centralizados em `prisma/data/`, permitindo edições fora do código executável.
+- **Idempotência:** Os scripts de seed utilizam `prisma.upsert` para garantir que a execução múltipla não crie registros duplicados ou quebre as chaves primárias (UUIDs).
+- **Script de Execução:** O comando padrão é `npx prisma db seed`.
