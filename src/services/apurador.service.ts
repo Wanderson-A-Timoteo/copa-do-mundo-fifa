@@ -4,6 +4,8 @@
  * Função pura: não possui dependências de banco de dados, ideal para testes unitários.
  */
 
+import { prisma } from "@/lib/prisma";
+
 export interface Placar {
   golsMandante: number;
   golsVisitante: number;
@@ -52,4 +54,89 @@ export function calcularPontuacaoDaPartida(palpite: Placar, real: Placar): numbe
   }
 
   return pontos;
+}
+
+export async function apurarPartida(partidaId: number) {
+  const partida = await prisma.partida.findUnique({
+    where: { id: partidaId },
+    include: { resultadoOficial: true }
+  });
+
+  if (!partida) {
+    throw new Error("Partida não encontrada");
+  }
+
+  const isMataMata = partida.fase !== "GRUPOS";
+
+  // Regra de bloqueio
+  if (!isMataMata) {
+    if (!partida.encerrada) {
+      throw new Error("A partida ainda não possui resultado oficial consolidado");
+    }
+  } else {
+    if (!partida.resultadoOficial) {
+      throw new Error("A partida ainda não possui resultado oficial consolidado");
+    }
+  }
+
+  const realPlacar: Placar = {
+    golsMandante: partida.golsMandante ?? 0,
+    golsVisitante: partida.golsVisitante ?? 0,
+    penaltisMandante: partida.resultadoOficial?.penaltisMandante,
+    penaltisVisitante: partida.resultadoOficial?.penaltisVisitante
+  };
+
+  const operacoes: any[] = [];
+
+  if (!isMataMata) {
+    const palpites = await prisma.palpite.findMany({
+      where: { partidaId }
+    });
+
+    for (const p of palpites) {
+      if (p.golsMandante == null || p.golsVisitante == null) continue;
+      
+      const palpitePlacar: Placar = {
+        golsMandante: p.golsMandante,
+        golsVisitante: p.golsVisitante
+      };
+
+      const pontos = calcularPontuacaoDaPartida(palpitePlacar, realPlacar);
+
+      operacoes.push(
+        prisma.palpite.update({
+          where: { id: p.id },
+          data: { pontos }
+        })
+      );
+    }
+  } else {
+    const palpites = await prisma.palpiteMataMata.findMany({
+      where: { partidaId }
+    });
+
+    for (const p of palpites) {
+      if (p.golsMandante == null || p.golsVisitante == null) continue;
+
+      const palpitePlacar: Placar = {
+        golsMandante: p.golsMandante,
+        golsVisitante: p.golsVisitante,
+        penaltisMandante: p.penaltisMandante,
+        penaltisVisitante: p.penaltisVisitante
+      };
+
+      const pontos = calcularPontuacaoDaPartida(palpitePlacar, realPlacar);
+
+      operacoes.push(
+        prisma.palpiteMataMata.update({
+          where: { id: p.id },
+          data: { pontos }
+        })
+      );
+    }
+  }
+
+  await prisma.$transaction(operacoes);
+
+  return { palpitesApurados: operacoes.length };
 }
