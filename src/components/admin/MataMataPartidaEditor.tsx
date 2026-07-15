@@ -102,40 +102,68 @@ export default function MataMataPartidaEditor({
         </div>
 
         {isAdmin && empate && p.mandante && p.visitante && (
-          <div className="mt-3 flex items-center justify-center gap-2 rounded-lg bg-amber-50 px-3 py-2 dark:bg-amber-900/20">
-            <span className="text-xs font-medium text-amber-700 dark:text-amber-400">
-              Pênaltis:
+          <div className="mt-4 flex flex-col items-center justify-center border-t border-dashed border-zinc-200 pt-4 dark:border-zinc-800">
+            <span className="mb-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+              Pênaltis
             </span>
-            <div className="hidden md:flex items-center gap-2">
-              <input
-                type="number"
-                min="0"
-                max="20"
-                value={penM}
-                onChange={(e) => onChangePlacar(p.numero, "penaltisMandante", e.target.value)}
-                onBlur={() => onSalvar(p.numero)}
-                className={penInputClass}
-              />
-              <span className="text-xs text-zinc-400">x</span>
-              <input
-                type="number"
-                min="0"
-                max="20"
-                value={penV}
-                onChange={(e) => onChangePlacar(p.numero, "penaltisVisitante", e.target.value)}
-                onBlur={() => onSalvar(p.numero)}
-                className={penInputClass}
-              />
+            <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center gap-2">
+                <FlagIcon
+                  codigo={p.mandante.codigoPais}
+                  className="h-5 w-auto rounded-sm shadow-sm"
+                />
+                <input
+                  type="number"
+                  min="0"
+                  max="20"
+                  value={penM}
+                  onChange={(e) => onChangePlacar(p.numero, "penaltisMandante", e.target.value)}
+                  onBlur={() => onSalvar(p.numero)}
+                  className={penInputClass}
+                />
+              </div>
+              <span className="text-xs font-bold text-zinc-300">X</span>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min="0"
+                  max="20"
+                  value={penV}
+                  onChange={(e) => onChangePlacar(p.numero, "penaltisVisitante", e.target.value)}
+                  onBlur={() => onSalvar(p.numero)}
+                  className={penInputClass}
+                />
+                <FlagIcon
+                  codigo={p.visitante.codigoPais}
+                  className="h-5 w-auto rounded-sm shadow-sm"
+                />
+              </div>
             </div>
           </div>
         )}
 
         {!isAdmin && empate && p.penaltisMandante !== null && p.penaltisVisitante !== null && (
-          <div className="mt-3 flex items-center justify-center gap-2 text-sm text-zinc-500">
-            <span className="text-xs font-medium">Pênaltis:</span>
-            <span className="font-bold">{p.penaltisMandante}</span>
-            <span className="text-xs text-zinc-400">x</span>
-            <span className="font-bold">{p.penaltisVisitante}</span>
+          <div className="mt-4 flex flex-col items-center justify-center border-t border-dashed border-zinc-200 pt-4 dark:border-zinc-800">
+            <span className="mb-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+              Pênaltis
+            </span>
+            <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center gap-2">
+                <FlagIcon
+                  codigo={p.mandante?.codigoPais}
+                  className="h-5 w-auto rounded-sm shadow-sm"
+                />
+                <span className="w-12 text-center text-lg font-bold">{p.penaltisMandante}</span>
+              </div>
+              <span className="text-xs font-bold text-zinc-300">X</span>
+              <div className="flex items-center gap-2">
+                <span className="w-12 text-center text-lg font-bold">{p.penaltisVisitante}</span>
+                <FlagIcon
+                  codigo={p.visitante?.codigoPais}
+                  className="h-5 w-auto rounded-sm shadow-sm"
+                />
+              </div>
+            </div>
           </div>
         )}
 
@@ -217,40 +245,68 @@ export default function MataMataPartidaEditor({
         </div>
 
         {isAdmin && empate && p.mandante && p.visitante && (
-          <div className="mt-2 flex items-center justify-center gap-2 rounded-lg bg-amber-50 px-3 py-1.5 dark:bg-amber-900/20">
-            <span className="text-[11px] font-medium text-amber-700 dark:text-amber-400">
-              Pênaltis:
+          <div className="mt-4 flex flex-col items-center justify-center border-t border-dashed border-zinc-200 pt-3 dark:border-zinc-800">
+            <span className="mb-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+              Pênaltis
             </span>
-            <div className="md:hidden flex items-center gap-1.5">
-              <input
-                type="number"
-                min="0"
-                max="20"
-                value={penM}
-                onChange={(e) => onChangePlacar(p.numero, "penaltisMandante", e.target.value)}
-                onBlur={() => onSalvar(p.numero)}
-                className={`w-10 rounded-lg border border-zinc-300 px-1.5 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 ${salvando ? "opacity-50" : ""}`}
-              />
-              <span className="text-[11px] text-zinc-400">x</span>
-              <input
-                type="number"
-                min="0"
-                max="20"
-                value={penV}
-                onChange={(e) => onChangePlacar(p.numero, "penaltisVisitante", e.target.value)}
-                onBlur={() => onSalvar(p.numero)}
-                className={`w-10 rounded-lg border border-zinc-300 px-1.5 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 ${salvando ? "opacity-50" : ""}`}
-              />
+            <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <FlagIcon
+                  codigo={p.mandante.codigoPais}
+                  className="h-4 w-auto rounded-sm shadow-sm"
+                />
+                <input
+                  type="number"
+                  min="0"
+                  max="20"
+                  value={penM}
+                  onChange={(e) => onChangePlacar(p.numero, "penaltisMandante", e.target.value)}
+                  onBlur={() => onSalvar(p.numero)}
+                  className={`w-12 rounded-lg border border-zinc-300 px-1 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800`}
+                />
+              </div>
+              <span className="text-[10px] font-bold text-zinc-300">X</span>
+              <div className="flex items-center gap-1.5">
+                <input
+                  type="number"
+                  min="0"
+                  max="20"
+                  value={penV}
+                  onChange={(e) => onChangePlacar(p.numero, "penaltisVisitante", e.target.value)}
+                  onBlur={() => onSalvar(p.numero)}
+                  className={`w-12 rounded-lg border border-zinc-300 px-1 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800`}
+                />
+                <FlagIcon
+                  codigo={p.visitante.codigoPais}
+                  className="h-4 w-auto rounded-sm shadow-sm"
+                />
+              </div>
             </div>
           </div>
         )}
 
         {!isAdmin && empate && p.penaltisMandante !== null && p.penaltisVisitante !== null && (
-          <div className="mt-2 flex items-center justify-center gap-1.5 text-xs text-zinc-500">
-            <span className="font-medium">Pênaltis:</span>
-            <span className="font-bold">{p.penaltisMandante}</span>
-            <span className="text-zinc-400">x</span>
-            <span className="font-bold">{p.penaltisVisitante}</span>
+          <div className="mt-4 flex flex-col items-center justify-center border-t border-dashed border-zinc-200 pt-3 dark:border-zinc-800">
+            <span className="mb-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+              Pênaltis
+            </span>
+            <div className="flex items-center justify-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <FlagIcon
+                  codigo={p.mandante?.codigoPais}
+                  className="h-4 w-auto rounded-sm shadow-sm"
+                />
+                <span className="w-10 text-center text-base font-bold">{p.penaltisMandante}</span>
+              </div>
+              <span className="text-[10px] font-bold text-zinc-300">X</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-10 text-center text-base font-bold">{p.penaltisVisitante}</span>
+                <FlagIcon
+                  codigo={p.visitante?.codigoPais}
+                  className="h-4 w-auto rounded-sm shadow-sm"
+                />
+              </div>
+            </div>
           </div>
         )}
 

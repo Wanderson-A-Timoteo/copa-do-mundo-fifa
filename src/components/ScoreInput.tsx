@@ -39,7 +39,7 @@ export default function ScoreInput({
       type="number"
       min="0"
       max="99"
-      disabled={disabled || salvando || showOverlay || jogoIniciado}
+      disabled={disabled || showOverlay || jogoIniciado}
       value={value}
       onChange={(e: ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
       onBlur={onBlur}
