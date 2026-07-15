@@ -181,7 +181,7 @@ export async function calcularClassificacao(usuarioId?: number) {
       orderBy: { id: "asc" },
     });
 
-    const palpites = await prisma.palpite.findMany({ where: { usuarioId } });
+    const palpites = await prisma.simulacao.findMany({ where: { usuarioId } });
     const palpitesPorPartida = new Map<number, MatchScore>();
     for (const p of palpites) {
       palpitesPorPartida.set(p.partidaId, {
