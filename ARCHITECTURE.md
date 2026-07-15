@@ -249,3 +249,18 @@ Com base na auditoria da rota administrativa (`src/app/(main)/admin/tabela/ofici
   - `src/app/(main)/tabela/simulacao-mata-mata/page.tsx` (Interface do Chaveamento)
   - `src/services/simulacao.service.ts` (Persistência isolada)
   - `src/lib/compute-bracket.ts` (Lógica de montagem da árvore)
+
+## Mapeamento Estrutural e Grafo de Dependências
+
+| Camada / Arquivo         | Responsabilidade      | Depende de      | É Dependido por       | Motivo da Dependência                   |
+| :----------------------- | :-------------------- | :-------------- | :-------------------- | :-------------------------------------- |
+| `lib/prisma.ts`          | Conexão Única com BD  | -               | Todos os `services`   | Singleton para evitar estouro de pools. |
+| `services/*.service.ts`  | Regras de Negócio     | `lib/prisma.ts` | `api/` routes         | Centralizar regra e isolar DB da UI.    |
+| `app/api/`               | Adaptadores REST      | `services/`     | `hooks/`              | Separar request/response da lógica.     |
+| `components/`            | Interface (UI)        | `types/`        | `app/pages`           | Modularização de visual (Tailwind).     |
+| `lib/compute-bracket.ts` | Lógica de Chaveamento | -               | `simulacao-mata-mata` | Abstrair cálculo complexo da UI.        |
+
+### Pontos de Ruptura (God Objects)
+
+- **Ponto Crítico:** `src/lib/prisma.ts` é o ponto de maior impacto. Qualquer alteração no schema reflete em todo o sistema.
+- **Isolamento:** A camada `src/services/` protege a camada de persistência de mudanças abruptas na UI, atuando como um buffer de validação.
