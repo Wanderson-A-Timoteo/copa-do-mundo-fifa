@@ -44,3 +44,10 @@ next-env.d.ts
 /src/generated/prisma
 
 dead-files.md
+
+dead-files/
+
+# VSCode
+.vscode/
+root-audit.md
+tsconfig.tsbuildinfo
