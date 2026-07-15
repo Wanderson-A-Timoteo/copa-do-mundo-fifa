@@ -33,8 +33,7 @@ export default function MataMataPartidaEditor({
   const penM = placar.penaltisMandante;
   const penV = placar.penaltisVisitante;
 
-  const empate =
-    golsM !== "" && golsV !== "" && Number(golsM) === Number(golsV) && Number(golsM) > 0;
+  const empate = golsM !== "" && golsV !== "" && Number(golsM) === Number(golsV);
 
   const estadioLabel = p.estadio?.nome ?? "A definir";
 
