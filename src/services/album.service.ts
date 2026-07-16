@@ -127,7 +127,17 @@ export async function abrirPacote(usuarioId: number) {
         codigoPais: f.selecao.codigoPais,
         corPrimaria: f.selecao.corPrimaria,
       },
-      jogador: f.jogador ? { nome: f.jogador.nome, posicao: f.jogador.posicao } : null,
+      jogador: f.jogador
+        ? {
+            nome: f.jogador.nome,
+            posicao: f.jogador.posicao,
+            numeroCamisa: f.jogador.numeroCamisa,
+            fotoUrl: f.jogador.fotoUrl,
+            dataNascimento: f.jogador.dataNascimento,
+            altura: f.jogador.altura,
+            peso: f.jogador.peso,
+          }
+        : null,
     })),
     pacotesRestantesHoje: LIMITE_DIARIO - pacotesHoje - 1,
     limiteDiario: LIMITE_DIARIO,
