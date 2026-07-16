@@ -51,13 +51,13 @@ export default function PlayerCard({
             <Image
               src={jogador.fotoUrl}
               alt={jogador.nome}
-              width={96}
-              height={128}
-              className="rounded-lg object-cover transition-transform duration-200 hover:scale-105"
+              width={128}
+              height={160}
+              className="h-28 w-20 sm:h-32 sm:w-24 md:h-40 md:w-32 rounded-lg object-cover transition-transform duration-200 hover:scale-105"
             />
           ) : (
             <div
-              className="flex h-28 w-20 items-center justify-center rounded-lg text-sm font-bold text-zinc-50 transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24 sm:text-base"
+              className="flex h-28 w-20 items-center justify-center rounded-lg text-sm font-bold text-zinc-50 transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24 sm:text-base md:h-40 md:w-32 md:text-xl"
               style={{ backgroundColor: corPrimaria || "#52525b" }}
             >
               {iniciais}
@@ -70,21 +70,25 @@ export default function PlayerCard({
           )}
         </div>
 
-        <span className="text-xs font-bold text-zinc-400">#{jogador.numeroCamisa ?? "—"}</span>
-        <span className="mt-0.5 text-center text-sm font-semibold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+        <span className="text-xs md:text-sm font-bold text-zinc-400">
+          #{jogador.numeroCamisa ?? "—"}
+        </span>
+        <span className="mt-0.5 text-center text-sm sm:text-base md:text-lg font-semibold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
           {jogador.nome}
         </span>
-        <span className="mt-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-500 dark:bg-zinc-700/50 dark:text-zinc-300">
+        <span className="mt-1 md:mt-2 rounded-full bg-zinc-100 px-2 md:px-3 py-0.5 md:py-1 text-[10px] md:text-xs font-medium text-zinc-500 dark:bg-zinc-700/50 dark:text-zinc-300">
           {jogador.posicao}
         </span>
         {isRara && (
-          <span className="mt-1 flex items-center gap-0.5 text-[10px] font-bold text-amber-500">
-            <IconStar className="h-3 w-3" /> RARA
+          <span className="mt-1 md:mt-2 flex items-center gap-0.5 text-[10px] md:text-xs font-bold text-amber-500">
+            <IconStar className="h-3 w-3 md:h-4 md:w-4" /> RARA
           </span>
         )}
-        {idade && <span className="mt-1 text-[10px] text-zinc-400">{idade} anos</span>}
+        {idade && (
+          <span className="mt-1 md:mt-2 text-[10px] md:text-xs text-zinc-400">{idade} anos</span>
+        )}
         {(jogador.altura || jogador.peso) && (
-          <div className="mt-1 flex items-center gap-2 text-[10px] text-zinc-400">
+          <div className="mt-1 md:mt-2 flex items-center gap-2 text-[10px] md:text-xs text-zinc-400">
             {jogador.altura && <span>{jogador.altura}cm</span>}
             {jogador.peso && <span>{jogador.peso}kg</span>}
           </div>

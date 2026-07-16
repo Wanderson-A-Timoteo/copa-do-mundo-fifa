@@ -29,10 +29,17 @@ export default function StickerCard({ figurinha, className = "", children }: Sti
           codigoPais={figurinha.selecao.codigoPais}
         />
       ) : (
-        <div className="flex h-full w-full aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
-          <FlagIcon codigo={figurinha.selecao.codigoPais} className="mb-2 h-10 w-auto rounded-sm" />
-          <span className="text-center text-xs font-bold">{figurinha.selecao.nome}</span>
-          <span className="text-[10px] text-zinc-400">#{figurinha.numero}</span>
+        <div className="flex h-full w-full flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
+          <FlagIcon
+            codigo={figurinha.selecao.codigoPais}
+            className="mb-2 md:mb-4 h-10 w-auto md:h-14 rounded-sm shadow-sm"
+          />
+          <span className="text-center text-xs md:text-sm font-bold text-zinc-700 dark:text-zinc-200">
+            {figurinha.selecao.nome}
+          </span>
+          <span className="text-[10px] md:text-xs text-zinc-400 mt-1 md:mt-2">
+            #{figurinha.numero}
+          </span>
         </div>
       )}
       {children}
