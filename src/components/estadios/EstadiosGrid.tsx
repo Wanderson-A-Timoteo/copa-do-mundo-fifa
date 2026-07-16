@@ -65,6 +65,7 @@ export default function EstadiosGrid({ paises, estadios }: EstadiosGridProps) {
                           fill
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                           unoptimized
+                          priority
                         />
                       ) : (
                         <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800" />
