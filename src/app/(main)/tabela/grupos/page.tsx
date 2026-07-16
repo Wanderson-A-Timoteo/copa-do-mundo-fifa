@@ -24,7 +24,7 @@ export default function TabelaPage() {
       </div>
 
       {carregando ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-2">
           {Array.from({ length: 6 }).map((_, i) => (
             <SkeletonTabela key={i} />
           ))}
@@ -34,7 +34,7 @@ export default function TabelaPage() {
           <p className="text-lg text-zinc-500">Nenhum resultado oficial registrado ainda.</p>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-2">
           {grupos.map((grupo) => (
             <div
               key={grupo.id}
