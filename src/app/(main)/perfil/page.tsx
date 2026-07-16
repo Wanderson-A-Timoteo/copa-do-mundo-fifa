@@ -1,9 +1,11 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { IconShield, IconUser } from "@/components/Icons";
 import { SkeletonPerfil } from "@/components/Skeleton";
+import ModalConfirm from "@/components/ModalConfirm";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function PerfilPage() {
   const router = useRouter();
@@ -14,6 +16,8 @@ export default function PerfilPage() {
     role: string;
   } | null>(null);
   const [carregando, setCarregando] = useState(true);
+  const [showSairModal, setShowSairModal] = useState(false);
+  const { logout } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -81,16 +85,24 @@ export default function PerfilPage() {
 
       <div className="mt-6">
         <button
-          onClick={() => {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            router.push("/");
-          }}
-          className="w-full rounded-lg border border-red-300 px-4 py-2.5 text-sm text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950"
+          onClick={() => setShowSairModal(true)}
+          className="w-full rounded-xl border border-red-300 px-4 py-2.5 text-sm font-bold text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/30 active:scale-95"
         >
           Sair da conta
         </button>
       </div>
+
+      {showSairModal && (
+        <ModalConfirm
+          title="Sair da conta?"
+          message="Tem certeza que deseja sair?"
+          onConfirm={() => {
+            logout();
+            window.location.href = "/";
+          }}
+          onCancel={() => setShowSairModal(false)}
+        />
+      )}
     </main>
   );
 }

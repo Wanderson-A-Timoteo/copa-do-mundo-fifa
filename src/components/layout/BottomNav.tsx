@@ -21,6 +21,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import ModalConfirm from "@/components/ModalConfirm";
 
 export function BottomNav() {
   const pathname = usePathname();
@@ -28,6 +29,7 @@ export function BottomNav() {
   const { user, logout } = useAuth();
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -116,6 +118,7 @@ export function BottomNav() {
   const handleLogout = () => {
     logout();
     setIsMenuOpen(false);
+    setShowLogoutModal(false);
     router.push("/");
   };
 
@@ -175,7 +178,7 @@ export function BottomNav() {
           {mounted && user && (
             <div className="mt-8 border-t border-zinc-100 pt-6 dark:border-zinc-800">
               <button
-                onClick={handleLogout}
+                onClick={() => setShowLogoutModal(true)}
                 className="flex w-full items-center justify-center gap-2 rounded-xl bg-red-50 py-3.5 text-sm font-bold text-red-600 transition-all active:scale-95 dark:bg-red-950/30 dark:text-red-400"
               >
                 <LogOut className="h-4 w-4" />
@@ -228,6 +231,15 @@ export function BottomNav() {
           </button>
         </div>
       </nav>
+
+      {showLogoutModal && (
+        <ModalConfirm
+          title="Sair da conta?"
+          message="Tem certeza que deseja sair?"
+          onConfirm={handleLogout}
+          onCancel={() => setShowLogoutModal(false)}
+        />
+      )}
     </>
   );
 }
