@@ -44,7 +44,7 @@ export default function PlacarCard({
   const penInputClass = `w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-14 sm:text-sm`;
 
   return (
-    <div className="w-full max-w-full overflow-hidden flex flex-col md:block rounded-xl border border-zinc-200 bg-white p-4 transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
+    <div className="w-full max-w-full overflow-hidden flex flex-col md:block rounded-xl border border-zinc-200 bg-zinc-100 p-4 transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
       <div className="hidden md:block">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
@@ -83,8 +83,13 @@ export default function PlacarCard({
           <div className="flex min-w-0 flex-1 items-center justify-end gap-2 sm:gap-3">
             {p.visitante ? (
               <>
-                <span className="truncate text-right font-medium sm:text-base">{p.visitante.nome}</span>
-                <FlagIcon codigo={p.visitante.codigoPais} className="h-6 w-auto rounded-sm sm:h-8" />
+                <span className="truncate text-right font-medium sm:text-base">
+                  {p.visitante.nome}
+                </span>
+                <FlagIcon
+                  codigo={p.visitante.codigoPais}
+                  className="h-6 w-auto rounded-sm sm:h-8"
+                />
               </>
             ) : (
               <span className="truncate text-right text-sm text-zinc-400">A definir</span>
@@ -162,7 +167,10 @@ export default function PlacarCard({
           <div className="flex items-center gap-1.5">
             {p.mandante ? (
               <>
-                <FlagIcon codigo={p.mandante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                <FlagIcon
+                  codigo={p.mandante.codigoPais}
+                  className="h-5 w-auto shrink-0 rounded-sm"
+                />
                 <span className="truncate text-sm font-medium">{p.mandante.nome}</span>
               </>
             ) : (
@@ -184,7 +192,10 @@ export default function PlacarCard({
           <div className="flex items-center gap-1.5">
             {p.visitante ? (
               <>
-                <FlagIcon codigo={p.visitante.codigoPais} className="h-5 w-auto shrink-0 rounded-sm" />
+                <FlagIcon
+                  codigo={p.visitante.codigoPais}
+                  className="h-5 w-auto shrink-0 rounded-sm"
+                />
                 <span className="truncate text-sm font-medium">{p.visitante.nome}</span>
               </>
             ) : (

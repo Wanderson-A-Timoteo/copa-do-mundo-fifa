@@ -44,7 +44,7 @@ export default function PlayerCard({
   const isRara = raridade ? raridade === "rara" : jogador.figurinha?.raridade === "rara";
 
   return (
-    <div className="group flex flex-col items-center rounded-xl border border-zinc-200 bg-white px-5 pb-5 pt-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+    <div className="group flex flex-col items-center rounded-xl border border-zinc-200 bg-zinc-100 px-5 pb-5 pt-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]">
       <div className="relative mb-3">
         {jogador.fotoUrl ? (
           <Image
@@ -70,7 +70,9 @@ export default function PlayerCard({
       </div>
 
       <span className="text-xs font-bold text-zinc-400">#{jogador.numeroCamisa ?? "—"}</span>
-      <span className="mt-0.5 text-center text-sm font-semibold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">{jogador.nome}</span>
+      <span className="mt-0.5 text-center text-sm font-semibold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+        {jogador.nome}
+      </span>
       <span className="mt-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-500 dark:bg-zinc-700/50 dark:text-zinc-300">
         {jogador.posicao}
       </span>
