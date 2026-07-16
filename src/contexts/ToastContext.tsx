@@ -1,6 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+  useEffect,
+} from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
@@ -49,13 +56,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   );
 }
 
-function ToastItem({
-  toast,
-  onRemove,
-}: {
-  toast: ToastMessage;
-  onRemove: (id: string) => void;
-}) {
+function ToastItem({ toast, onRemove }: { toast: ToastMessage; onRemove: (id: string) => void }) {
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
@@ -66,7 +67,10 @@ function ToastItem({
     return () => clearTimeout(timer);
   }, [toast.id, isHovered, onRemove]);
 
-  const bgColor = toast.type === "success" ? "bg-emerald-100 text-emerald-800 border-emerald-200" : "bg-red-100 text-red-800 border-red-200";
+  const bgColor =
+    toast.type === "success"
+      ? "bg-emerald-100 text-emerald-800 border-emerald-200"
+      : "bg-red-100 text-red-800 border-red-200";
   const iconColor = toast.type === "success" ? "text-emerald-500" : "text-red-500";
 
   return (
@@ -81,12 +85,27 @@ function ToastItem({
     >
       <div className="flex items-center gap-3">
         {toast.type === "success" ? (
-          <svg className={`h-5 w-5 ${iconColor}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg
+            className={`h-5 w-5 ${iconColor}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         ) : (
-          <svg className={`h-5 w-5 ${iconColor}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <svg
+            className={`h-5 w-5 ${iconColor}`}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         )}
         <p className="text-sm font-medium">{toast.message}</p>

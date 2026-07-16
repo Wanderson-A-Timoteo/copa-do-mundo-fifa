@@ -21,8 +21,6 @@ interface AlbumItem {
   figurinha: Figurinha;
 }
 
-
-
 export default function AlbumPage() {
   const { user, getAuthHeaders } = useAuth();
   const [figurinhas, setFigurinhas] = useState<Figurinha[]>([]);

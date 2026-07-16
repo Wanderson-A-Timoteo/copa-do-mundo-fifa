@@ -250,7 +250,7 @@ export async function getRanking() {
     prisma.palpiteMataMata.groupBy({
       by: ["usuarioId"],
       _sum: { pontos: true },
-    })
+    }),
   ]);
 
   const mapPontos = new Map<number, number>();

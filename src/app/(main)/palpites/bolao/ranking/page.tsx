@@ -129,7 +129,9 @@ export default function RankingPage() {
                     <tr
                       key={item.usuarioId}
                       className={`hover:bg-zinc-50 dark:hover:bg-zinc-100/10 transition-all ${
-                        isCurrentUser ? "bg-indigo-50 dark:bg-zinc-100/10 ring-1 ring-indigo-500" : ""
+                        isCurrentUser
+                          ? "bg-indigo-50 dark:bg-zinc-100/10 ring-1 ring-indigo-500"
+                          : ""
                       }`}
                     >
                       <td className="px-6 py-4 text-center font-bold text-zinc-500 dark:text-zinc-400">

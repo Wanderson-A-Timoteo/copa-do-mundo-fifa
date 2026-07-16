@@ -68,9 +68,14 @@ export default function SelecoesPage() {
               className="group rounded-xl border border-zinc-200 bg-zinc-100 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]"
             >
               <div className="flex items-center gap-4">
-                <FlagIcon codigo={sel.codigoPais} className="h-10 w-auto rounded-sm drop-shadow-sm" />
+                <FlagIcon
+                  codigo={sel.codigoPais}
+                  className="h-10 w-auto rounded-sm drop-shadow-sm"
+                />
                 <div>
-                  <h2 className="font-semibold text-zinc-800 transition-colors group-hover:text-emerald-600 dark:text-zinc-100 dark:group-hover:text-emerald-400">{sel.nome}</h2>
+                  <h2 className="font-semibold text-zinc-800 transition-colors group-hover:text-emerald-600 dark:text-zinc-100 dark:group-hover:text-emerald-400">
+                    {sel.nome}
+                  </h2>
                   <p className="text-xs text-zinc-500">
                     Grupo {sel.grupoId} · {sel.continente}
                     {sel.titulos > 0 && ` · ${sel.titulos} títulos`}

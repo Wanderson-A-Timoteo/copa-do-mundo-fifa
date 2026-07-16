@@ -45,8 +45,8 @@ export default function PoliticasPrivacidadePage() {
           </h2>
           <p>
             Você tem o direito de solicitar a exclusão da sua conta e de todos os dados associados a
-            qualquer momento. Para isso, acesse as configurações do seu perfil e clique em &quot;Excluir
-            Conta&quot;. A remoção é imediata e irreversível.
+            qualquer momento. Para isso, acesse as configurações do seu perfil e clique em
+            &quot;Excluir Conta&quot;. A remoção é imediata e irreversível.
           </p>
 
           <p className="mt-12 text-sm text-zinc-500">Última atualização: Julho de 2026</p>

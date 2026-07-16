@@ -1,6 +1,5 @@
 "use client";
 
-
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 import UserMenu from "./UserMenu";
@@ -8,11 +7,9 @@ import ActiveLink from "./ActiveLink";
 import { IconTrophy, IconBook, IconRepeat } from "./Icons";
 
 export default function NavHeader({ transparent }: { transparent?: boolean }) {
-
   const headerClass = transparent
     ? "absolute inset-x-0 top-0 z-30 flex items-center justify-between bg-transparent px-6 py-4 text-zinc-50"
     : "sticky top-0 z-[110] flex items-center justify-between border-b border-zinc-200 bg-zinc-100/80 px-6 py-4 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-800/80";
-
 
   return (
     <>

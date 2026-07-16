@@ -8,7 +8,6 @@ import GoogleLoginButton from "@/components/GoogleLoginButton";
 import PaginaAnimada from "@/components/PaginaAnimada";
 
 export default function CadastroPage() {
-
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");

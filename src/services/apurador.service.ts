@@ -37,7 +37,6 @@ export function calcularPontuacaoDaPartida(palpite: Placar, real: Placar): numbe
   // --- 2. AVALIAÇÃO DE PÊNALTIS (MATA-MATA) ---
   // Só avalia pênaltis se o jogo real empatou e foi para os pênaltis
   if (empateReal && real.penaltisMandante != null && real.penaltisVisitante != null) {
-    
     // O usuário também precisa ter palpitado pênaltis para ganhar pontos bônus
     if (palpite.penaltisMandante != null && palpite.penaltisVisitante != null) {
       const venceuMandanteReal = real.penaltisMandante > real.penaltisVisitante;
@@ -45,8 +44,11 @@ export function calcularPontuacaoDaPartida(palpite: Placar, real: Placar): numbe
 
       if (venceuMandanteReal === venceuMandantePalpite) {
         pontos += 2; // Acertou a Seleção Classificada
-        
-        if (palpite.penaltisMandante === real.penaltisMandante && palpite.penaltisVisitante === real.penaltisVisitante) {
+
+        if (
+          palpite.penaltisMandante === real.penaltisMandante &&
+          palpite.penaltisVisitante === real.penaltisVisitante
+        ) {
           pontos += 1; // Acertou o placar exato dos pênaltis
         }
       }
@@ -59,7 +61,7 @@ export function calcularPontuacaoDaPartida(palpite: Placar, real: Placar): numbe
 export async function apurarPartida(partidaId: number) {
   const partida = await prisma.partida.findUnique({
     where: { id: partidaId },
-    include: { resultadoOficial: true }
+    include: { resultadoOficial: true },
   });
 
   if (!partida) {
@@ -83,22 +85,22 @@ export async function apurarPartida(partidaId: number) {
     golsMandante: partida.golsMandante ?? 0,
     golsVisitante: partida.golsVisitante ?? 0,
     penaltisMandante: partida.resultadoOficial?.penaltisMandante,
-    penaltisVisitante: partida.resultadoOficial?.penaltisVisitante
+    penaltisVisitante: partida.resultadoOficial?.penaltisVisitante,
   };
 
   const operacoes: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ = [];
 
   if (!isMataMata) {
     const palpites = await prisma.palpite.findMany({
-      where: { partidaId }
+      where: { partidaId },
     });
 
     for (const p of palpites) {
       if (p.golsMandante == null || p.golsVisitante == null) continue;
-      
+
       const palpitePlacar: Placar = {
         golsMandante: p.golsMandante,
-        golsVisitante: p.golsVisitante
+        golsVisitante: p.golsVisitante,
       };
 
       const pontos = calcularPontuacaoDaPartida(palpitePlacar, realPlacar);
@@ -106,13 +108,13 @@ export async function apurarPartida(partidaId: number) {
       operacoes.push(
         prisma.palpite.update({
           where: { id: p.id },
-          data: { pontos }
-        })
+          data: { pontos },
+        }),
       );
     }
   } else {
     const palpites = await prisma.palpiteMataMata.findMany({
-      where: { partidaId }
+      where: { partidaId },
     });
 
     for (const p of palpites) {
@@ -122,7 +124,7 @@ export async function apurarPartida(partidaId: number) {
         golsMandante: p.golsMandante,
         golsVisitante: p.golsVisitante,
         penaltisMandante: p.penaltisMandante,
-        penaltisVisitante: p.penaltisVisitante
+        penaltisVisitante: p.penaltisVisitante,
       };
 
       const pontos = calcularPontuacaoDaPartida(palpitePlacar, realPlacar);
@@ -130,8 +132,8 @@ export async function apurarPartida(partidaId: number) {
       operacoes.push(
         prisma.palpiteMataMata.update({
           where: { id: p.id },
-          data: { pontos }
-        })
+          data: { pontos },
+        }),
       );
     }
   }

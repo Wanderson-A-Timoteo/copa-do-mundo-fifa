@@ -104,14 +104,21 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
             transition={{ duration: 0.8 }}
             className="absolute inset-0"
           >
-            <Image src={estadio.fotoUrl} alt={estadio.nome} fill className="object-cover" priority unoptimized />
+            <Image
+              src={estadio.fotoUrl}
+              alt={estadio.nome}
+              fill
+              className="object-cover"
+              priority
+              unoptimized
+            />
           </motion.div>
         ) : (
           <div className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -143,35 +150,46 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
 
       <div className="mx-auto max-w-5xl px-6">
         {/* Grid de Info */}
-        <motion.section 
+        <motion.section
           initial="hidden"
           animate="show"
           variants={{
             hidden: { opacity: 0 },
-            show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.4 } }
+            show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.4 } },
           }}
           className="relative z-20 -mt-8 mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3"
         >
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+            className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+          >
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Localização</h3>
             <p className="mt-2 flex items-center gap-1.5 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               <IconMapPin className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               {estadio.cidade}, {estadio.pais}
             </p>
           </motion.div>
-          
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+            className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+          >
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Capacidade</h3>
             <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               {estadio.capacidade.toLocaleString("pt-BR")} lugares
             </p>
           </motion.div>
-          
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+
+          <motion.div
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+            className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+          >
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
               Jogos Programados
             </h3>
-            <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{estadio.partidas.length} partidas</p>
+            <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+              {estadio.partidas.length} partidas
+            </p>
           </motion.div>
         </motion.section>
 
@@ -206,8 +224,8 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
                   viewport={{ once: true }}
                 >
                   {estadio.galeria.map((url, i) => (
-                    <div 
-                      key={i} 
+                    <div
+                      key={i}
                       className="break-inside-avoid overflow-hidden rounded-xl cursor-pointer group relative"
                       onClick={() => setSelectedImageIndex(i)}
                     >
@@ -283,25 +301,50 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
       {/* Lightbox Modal */}
       {selectedImageIndex !== null && estadio.galeria && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/90 backdrop-blur-sm p-4">
-          <button 
+          <button
             className="absolute top-6 right-6 z-50 text-zinc-50/70 hover:text-zinc-50 transition-colors bg-zinc-900/50 p-2 rounded-full"
             onClick={() => setSelectedImageIndex(null)}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
           </button>
-          
-          <button 
+
+          <button
             className="absolute left-4 z-50 text-zinc-50/70 hover:text-zinc-50 transition-colors bg-zinc-900/50 p-3 rounded-full hover:bg-zinc-900/80 disabled:opacity-30"
             disabled={selectedImageIndex === 0}
             onClick={(e) => {
               e.stopPropagation();
-              setSelectedImageIndex(prev => (prev !== null && prev > 0 ? prev - 1 : prev));
+              setSelectedImageIndex((prev) => (prev !== null && prev > 0 ? prev - 1 : prev));
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
           </button>
 
-          <motion.div 
+          <motion.div
             key={selectedImageIndex}
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -322,15 +365,29 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
             </div>
           </motion.div>
 
-          <button 
+          <button
             className="absolute right-4 z-50 text-zinc-50/70 hover:text-zinc-50 transition-colors bg-zinc-900/50 p-3 rounded-full hover:bg-zinc-900/80 disabled:opacity-30"
             disabled={selectedImageIndex === estadio.galeria.length - 1}
             onClick={(e) => {
               e.stopPropagation();
-              setSelectedImageIndex(prev => (prev !== null && prev < estadio.galeria!.length - 1 ? prev + 1 : prev));
+              setSelectedImageIndex((prev) =>
+                prev !== null && prev < estadio.galeria!.length - 1 ? prev + 1 : prev,
+              );
             }}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
           </button>
         </div>
       )}

@@ -146,8 +146,6 @@ export default function BolaoPage() {
     carregar();
   }, [carregar]);
 
-
-
   const partidasPorDia = partidas.reduce<Record<string, PartidaResumo[]>>((acc, p) => {
     const chave = formatarData(p.dataHora);
     if (!acc[chave]) acc[chave] = [];
@@ -315,16 +313,20 @@ export default function BolaoPage() {
                             cidade: p.estadio?.cidade || "",
                             pais: "",
                           },
-                          mandante: p.mandante ? {
-                            id: p.mandante.id,
-                            nome: p.mandante.nome,
-                            codigoPais: p.mandante.codigoPais,
-                          } : undefined,
-                          visitante: p.visitante ? {
-                            id: p.visitante.id,
-                            nome: p.visitante.nome,
-                            codigoPais: p.visitante.codigoPais,
-                          } : undefined,
+                          mandante: p.mandante
+                            ? {
+                                id: p.mandante.id,
+                                nome: p.mandante.nome,
+                                codigoPais: p.mandante.codigoPais,
+                              }
+                            : undefined,
+                          visitante: p.visitante
+                            ? {
+                                id: p.visitante.id,
+                                nome: p.visitante.nome,
+                                codigoPais: p.visitante.codigoPais,
+                              }
+                            : undefined,
                           grupoId: null,
                           encerrada: p.resolvida,
                         } as unknown as PartidaResumo;

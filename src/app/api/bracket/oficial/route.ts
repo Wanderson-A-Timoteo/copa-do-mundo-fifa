@@ -20,65 +20,69 @@ export async function GET() {
     orderBy: { id: "asc" },
   });
 
-  const gruposStandings = gruposDB.map((g: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
-    const selecoes = g.selecoes.map((s: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
-      let v = 0,
-        e = 0,
-        d = 0,
-        gp = 0,
-        gc = 0;
+  const gruposStandings = gruposDB.map(
+    (g: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
+      const selecoes = g.selecoes.map(
+        (s: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
+          let v = 0,
+            e = 0,
+            d = 0,
+            gp = 0,
+            gc = 0;
 
-      for (const p of s.partidasCasa) {
-        if (p.golsMandante !== null && p.golsVisitante !== null) {
-          gp += p.golsMandante;
-          gc += p.golsVisitante;
-          if (p.golsMandante > p.golsVisitante) v++;
-          else if (p.golsMandante === p.golsVisitante) e++;
-          else d++;
-        }
-      }
-      for (const p of s.partidasFora) {
-        if (p.golsMandante !== null && p.golsVisitante !== null) {
-          gp += p.golsVisitante;
-          gc += p.golsMandante;
-          if (p.golsVisitante > p.golsMandante) v++;
-          else if (p.golsVisitante === p.golsMandante) e++;
-          else d++;
-        }
-      }
-      const sg = gp - gc;
-      const pts = v * 3 + e;
+          for (const p of s.partidasCasa) {
+            if (p.golsMandante !== null && p.golsVisitante !== null) {
+              gp += p.golsMandante;
+              gc += p.golsVisitante;
+              if (p.golsMandante > p.golsVisitante) v++;
+              else if (p.golsMandante === p.golsVisitante) e++;
+              else d++;
+            }
+          }
+          for (const p of s.partidasFora) {
+            if (p.golsMandante !== null && p.golsVisitante !== null) {
+              gp += p.golsVisitante;
+              gc += p.golsMandante;
+              if (p.golsVisitante > p.golsMandante) v++;
+              else if (p.golsVisitante === p.golsMandante) e++;
+              else d++;
+            }
+          }
+          const sg = gp - gc;
+          const pts = v * 3 + e;
+
+          return {
+            id: s.id,
+            nome: s.nome,
+            codigoPais: s.codigoPais,
+            grupoId: s.grupoId,
+            p: pts,
+            j: v + e + d,
+            v,
+            e,
+            d,
+            gp,
+            gc,
+            sg,
+          };
+        },
+      );
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      selecoes.sort((a: any, b: any) => {
+        if (b.p !== a.p) return b.p - a.p;
+        if (b.sg !== a.sg) return b.sg - a.sg;
+        if (b.gp !== a.gp) return b.gp - a.gp;
+        return a.nome.localeCompare(b.nome);
+      });
 
       return {
-        id: s.id,
-        nome: s.nome,
-        codigoPais: s.codigoPais,
-        grupoId: s.grupoId,
-        p: pts,
-        j: v + e + d,
-        v,
-        e,
-        d,
-        gp,
-        gc,
-        sg,
+        id: g.id,
+        nome: g.nome,
+        selecoes,
       };
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    selecoes.sort((a: any, b: any) => {
-      if (b.p !== a.p) return b.p - a.p;
-      if (b.sg !== a.sg) return b.sg - a.sg;
-      if (b.gp !== a.gp) return b.gp - a.gp;
-      return a.nome.localeCompare(b.nome);
-    });
-
-    return {
-      id: g.id,
-      nome: g.nome,
-      selecoes,
-    };
-  });
+    },
+  );
 
   const resultados = await prisma.resultadoOficial.findMany();
   const resultadosFormatados = resultados.map((r) => ({

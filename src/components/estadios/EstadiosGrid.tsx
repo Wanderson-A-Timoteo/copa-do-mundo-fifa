@@ -70,10 +70,10 @@ export default function EstadiosGrid({ paises, estadios }: EstadiosGridProps) {
                       ) : (
                         <div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800" />
                       )}
-                      
+
                       {/* Gradient Overlay for modern look */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                      
+
                       <div className="absolute right-3 top-3 rounded-full bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-50 backdrop-blur-md">
                         {e.capacidade.toLocaleString("pt-BR")}
                       </div>
