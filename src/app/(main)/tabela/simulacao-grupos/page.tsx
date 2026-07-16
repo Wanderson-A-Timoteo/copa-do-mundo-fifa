@@ -185,11 +185,11 @@ export default function PlacarPage() {
             {grupo && (
               <section className="mt-8">
                 <h2 className="mb-4 text-lg font-bold">{grupo.nome}</h2>
-                <div className="w-full max-w-full overflow-x-auto mb-8 shadow-sm rounded-xl border border-zinc-200 dark:border-zinc-800">
+                <div className="w-full max-w-full overflow-x-auto mb-8 shadow-sm rounded-xl border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800">
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="bg-zinc-50 text-left text-xs text-zinc-500 dark:bg-zinc-900">
-                        <th className="px-3 py-2 font-medium sticky left-0 z-20 bg-zinc-50 dark:bg-zinc-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                      <tr className="text-left text-xs text-zinc-500">
+                        <th className="px-3 py-2 font-medium sticky left-0 z-20 bg-zinc-100 dark:bg-zinc-800 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                           Seleção
                         </th>
                         <th className="px-3 py-2 text-center font-medium">P</th>
@@ -206,7 +206,7 @@ export default function PlacarPage() {
                       {grupo.selecoes.map((sel, idx) => (
                         <tr
                           key={sel.id}
-                          className={`border-t border-zinc-100 dark:border-zinc-800 border-l-4 ${
+                          className={`border-t border-zinc-200 dark:border-zinc-700/50 transition-colors bg-zinc-100 hover:bg-zinc-200/80 even:bg-zinc-200/50 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:even:bg-zinc-700/50 group border-l-4 ${
                             idx < 2
                               ? "border-l-emerald-500"
                               : idx === 2
@@ -214,7 +214,7 @@ export default function PlacarPage() {
                                 : "border-l-red-500"
                           }`}
                         >
-                          <td className="px-3 py-3 sticky left-0 z-10 bg-zinc-100 dark:bg-zinc-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                          <td className="px-3 py-3 sticky left-0 z-10 bg-inherit shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-zinc-400 w-4">{idx + 1}</span>
                               <FlagIcon codigo={sel.codigoPais} className="h-5 w-auto rounded-sm" />
