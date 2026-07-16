@@ -38,14 +38,14 @@ export default function TabelaPage() {
           {grupos.map((grupo) => (
             <div
               key={grupo.id}
-              className="overflow-hidden rounded-xl border border-zinc-200 bg-white p-4 sm:p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+              className="overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 p-4 sm:p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-800"
             >
               <h2 className="mb-4 text-lg font-bold">{grupo.nome}</h2>
               <div className="overflow-x-auto pb-2">
                 <table className="w-full text-sm min-w-[500px] table-fixed">
                   <thead>
                     <tr className="text-left text-xs text-zinc-500">
-                      <th className="pb-2 text-center font-medium sticky left-0 z-10 bg-white dark:bg-zinc-900 w-8 after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
+                      <th className="pb-2 text-center font-medium sticky left-0 z-10 bg-zinc-100 dark:bg-zinc-800 w-8 after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
                         #
                       </th>
                       <th className="pb-2 font-medium">Seleção</th>
@@ -65,7 +65,7 @@ export default function TabelaPage() {
                     {grupo.selecoes.map((sel, idx) => (
                       <tr
                         key={sel.id}
-                        className="border-t border-zinc-100 dark:border-zinc-800 transition-colors bg-white hover:bg-zinc-50 even:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:even:bg-zinc-800/50 group"
+                        className="border-t border-zinc-200 dark:border-zinc-700/50 transition-colors bg-zinc-100 hover:bg-zinc-200/80 even:bg-zinc-200/50 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:even:bg-zinc-700/50 group"
                       >
                         <td className="py-2.5 text-center font-bold text-zinc-400 sticky left-0 z-10 bg-inherit after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
                           {idx + 1}
