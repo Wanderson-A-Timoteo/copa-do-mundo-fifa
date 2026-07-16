@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Globe, Calendar, MapPin, Trophy, BookOpen } from "lucide-react";
 
 const copasAnteriores = [
-  { ano: 2022, sede: "Catar", campeao: "Argentina", siglaCampeao: "ar", siglaSede: "qa" }, // Wait, Argentina is "ar"
+  { ano: 2022, sede: "Catar", campeao: "Argentina", siglaCampeao: "ar", siglaSede: "qa" },
   { ano: 2018, sede: "Rússia", campeao: "França", siglaCampeao: "fr", siglaSede: "ru" },
   { ano: 2014, sede: "Brasil", campeao: "Alemanha", siglaCampeao: "de", siglaSede: "br" },
   { ano: 2010, sede: "África do Sul", campeao: "Espanha", siglaCampeao: "es", siglaSede: "za" },
@@ -14,6 +14,26 @@ const copasAnteriores = [
   { ano: 2002, sede: "Coreia/Japão", campeao: "Brasil", siglaCampeao: "br", siglaSede: "kr" },
   { ano: 1998, sede: "França", campeao: "França", siglaCampeao: "fr", siglaSede: "fr" },
   { ano: 1994, sede: "EUA", campeao: "Brasil", siglaCampeao: "br", siglaSede: "us" },
+  { ano: 1990, sede: "Itália", campeao: "Alemanha", siglaCampeao: "de", siglaSede: "it" },
+  { ano: 1986, sede: "México", campeao: "Argentina", siglaCampeao: "ar", siglaSede: "mx" },
+  { ano: 1982, sede: "Espanha", campeao: "Itália", siglaCampeao: "it", siglaSede: "es" },
+  { ano: 1978, sede: "Argentina", campeao: "Argentina", siglaCampeao: "ar", siglaSede: "ar" },
+  { ano: 1974, sede: "Alemanha", campeao: "Alemanha", siglaCampeao: "de", siglaSede: "de" },
+  { ano: 1970, sede: "México", campeao: "Brasil", siglaCampeao: "br", siglaSede: "mx" },
+  {
+    ano: 1966,
+    sede: "Inglaterra",
+    campeao: "Inglaterra",
+    siglaCampeao: "gb-eng",
+    siglaSede: "gb-eng",
+  },
+  { ano: 1962, sede: "Chile", campeao: "Brasil", siglaCampeao: "br", siglaSede: "cl" },
+  { ano: 1958, sede: "Suécia", campeao: "Brasil", siglaCampeao: "br", siglaSede: "se" },
+  { ano: 1954, sede: "Suíça", campeao: "Alemanha", siglaCampeao: "de", siglaSede: "ch" },
+  { ano: 1950, sede: "Brasil", campeao: "Uruguai", siglaCampeao: "uy", siglaSede: "br" },
+  { ano: 1938, sede: "França", campeao: "Itália", siglaCampeao: "it", siglaSede: "fr" },
+  { ano: 1934, sede: "Itália", campeao: "Itália", siglaCampeao: "it", siglaSede: "it" },
+  { ano: 1930, sede: "Uruguai", campeao: "Uruguai", siglaCampeao: "uy", siglaSede: "uy" },
 ];
 
 const containerVariants = {
