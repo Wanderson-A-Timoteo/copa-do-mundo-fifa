@@ -21,20 +21,7 @@ interface AlbumItem {
   figurinha: Figurinha;
 }
 
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.2,
-    },
-  },
-};
 
-const staggerItem = {
-  hidden: { opacity: 0, scale: 0.8 },
-  show: { opacity: 1, scale: 1 },
-};
 
 export default function AlbumPage() {
   const { user, getAuthHeaders } = useAuth();

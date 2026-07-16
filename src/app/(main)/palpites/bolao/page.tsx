@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { FlagIcon } from "@/components/FlagIcon";
+
 import ModalLogin from "@/components/ModalLogin";
 import ModalAlert from "@/components/ModalAlert";
 
-import { IconClock, IconMapPin, IconLock } from "@/components/Icons";
-import { formatarData, formatarHora } from "@/lib/format";
-import type { ClassificacaoSelecao, PartidaResumo } from "@/types";
+import { IconLock } from "@/components/Icons";
+import { formatarData } from "@/lib/format";
+import type { PartidaResumo } from "@/types";
 import type { BracketResult } from "@/lib/compute-bracket";
 import PlacarCard from "@/components/PlacarCard";
 
@@ -29,7 +29,7 @@ export default function BolaoPage() {
   const [showModalLogin, setShowModalLogin] = useState(false);
   const [showModalClosed, setShowModalClosed] = useState(false);
   const [salvandoPartida, setSalvandoPartida] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   useEffect(() => {
     const t = localStorage.getItem("token");
@@ -146,12 +146,7 @@ export default function BolaoPage() {
     carregar();
   }, [carregar]);
 
-  const atualizarPlacares = useCallback(
-    (silent = false) => {
-      carregar(silent);
-    },
-    [carregar],
-  );
+
 
   const partidasPorDia = partidas.reduce<Record<string, PartidaResumo[]>>((acc, p) => {
     const chave = formatarData(p.dataHora);
