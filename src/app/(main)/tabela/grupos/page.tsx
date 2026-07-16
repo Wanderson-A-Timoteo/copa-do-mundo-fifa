@@ -42,23 +42,25 @@ export default function TabelaPage() {
             >
               <h2 className="mb-4 text-lg font-bold">{grupo.nome}</h2>
               <div className="overflow-x-auto pb-2">
-                <table className="w-full text-sm min-w-[500px]">
+                <table className="w-full text-sm min-w-[500px] table-fixed">
                   <thead>
                     <tr className="text-left text-xs text-zinc-500">
-                      <th className="pb-2 font-medium sticky left-0 z-10 bg-white dark:bg-zinc-900">
+                      <th className="pb-2 text-center font-medium sticky left-0 z-10 bg-white dark:bg-zinc-900 w-8">
                         #
                       </th>
-                      <th className="pb-2 font-medium sticky left-6 z-10 bg-white dark:bg-zinc-900 after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
+                      <th className="pb-2 font-medium sticky left-8 z-10 bg-white dark:bg-zinc-900 after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
                         Seleção
                       </th>
-                      <th className="pb-2 text-center font-medium">P</th>
-                      <th className="pb-2 text-center font-medium">J</th>
-                      <th className="pb-2 text-center font-medium">V</th>
-                      <th className="pb-2 text-center font-medium">E</th>
-                      <th className="pb-2 text-center font-medium">D</th>
-                      <th className="pb-2 text-center font-medium">GM</th>
-                      <th className="pb-2 text-center font-medium">GC</th>
-                      <th className="pb-2 text-center font-medium">SG</th>
+                      <th className="pb-2 text-center font-medium w-8 text-zinc-900 dark:text-zinc-100">
+                        P
+                      </th>
+                      <th className="pb-2 text-center font-medium w-8">J</th>
+                      <th className="pb-2 text-center font-medium w-8">V</th>
+                      <th className="pb-2 text-center font-medium w-8">E</th>
+                      <th className="pb-2 text-center font-medium w-8">D</th>
+                      <th className="pb-2 text-center font-medium w-10">GM</th>
+                      <th className="pb-2 text-center font-medium w-10">GC</th>
+                      <th className="pb-2 text-center font-medium w-10">SG</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -67,10 +69,10 @@ export default function TabelaPage() {
                         key={sel.id}
                         className="border-t border-zinc-100 dark:border-zinc-800 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 even:bg-zinc-50/50 dark:even:bg-zinc-800/30 group"
                       >
-                        <td className="py-2.5 font-bold text-zinc-400 pl-1 sticky left-0 z-10 bg-inherit group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800/50">
+                        <td className="py-2.5 text-center font-bold text-zinc-400 sticky left-0 z-10 bg-inherit group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800/50">
                           {idx + 1}
                         </td>
-                        <td className="py-2.5 sticky left-6 z-10 bg-inherit group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800/50 after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
+                        <td className="py-2.5 sticky left-8 z-10 bg-inherit group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800/50 after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
                           <div className="flex items-center gap-2">
                             <FlagIcon
                               codigo={sel.codigoPais}
