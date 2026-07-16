@@ -378,7 +378,7 @@ export default function TabelaMataMataPage() {
             <p className="text-lg text-zinc-500">Faça login para palpitar nos jogos</p>
             <button
               onClick={() => setShowModalLogin(true)}
-              className="mt-4 rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="mt-4 rounded-lg bg-zinc-900 px-4 py-2 text-sm text-zinc-50 transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
             >
               Fazer Login
             </button>
@@ -493,7 +493,7 @@ export default function TabelaMataMataPage() {
                   return (
                     <div
                       key={num}
-                      className="absolute rounded-lg border border-zinc-200 bg-white p-2.5 dark:border-zinc-800 dark:bg-zinc-900"
+                      className="absolute rounded-lg border border-zinc-200 bg-zinc-100 p-2.5 dark:border-zinc-800 dark:bg-zinc-900"
                       style={{ left: x, top: y, width: CARD_W, height: CARD_H, zIndex: 1 }}
                     >
                       {p.mandante || p.visitante ? (
@@ -686,7 +686,7 @@ export default function TabelaMataMataPage() {
                       return (
                         <div
                           key={p.numero}
-                          className="rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-900"
+                          className="rounded-lg border border-zinc-200 bg-zinc-100 p-3 dark:border-zinc-800 dark:bg-zinc-900"
                         >
                           {p.mandante || p.visitante ? (
                             <>

@@ -55,7 +55,7 @@ export default function EstadiosGrid({ paises, estadios }: EstadiosGridProps) {
                 <motion.div key={e.id} variants={itemVariants}>
                   <Link
                     href={`/estadios/${e.slug}`}
-                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                   >
                     <div className="relative h-48 w-full overflow-hidden">
                       {e.fotoUrl ? (
@@ -74,7 +74,7 @@ export default function EstadiosGrid({ paises, estadios }: EstadiosGridProps) {
                       {/* Gradient Overlay for modern look */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                       
-                      <div className="absolute right-3 top-3 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
+                      <div className="absolute right-3 top-3 rounded-full bg-zinc-900/60 px-3 py-1 text-xs font-semibold text-zinc-50 backdrop-blur-md">
                         {e.capacidade.toLocaleString("pt-BR")}
                       </div>
                     </div>

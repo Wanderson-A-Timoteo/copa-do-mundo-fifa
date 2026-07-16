@@ -38,8 +38,8 @@ export default function RankingPage() {
     return (
       <main className="mx-auto max-w-5xl px-4 py-12 md:py-20 text-center">
         <div className="animate-pulse flex flex-col items-center justify-center space-y-4">
-          <div className="h-12 w-12 rounded-full bg-white/10" />
-          <div className="h-6 w-48 rounded bg-white/10" />
+          <div className="h-12 w-12 rounded-full bg-zinc-100/10" />
+          <div className="h-6 w-48 rounded bg-zinc-100/10" />
         </div>
       </main>
     );
@@ -80,7 +80,7 @@ export default function RankingPage() {
             <motion.div
               key={item.usuarioId}
               whileHover={{ scale: 1.05 }}
-              className={`flex flex-col items-center justify-center p-8 rounded-3xl bg-white/5 backdrop-blur-md border transition-all shadow-xl ${
+              className={`flex flex-col items-center justify-center p-8 rounded-3xl bg-zinc-100/5 backdrop-blur-md border transition-all shadow-xl ${
                 item.posicao === 1
                   ? "border-yellow-500/30 dark:bg-yellow-500/10"
                   : item.posicao === 2
@@ -101,7 +101,7 @@ export default function RankingPage() {
                 {item.pontos} <span className="text-sm font-normal opacity-70">pts</span>
               </div>
               {isCurrentUser && (
-                <span className="mt-3 rounded-full bg-indigo-500 px-3 py-1 text-xs font-bold text-white">
+                <span className="mt-3 rounded-full bg-indigo-500 px-3 py-1 text-xs font-bold text-zinc-50">
                   Você
                 </span>
               )}
@@ -112,10 +112,10 @@ export default function RankingPage() {
 
       {/* Tabela do Restante */}
       {others.length > 0 && (
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-2 md:p-6 shadow-2xl overflow-hidden">
+        <div className="bg-zinc-100/5 backdrop-blur-md border border-zinc-100/10 rounded-2xl p-2 md:p-6 shadow-2xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="text-sm uppercase text-zinc-500 border-b border-zinc-200 dark:border-white/10">
+              <thead className="text-sm uppercase text-zinc-500 border-b border-zinc-200 dark:border-zinc-100/10">
                 <tr>
                   <th className="px-6 py-4 font-semibold text-center w-24">Pos</th>
                   <th className="px-6 py-4 font-semibold">Usuário</th>
@@ -128,8 +128,8 @@ export default function RankingPage() {
                   return (
                     <tr
                       key={item.usuarioId}
-                      className={`hover:bg-zinc-50 dark:hover:bg-white/10 transition-all ${
-                        isCurrentUser ? "bg-indigo-50 dark:bg-white/10 ring-1 ring-indigo-500" : ""
+                      className={`hover:bg-zinc-50 dark:hover:bg-zinc-100/10 transition-all ${
+                        isCurrentUser ? "bg-indigo-50 dark:bg-zinc-100/10 ring-1 ring-indigo-500" : ""
                       }`}
                     >
                       <td className="px-6 py-4 text-center font-bold text-zinc-500 dark:text-zinc-400">

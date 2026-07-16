@@ -128,13 +128,13 @@ export default function PerfilPublicoPage() {
             {paginaItens.map((item) => (
               <div key={item.figurinha.id} className="relative">
                 <StickerCard figurinha={item.figurinha} />
-                <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-white">
+                <span className="absolute -right-1 -top-1 z-10 flex h-5 w-5 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-zinc-50">
                   {item.quantidade}
                 </span>
                 {userLogado && !ehProprioPerfil && (
                   <Link
                     href={`/trocas/nova/${usuario.slug || usuario.id}/${item.figurinha.slug}`}
-                    className="mt-1 flex w-full items-center justify-center gap-1 rounded-md bg-zinc-900 py-1 text-[10px] font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                    className="mt-1 flex w-full items-center justify-center gap-1 rounded-md bg-zinc-900 py-1 text-[10px] font-medium text-zinc-50 transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
                   >
                     Solicitar Troca
                   </Link>

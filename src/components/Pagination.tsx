@@ -45,7 +45,7 @@ export default function Pagination({
           onClick={() => onPageChange(n)}
           className={`min-w-[2rem] rounded-lg px-2 py-1.5 text-sm transition-colors ${
             n === paginaSegura
-              ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+              ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
               : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
           }`}
         >

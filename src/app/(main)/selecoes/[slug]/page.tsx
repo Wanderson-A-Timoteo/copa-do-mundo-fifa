@@ -63,7 +63,7 @@ export default async function DetalheSelecaoPage({
         &larr; Voltar
       </Link>
       
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-center rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
         <FlagIcon codigo={selecao.codigoPais} className="h-24 w-auto rounded-md drop-shadow-md" />
         <div>
           <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">{selecao.nome}</h1>
@@ -119,7 +119,7 @@ export default async function DetalheSelecaoPage({
               <Link
                 key={p.id}
                 href={`/tabela/grupos`}
-                className="group flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] gap-3"
+                className="group flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-zinc-200 bg-zinc-100 p-4 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] gap-3"
               >
                 <div className="flex items-center gap-3 text-sm font-medium">
                   <span className="rounded-md bg-zinc-100 px-2.5 py-1 text-xs dark:bg-zinc-700/50 text-zinc-600 dark:text-zinc-300">

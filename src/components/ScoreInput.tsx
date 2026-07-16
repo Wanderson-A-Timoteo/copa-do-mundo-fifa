@@ -48,7 +48,7 @@ export default function ScoreInput({
   );
 
   const encerradoBadge = jogoIniciado && !isMobile && (
-    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded bg-red-500 px-1 py-0.5 text-[8px] font-bold text-white shadow-sm">
+    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded bg-red-500 px-1 py-0.5 text-[8px] font-bold text-zinc-50 shadow-sm">
       Encerrado
     </span>
   );

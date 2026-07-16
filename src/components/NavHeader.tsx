@@ -15,11 +15,11 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
   const [bolaoOpen, setBolaoOpen] = useState(false);
 
   const headerClass = transparent
-    ? "absolute inset-x-0 top-0 z-30 flex items-center justify-between bg-transparent px-6 py-4 text-white"
-    : "sticky top-0 z-[110] flex items-center justify-between border-b border-zinc-200 bg-white/80 px-6 py-4 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80";
+    ? "absolute inset-x-0 top-0 z-30 flex items-center justify-between bg-transparent px-6 py-4 text-zinc-50"
+    : "sticky top-0 z-[110] flex items-center justify-between border-b border-zinc-200 bg-zinc-100/80 px-6 py-4 backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-800/80";
 
   const btnHoverClass = transparent
-    ? "hover:bg-white/10"
+    ? "hover:bg-zinc-100/10"
     : "hover:bg-zinc-100 dark:hover:bg-zinc-800";
 
   return (
@@ -46,7 +46,7 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
-            <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
+            <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-zinc-100 py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
               <Link
                 href="/tabela/grupos"
                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
@@ -78,7 +78,7 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
-            <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
+            <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-zinc-100 py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
               <Link
                 href="/tabela/simulacao-grupos"
                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
@@ -110,7 +110,7 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
-            <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
+            <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-zinc-100 py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
               <Link
                 href="/palpites/bolao"
                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
@@ -142,7 +142,7 @@ export default function NavHeader({ transparent }: { transparent?: boolean }) {
                 <polyline points="6 9 12 15 18 9" />
               </svg>
             </button>
-            <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-white py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
+            <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-56 rounded-lg border border-zinc-200 bg-zinc-100 py-1 shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-200 dark:border-zinc-700 dark:bg-zinc-900">
               <Link
                 href="/album"
                 className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"

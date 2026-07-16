@@ -159,7 +159,7 @@ export default function PlacarPage() {
             <p className="text-lg text-zinc-500">Faça login para palpitar nos jogos</p>
             <button
               onClick={() => setShowModalLogin(true)}
-              className="mt-4 rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="mt-4 rounded-lg bg-zinc-900 px-4 py-2 text-sm text-zinc-50 transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
             >
               Fazer Login
             </button>
@@ -173,7 +173,7 @@ export default function PlacarPage() {
                   onClick={() => setGrupoAtivo(g.id)}
                   className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
                     grupoAtivo === g.id
-                      ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                      ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
                       : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
                   }`}
                 >
@@ -214,7 +214,7 @@ export default function PlacarPage() {
                                 : "border-l-red-500"
                           }`}
                         >
-                          <td className="px-3 py-3 sticky left-0 z-10 bg-white dark:bg-zinc-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                          <td className="px-3 py-3 sticky left-0 z-10 bg-zinc-100 dark:bg-zinc-900 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-zinc-400 w-4">{idx + 1}</span>
                               <FlagIcon codigo={sel.codigoPais} className="h-5 w-auto rounded-sm" />

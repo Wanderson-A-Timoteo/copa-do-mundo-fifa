@@ -157,7 +157,7 @@ export default function AlbumPage() {
     <>
       <main className="mx-auto max-w-6xl p-4 md:p-8 space-y-8">
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-2xl p-8 text-white shadow-xl flex flex-wrap items-center justify-between gap-6">
+        <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-2xl p-8 text-zinc-50 shadow-xl flex flex-wrap items-center justify-between gap-6">
           <div>
             <h1 className="text-3xl sm:text-4xl font-bold">Álbum de Figurinhas</h1>
             <p className="mt-2 text-blue-200 text-lg">
@@ -175,7 +175,7 @@ export default function AlbumPage() {
               <div className="flex items-center gap-3">
                 <Link
                   href="/trocas"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-white/20 backdrop-blur-sm"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-100/20 bg-zinc-100/10 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-zinc-100/20 backdrop-blur-sm"
                 >
                   <IconRepeat className="h-4 w-4" />
                   Trocas
@@ -183,7 +183,7 @@ export default function AlbumPage() {
                 <button
                   onClick={abrirPacote}
                   disabled={abrindo || pacotesAbertosHoje >= limiteDiario}
-                  className="rounded-lg bg-emerald-500 hover:bg-emerald-600 px-6 py-2.5 text-sm font-bold text-white transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-lg bg-emerald-500 hover:bg-emerald-600 px-6 py-2.5 text-sm font-bold text-zinc-50 transition-all shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {abrindo
                     ? "Abrindo..."
@@ -207,7 +207,7 @@ export default function AlbumPage() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-sm font-medium transition-colors hover:bg-white/20 backdrop-blur-sm"
+              className="inline-flex items-center gap-2 rounded-lg border border-zinc-100/20 bg-zinc-100/10 px-6 py-3 text-sm font-medium transition-colors hover:bg-zinc-100/20 backdrop-blur-sm"
             >
               <IconUser className="h-4 w-4" />
               Faça login para abrir pacotinhos
@@ -237,8 +237,8 @@ export default function AlbumPage() {
                 onClick={() => setFiltroStatus(s)}
                 className={`rounded-xl px-4 py-2 text-sm font-medium capitalize transition-all ${
                   filtroStatus === s
-                    ? "bg-zinc-900 text-white shadow-md dark:bg-zinc-100 dark:text-zinc-900"
-                    : "border border-zinc-200 bg-white hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                    ? "bg-zinc-900 text-zinc-50 shadow-md dark:bg-zinc-100 dark:text-zinc-900"
+                    : "border border-zinc-200 bg-zinc-100 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
                 }`}
               >
                 {s === "todas"
@@ -259,7 +259,7 @@ export default function AlbumPage() {
               value={filtroNome}
               onChange={(e) => setFiltroNome(e.target.value)}
               placeholder="Buscar seleção..."
-              className="w-full rounded-xl border border-zinc-200 bg-white py-2 pl-10 pr-4 text-sm outline-none transition-all focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:border-zinc-600 dark:focus:ring-zinc-800"
+              className="w-full rounded-xl border border-zinc-200 bg-zinc-100 py-2 pl-10 pr-4 text-sm outline-none transition-all focus:border-zinc-400 focus:ring-2 focus:ring-zinc-200 dark:border-zinc-800 dark:bg-zinc-900 dark:focus:border-zinc-600 dark:focus:ring-zinc-800"
             />
           </div>
         </div>
@@ -284,7 +284,7 @@ export default function AlbumPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
-                    className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-950"
+                    className="rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-800"
                   >
                     <div className="mb-6 flex items-center justify-between border-b border-zinc-100 pb-4 dark:border-zinc-800">
                       <div className="flex items-center gap-3">
@@ -321,7 +321,7 @@ export default function AlbumPage() {
                               className={faltando ? "opacity-30 grayscale" : ""}
                             >
                               {repetidaQtd && (
-                                <span className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-white shadow-md border-2 border-white dark:border-zinc-900">
+                                <span className="absolute -right-2 -top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-amber-400 text-xs font-bold text-zinc-50 shadow-md border-2 border-zinc-100 dark:border-zinc-900">
                                   {repetidaQtd}
                                 </span>
                               )}
@@ -339,7 +339,7 @@ export default function AlbumPage() {
               <button
                 onClick={() => setPaginaAtual((p) => Math.max(0, p - 1))}
                 disabled={paginaAtual === 0}
-                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-100 px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
               >
                 &#9664; Anterior
               </button>
@@ -349,7 +349,7 @@ export default function AlbumPage() {
               <button
                 onClick={() => setPaginaAtual((p) => Math.min(selecoesFiltradas.length - 1, p + 1))}
                 disabled={paginaAtual === selecoesFiltradas.length - 1}
-                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-100 px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
               >
                 Próxima &#9654;
               </button>
@@ -365,11 +365,11 @@ export default function AlbumPage() {
 
       {showAnimacao && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/80 backdrop-blur-md pt-[10vh] pb-8"
+          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-zinc-900/80 backdrop-blur-md pt-[10vh] pb-8"
           onClick={() => setShowAnimacao(false)}
         >
           <div className="w-full max-w-3xl px-4 text-center" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-8 flex items-center justify-center gap-3 text-3xl font-extrabold text-white drop-shadow-lg">
+            <h2 className="mb-8 flex items-center justify-center gap-3 text-3xl font-extrabold text-zinc-50 drop-shadow-lg">
               <IconStar className="h-8 w-8 text-amber-400 animate-pulse" />
               Novas Figurinhas!
             </h2>
@@ -393,7 +393,7 @@ export default function AlbumPage() {
 
             <button
               onClick={() => setShowAnimacao(false)}
-              className="mt-12 mb-8 rounded-xl bg-white px-10 py-3.5 text-sm font-bold text-black shadow-xl transition-all hover:scale-105 hover:bg-zinc-100"
+              className="mt-12 mb-8 rounded-xl bg-zinc-100 px-10 py-3.5 text-sm font-bold text-zinc-900 shadow-xl transition-all hover:scale-105 hover:bg-zinc-100"
             >
               Continuar Colecionando
             </button>

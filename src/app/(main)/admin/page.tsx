@@ -145,7 +145,7 @@ export default function AdminPage() {
                       <button
                         onClick={() => promover(u.id)}
                         disabled={promovendo === u.id}
-                        className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs text-white transition-colors hover:bg-zinc-700 disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                        className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs text-zinc-50 transition-colors hover:bg-zinc-700 disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
                       >
                         {promovendo === u.id ? "..." : "Promover a Admin"}
                       </button>
@@ -162,7 +162,7 @@ export default function AdminPage() {
           {usuarios.map((u) => (
             <div
               key={u.id}
-              className="p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm"
+              className="p-4 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm"
             >
               <div className="font-bold">{u.nome}</div>
               <div className="text-sm text-zinc-500">{u.email}</div>
@@ -190,7 +190,7 @@ export default function AdminPage() {
                   <button
                     onClick={() => promover(u.id)}
                     disabled={promovendo === u.id}
-                    className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs text-white transition-colors hover:bg-zinc-700 disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                    className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs text-zinc-50 transition-colors hover:bg-zinc-700 disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
                   >
                     {promovendo === u.id ? "..." : "Promover"}
                   </button>

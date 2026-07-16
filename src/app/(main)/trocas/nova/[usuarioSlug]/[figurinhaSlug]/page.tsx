@@ -177,7 +177,7 @@ export default function NovaTrocaPage() {
                     >
                       <StickerCard figurinha={item.figurinha} />
                       {selecionado && (
-                        <span className="absolute -right-1 -top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-white">
+                        <span className="absolute -right-1 -top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-zinc-50">
                           &#10003;
                         </span>
                       )}
@@ -193,7 +193,7 @@ export default function NovaTrocaPage() {
           <button
             onClick={enviarSolicitacao}
             disabled={selecionadas.size === 0 || enviando}
-            className="mt-4 w-full rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-white transition-all hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+            className="mt-4 w-full rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-zinc-50 transition-all hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
           >
             {enviando
               ? "Enviando..."

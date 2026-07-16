@@ -1,7 +1,7 @@
 export default function TermosDeUsoPage() {
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 md:py-20">
-      <div className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:p-12">
+      <div className="rounded-3xl border border-zinc-200 bg-zinc-100 p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:p-12">
         <h1 className="mb-8 text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
           Termos de Uso
         </h1>

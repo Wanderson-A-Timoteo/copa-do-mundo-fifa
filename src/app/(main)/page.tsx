@@ -84,13 +84,13 @@ export default function Home() {
             variants={itemVariants}
             className="mt-6 flex flex-wrap items-center justify-center gap-3 text-lg font-medium text-zinc-500 dark:text-zinc-400"
           >
-            <span className="flex items-center gap-1.5 rounded-full bg-white px-4 py-2 shadow-sm dark:bg-zinc-800 dark:shadow-[0_0_15px_rgba(255,255,255,0.02)]">
+            <span className="flex items-center gap-1.5 rounded-full bg-zinc-100 px-4 py-2 shadow-sm dark:bg-zinc-800 dark:shadow-[0_0_15px_rgba(255,255,255,0.02)]">
               Canadá <FlagIcon codigo="ca" className="h-5 w-auto rounded-sm drop-shadow-sm" />
             </span>
-            <span className="flex items-center gap-1.5 rounded-full bg-white px-4 py-2 shadow-sm dark:bg-zinc-800 dark:shadow-[0_0_15px_rgba(255,255,255,0.02)]">
+            <span className="flex items-center gap-1.5 rounded-full bg-zinc-100 px-4 py-2 shadow-sm dark:bg-zinc-800 dark:shadow-[0_0_15px_rgba(255,255,255,0.02)]">
               EUA <FlagIcon codigo="us" className="h-5 w-auto rounded-sm drop-shadow-sm" />
             </span>
-            <span className="flex items-center gap-1.5 rounded-full bg-white px-4 py-2 shadow-sm dark:bg-zinc-800 dark:shadow-[0_0_15px_rgba(255,255,255,0.02)]">
+            <span className="flex items-center gap-1.5 rounded-full bg-zinc-100 px-4 py-2 shadow-sm dark:bg-zinc-800 dark:shadow-[0_0_15px_rgba(255,255,255,0.02)]">
               México <FlagIcon codigo="mx" className="h-5 w-auto rounded-sm drop-shadow-sm" />
             </span>
           </motion.p>
@@ -101,13 +101,13 @@ export default function Home() {
           >
             <Link
               href="/album"
-              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 px-8 py-4 text-base font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-emerald-500/25 active:scale-95 sm:w-auto"
+              className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-500 px-8 py-4 text-base font-bold text-zinc-50 shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-emerald-500/25 active:scale-95 sm:w-auto"
             >
               <BookOpen className="h-5 w-5" /> Abrir Álbum
             </Link>
             <Link
               href="/tabela/grupos"
-              className="group flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-8 py-4 text-base font-bold text-zinc-800 shadow-sm transition-all duration-300 hover:scale-105 hover:border-zinc-300 hover:shadow-md active:scale-95 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:border-zinc-500 sm:w-auto"
+              className="group flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-100 px-8 py-4 text-base font-bold text-zinc-800 shadow-sm transition-all duration-300 hover:scale-105 hover:border-zinc-300 hover:shadow-md active:scale-95 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:border-zinc-500 sm:w-auto"
             >
               <Calendar className="h-5 w-5 text-emerald-500" /> Ver Tabela
             </Link>
@@ -126,7 +126,7 @@ export default function Home() {
         >
           <motion.div
             variants={itemVariants}
-            className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
+            className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
           >
             <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-emerald-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <Globe className="mb-4 h-8 w-8 text-emerald-500" />
@@ -136,7 +136,7 @@ export default function Home() {
 
           <motion.div
             variants={itemVariants}
-            className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
+            className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
           >
             <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-teal-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <Calendar className="mb-4 h-8 w-8 text-teal-500" />
@@ -146,7 +146,7 @@ export default function Home() {
 
           <motion.div
             variants={itemVariants}
-            className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
+            className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
           >
             <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-blue-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <MapPin className="mb-4 h-8 w-8 text-blue-500" />
@@ -182,13 +182,13 @@ export default function Home() {
                   className={`relative flex items-center ${isEven ? "sm:flex-row-reverse" : ""}`}
                 >
                   {/* Ponto Central */}
-                  <div className="absolute left-12 h-4 w-4 -translate-x-1/2 rounded-full border-4 border-white bg-emerald-500 shadow-sm dark:border-zinc-900 sm:left-1/2" />
+                  <div className="absolute left-12 h-4 w-4 -translate-x-1/2 rounded-full border-4 border-zinc-100 bg-emerald-500 shadow-sm dark:border-zinc-900 sm:left-1/2" />
 
                   {/* Card do Campeão */}
                   <div
                     className={`ml-20 flex w-full flex-col sm:ml-0 sm:w-1/2 ${isEven ? "sm:pl-10" : "sm:pr-10 sm:text-right"}`}
                   >
-                    <div className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500">
+                    <div className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500">
                       {/* Selo do Ano e Sede */}
                       <div
                         className={`mb-4 flex items-center gap-2 ${isEven ? "justify-start" : "sm:justify-end"}`}

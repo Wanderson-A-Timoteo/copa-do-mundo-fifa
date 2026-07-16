@@ -128,12 +128,12 @@ export function BottomNav() {
         }`}
       >
         <div
-          className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+          className="absolute inset-0 bg-zinc-900/40 backdrop-blur-sm"
           onClick={() => setIsMenuOpen(false)}
         />
 
         <div
-          className={`absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-3xl bg-white p-6 shadow-2xl transition-transform duration-300 dark:bg-zinc-950 ${
+          className={`absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-3xl bg-zinc-100 p-6 shadow-2xl transition-transform duration-300 dark:bg-zinc-800 ${
             isMenuOpen ? "translate-y-0" : "translate-y-full"
           }`}
         >
@@ -157,7 +157,7 @@ export function BottomNav() {
                 <Link
                   key={item.name}
                   href={item.path}
-                  className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm transition-all active:scale-95 hover:border-zinc-200 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
+                  className="flex flex-col items-center justify-center gap-2 rounded-2xl border border-zinc-100 bg-zinc-100 p-4 shadow-sm transition-all active:scale-95 hover:border-zinc-200 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900"
                 >
                   <div
                     className={`flex h-12 w-12 items-center justify-center rounded-full ${item.bg}`}
@@ -187,7 +187,7 @@ export function BottomNav() {
       </div>
 
       {/* Main Bottom Navigation */}
-      <nav className="fixed bottom-0 z-50 w-full border-t border-zinc-200/50 bg-white/90 pb-safe backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/90 md:hidden shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
+      <nav className="fixed bottom-0 z-50 w-full border-t border-zinc-200/50 bg-zinc-100/90 pb-safe backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-800/90 md:hidden shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)]">
         <div className="flex h-16 items-center justify-around px-1 sm:px-4">
           {navItems.map((item) => {
             const isActive =

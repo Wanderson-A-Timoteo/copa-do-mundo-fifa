@@ -12,8 +12,8 @@ export default function ModalAlert({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-sm rounded-xl bg-white p-8 shadow-xl dark:bg-zinc-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/50">
+      <div className="w-full max-w-sm rounded-xl bg-zinc-100 p-8 shadow-xl dark:bg-zinc-900">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">{title}</h2>
           <button
@@ -28,7 +28,7 @@ export default function ModalAlert({
 
         <button
           onClick={onClose}
-          className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+          className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-zinc-50 transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
         >
           Entendido
         </button>

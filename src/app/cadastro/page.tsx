@@ -111,7 +111,7 @@ export default function CadastroPage() {
               <button
                 type="submit"
                 disabled={carregando}
-                className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                className="w-full rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-zinc-50 transition-colors hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
               >
                 {carregando ? "Cadastrando..." : "Cadastrar"}
               </button>
@@ -122,7 +122,7 @@ export default function CadastroPage() {
                 <div className="w-full border-t border-zinc-300 dark:border-zinc-700" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-900">ou</span>
+                <span className="bg-zinc-100 px-2 text-zinc-500 dark:bg-zinc-900">ou</span>
               </div>
             </div>
 
@@ -158,9 +158,9 @@ export default function CadastroPage() {
             priority
           />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 md:bg-gradient-to-l" />
-          <div className="absolute bottom-6 left-6 text-white">
+          <div className="absolute bottom-6 left-6 text-zinc-50">
             <h1 className="text-3xl font-bold">Faça parte</h1>
-            <p className="text-lg text-white/80">Monte seu álbum e acompanhe os jogos</p>
+            <p className="text-lg text-zinc-50/80">Monte seu álbum e acompanhe os jogos</p>
           </div>
         </div>
       </div>

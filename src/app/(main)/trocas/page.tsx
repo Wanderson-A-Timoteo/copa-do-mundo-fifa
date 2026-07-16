@@ -189,13 +189,13 @@ export default function TrocasPage() {
               onClick={() => setAba(t)}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
                 aba === t
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
+                  ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
                   : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
               }`}
             >
               {label}
               {pendentes > 0 && (
-                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-zinc-50">
                   {pendentes}
                 </span>
               )}
@@ -325,7 +325,7 @@ export default function TrocasPage() {
               return (
                 <div
                   key={troca.id}
-                  className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+                  className="rounded-xl border border-zinc-200 bg-zinc-100 p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
                 >
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2 text-sm text-zinc-500">
@@ -365,7 +365,7 @@ export default function TrocasPage() {
                     <div className="mt-4 flex gap-2">
                       <button
                         onClick={() => aceitarTroca(troca.id)}
-                        className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                        className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-50 transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
                       >
                         Aceitar Troca
                       </button>

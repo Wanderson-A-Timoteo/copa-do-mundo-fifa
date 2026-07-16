@@ -3,7 +3,7 @@ import { Trophy } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-zinc-200 bg-zinc-100/80 px-6 py-12 backdrop-blur-md pb-24 dark:border-zinc-800 dark:bg-zinc-900/80 md:pb-12">
+    <footer className="mt-auto border-t border-zinc-200 bg-zinc-100/80 px-6 py-12 backdrop-blur-md pb-24 dark:border-zinc-800 dark:bg-zinc-800/80 md:pb-12">
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-6 md:flex-row">
         <div className="flex flex-col items-center gap-2 md:items-start">
           <Link

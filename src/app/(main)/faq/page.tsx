@@ -36,7 +36,7 @@ export default function FAQPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-12 md:py-20">
-      <div className="rounded-3xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:p-12">
+      <div className="rounded-3xl border border-zinc-200 bg-zinc-100 p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:p-12">
         <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
           Perguntas Frequentes
         </h1>
@@ -46,7 +46,7 @@ export default function FAQPage() {
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/50"
+              className="overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-800/50"
             >
               <button
                 onClick={() => toggle(index)}

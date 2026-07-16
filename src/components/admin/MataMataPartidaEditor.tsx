@@ -63,7 +63,7 @@ export default function MataMataPartidaEditor({
   const penInputClass = `w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-14 sm:text-sm`;
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-4 transition-shadow dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
+    <div className="rounded-xl border border-zinc-200 bg-zinc-100 p-4 transition-shadow dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
       {/* Desktop */}
       <div className="hidden md:block">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
@@ -212,7 +212,7 @@ export default function MataMataPartidaEditor({
             <button
               onClick={handleApurar}
               disabled={isApurando}
-              className="ml-auto flex items-center gap-1 rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="ml-auto flex items-center gap-1 rounded-md border border-zinc-300 bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               {isApurando ? "Apurando..." : "Apurar Pontos"}
             </button>
@@ -364,7 +364,7 @@ export default function MataMataPartidaEditor({
             <button
               onClick={handleApurar}
               disabled={isApurando}
-              className="ml-auto flex items-center gap-1 rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="ml-auto flex items-center gap-1 rounded-md border border-zinc-300 bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700 transition hover:bg-zinc-100 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               {isApurando ? "Apurando..." : "Apurar Pontos"}
             </button>

@@ -118,7 +118,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
           className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-12 pt-32"
         >
           <nav className="mb-4 text-sm text-zinc-300">
-            <Link href="/estadios" className="hover:text-white transition-colors">
+            <Link href="/estadios" className="hover:text-zinc-50 transition-colors">
               Estádios
             </Link>
             <span className="mx-2">&rsaquo;</span>
@@ -126,7 +126,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
           </nav>
 
           <div className="flex flex-wrap items-end gap-4">
-            <h1 className="text-4xl font-extrabold text-white sm:text-6xl drop-shadow-lg break-words max-w-full">
+            <h1 className="text-4xl font-extrabold text-zinc-50 sm:text-6xl drop-shadow-lg break-words max-w-full">
               {estadio.nome}
             </h1>
             {badge && (
@@ -152,7 +152,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
           }}
           className="relative z-20 -mt-8 mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3"
         >
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-950/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Localização</h3>
             <p className="mt-2 flex items-center gap-1.5 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               <IconMapPin className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
@@ -160,14 +160,14 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
             </p>
           </motion.div>
           
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-950/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Capacidade</h3>
             <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               {estadio.capacidade.toLocaleString("pt-BR")} lugares
             </p>
           </motion.div>
           
-          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-950/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
               Jogos Programados
             </h3>
@@ -219,8 +219,8 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
                         className="h-auto w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         unoptimized
                       />
-                      <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20 flex items-center justify-center">
-                        <span className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-white drop-shadow-md font-medium text-sm">
+                      <div className="absolute inset-0 bg-zinc-900/0 transition-colors duration-300 group-hover:bg-zinc-900/20 flex items-center justify-center">
+                        <span className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-zinc-50 drop-shadow-md font-medium text-sm">
                           Ampliar
                         </span>
                       </div>
@@ -282,16 +282,16 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
 
       {/* Lightbox Modal */}
       {selectedImageIndex !== null && estadio.galeria && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-zinc-900/90 backdrop-blur-sm p-4">
           <button 
-            className="absolute top-6 right-6 z-50 text-white/70 hover:text-white transition-colors bg-black/50 p-2 rounded-full"
+            className="absolute top-6 right-6 z-50 text-zinc-50/70 hover:text-zinc-50 transition-colors bg-zinc-900/50 p-2 rounded-full"
             onClick={() => setSelectedImageIndex(null)}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
           
           <button 
-            className="absolute left-4 z-50 text-white/70 hover:text-white transition-colors bg-black/50 p-3 rounded-full hover:bg-black/80 disabled:opacity-30"
+            className="absolute left-4 z-50 text-zinc-50/70 hover:text-zinc-50 transition-colors bg-zinc-900/50 p-3 rounded-full hover:bg-zinc-900/80 disabled:opacity-30"
             disabled={selectedImageIndex === 0}
             onClick={(e) => {
               e.stopPropagation();
@@ -317,13 +317,13 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
               className="object-contain"
               unoptimized
             />
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 px-4 py-1.5 rounded-full text-white text-sm backdrop-blur-md">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-zinc-900/50 px-4 py-1.5 rounded-full text-zinc-50 text-sm backdrop-blur-md">
               {selectedImageIndex + 1} / {estadio.galeria.length}
             </div>
           </motion.div>
 
           <button 
-            className="absolute right-4 z-50 text-white/70 hover:text-white transition-colors bg-black/50 p-3 rounded-full hover:bg-black/80 disabled:opacity-30"
+            className="absolute right-4 z-50 text-zinc-50/70 hover:text-zinc-50 transition-colors bg-zinc-900/50 p-3 rounded-full hover:bg-zinc-900/80 disabled:opacity-30"
             disabled={selectedImageIndex === estadio.galeria.length - 1}
             onClick={(e) => {
               e.stopPropagation();

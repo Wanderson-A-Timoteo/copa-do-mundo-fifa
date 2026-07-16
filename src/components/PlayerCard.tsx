@@ -56,7 +56,7 @@ export default function PlayerCard({
           />
         ) : (
           <div
-            className="flex h-28 w-20 items-center justify-center rounded-lg text-sm font-bold text-white transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24 sm:text-base"
+            className="flex h-28 w-20 items-center justify-center rounded-lg text-sm font-bold text-zinc-50 transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24 sm:text-base"
             style={{ backgroundColor: corPrimaria || "#52525b" }}
           >
             {iniciais}

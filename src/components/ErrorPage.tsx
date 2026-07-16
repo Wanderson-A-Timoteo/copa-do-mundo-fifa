@@ -23,7 +23,7 @@ export default function ErrorPage({
         <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
           <button
             onClick={() => reset()}
-            className="rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-white transition-all hover:scale-[1.03] hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="rounded-lg bg-zinc-900 px-6 py-3 text-sm font-medium text-zinc-50 transition-all hover:scale-[1.03] hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
           >
             Tentar novamente
           </button>

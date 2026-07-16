@@ -220,7 +220,7 @@ export default function BolaoPage() {
             <p className="text-lg text-zinc-500">Faça login para palpitar nos jogos</p>
             <button
               onClick={() => setShowModalLogin(true)}
-              className="mt-4 rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="mt-4 rounded-lg bg-zinc-900 px-4 py-2 text-sm text-zinc-50 transition-colors hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
             >
               Fazer Login
             </button>
