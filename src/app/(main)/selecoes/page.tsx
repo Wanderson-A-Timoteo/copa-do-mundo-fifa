@@ -65,7 +65,7 @@ export default function SelecoesPage() {
             <Link
               key={sel.id}
               href={`/selecoes/${sel.slug || sel.id}`}
-              className="group rounded-xl border border-zinc-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]"
+              className="group rounded-xl border border-zinc-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]"
             >
               <div className="flex items-center gap-4">
                 <FlagIcon codigo={sel.codigoPais} className="h-10 w-auto rounded-sm drop-shadow-sm" />
