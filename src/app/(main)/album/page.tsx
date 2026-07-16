@@ -365,10 +365,10 @@ export default function AlbumPage() {
 
       {showAnimacao && (
         <div
-          className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-zinc-900/80 backdrop-blur-md pt-[10vh] pb-8"
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-zinc-900/80 backdrop-blur-md p-4 sm:p-8"
           onClick={() => setShowAnimacao(false)}
         >
-          <div className="w-full max-w-3xl px-4 text-center" onClick={(e) => e.stopPropagation()}>
+          <div className="w-full max-w-3xl text-center" onClick={(e) => e.stopPropagation()}>
             <h2 className="mb-8 flex items-center justify-center gap-3 text-3xl font-extrabold text-zinc-50 drop-shadow-lg">
               <IconStar className="h-8 w-8 text-amber-400 animate-pulse" />
               Novas Figurinhas!
