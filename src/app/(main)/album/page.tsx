@@ -314,7 +314,7 @@ export default function AlbumPage() {
                         return (
                           <div
                             key={fig.id}
-                            className="relative transition-all duration-300 hover:scale-105 hover:shadow-2xl rounded-xl"
+                            className="relative flex flex-col h-full transition-all duration-300 hover:scale-105 hover:shadow-2xl rounded-xl"
                           >
                             <StickerCard
                               figurinha={fig}
@@ -384,7 +384,7 @@ export default function AlbumPage() {
                 <motion.div
                   key={i}
                   variants={staggerItem}
-                  className="mx-auto w-full max-w-[220px] transition-all duration-300 hover:-translate-y-2 hover:scale-105"
+                  className="mx-auto w-full h-full flex flex-col max-w-[220px] transition-all duration-300 hover:-translate-y-2 hover:scale-105"
                 >
                   <StickerCard figurinha={fig} />
                 </motion.div>

@@ -44,50 +44,52 @@ export default function PlayerCard({
   const isRara = raridade ? raridade === "rara" : jogador.figurinha?.raridade === "rara";
 
   return (
-    <div className="group flex flex-col items-center rounded-xl border border-zinc-200 bg-zinc-100 px-5 pb-5 pt-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-      <div className="relative mb-3">
-        {jogador.fotoUrl ? (
-          <Image
-            src={jogador.fotoUrl}
-            alt={jogador.nome}
-            width={96}
-            height={128}
-            className="rounded-lg object-cover transition-transform duration-200 hover:scale-105"
-          />
-        ) : (
-          <div
-            className="flex h-28 w-20 items-center justify-center rounded-lg text-sm font-bold text-zinc-50 transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24 sm:text-base"
-            style={{ backgroundColor: corPrimaria || "#52525b" }}
-          >
-            {iniciais}
-          </div>
+    <div className="group flex h-full w-full flex-col items-center justify-between rounded-xl border border-zinc-200 bg-zinc-100 px-5 pb-5 pt-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+      <div className="flex flex-col items-center w-full">
+        <div className="relative mb-3">
+          {jogador.fotoUrl ? (
+            <Image
+              src={jogador.fotoUrl}
+              alt={jogador.nome}
+              width={96}
+              height={128}
+              className="rounded-lg object-cover transition-transform duration-200 hover:scale-105"
+            />
+          ) : (
+            <div
+              className="flex h-28 w-20 items-center justify-center rounded-lg text-sm font-bold text-zinc-50 transition-transform duration-200 hover:scale-105 sm:h-32 sm:w-24 sm:text-base"
+              style={{ backgroundColor: corPrimaria || "#52525b" }}
+            >
+              {iniciais}
+            </div>
+          )}
+          {codigoPais && (
+            <div className="absolute -right-1 -top-1 overflow-hidden rounded-sm shadow-md">
+              <FlagIcon codigo={codigoPais} className="h-4 w-auto sm:h-5" />
+            </div>
+          )}
+        </div>
+
+        <span className="text-xs font-bold text-zinc-400">#{jogador.numeroCamisa ?? "—"}</span>
+        <span className="mt-0.5 text-center text-sm font-semibold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+          {jogador.nome}
+        </span>
+        <span className="mt-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-500 dark:bg-zinc-700/50 dark:text-zinc-300">
+          {jogador.posicao}
+        </span>
+        {isRara && (
+          <span className="mt-1 flex items-center gap-0.5 text-[10px] font-bold text-amber-500">
+            <IconStar className="h-3 w-3" /> RARA
+          </span>
         )}
-        {codigoPais && (
-          <div className="absolute -right-1 -top-1 overflow-hidden rounded-sm shadow-md">
-            <FlagIcon codigo={codigoPais} className="h-4 w-auto sm:h-5" />
+        {idade && <span className="mt-1 text-[10px] text-zinc-400">{idade} anos</span>}
+        {(jogador.altura || jogador.peso) && (
+          <div className="mt-1 flex items-center gap-2 text-[10px] text-zinc-400">
+            {jogador.altura && <span>{jogador.altura}cm</span>}
+            {jogador.peso && <span>{jogador.peso}kg</span>}
           </div>
         )}
       </div>
-
-      <span className="text-xs font-bold text-zinc-400">#{jogador.numeroCamisa ?? "—"}</span>
-      <span className="mt-0.5 text-center text-sm font-semibold leading-tight text-zinc-900 dark:text-zinc-100 transition-colors group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
-        {jogador.nome}
-      </span>
-      <span className="mt-1 rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-500 dark:bg-zinc-700/50 dark:text-zinc-300">
-        {jogador.posicao}
-      </span>
-      {isRara && (
-        <span className="mt-1 flex items-center gap-0.5 text-[10px] font-bold text-amber-500">
-          <IconStar className="h-3 w-3" /> RARA
-        </span>
-      )}
-      {idade && <span className="mt-1 text-[10px] text-zinc-400">{idade} anos</span>}
-      {(jogador.altura || jogador.peso) && (
-        <div className="mt-1 flex items-center gap-2 text-[10px] text-zinc-400">
-          {jogador.altura && <span>{jogador.altura}cm</span>}
-          {jogador.peso && <span>{jogador.peso}kg</span>}
-        </div>
-      )}
     </div>
   );
 }

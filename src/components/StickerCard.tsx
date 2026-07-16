@@ -20,7 +20,7 @@ interface StickerCardProps {
 
 export default function StickerCard({ figurinha, className = "", children }: StickerCardProps) {
   return (
-    <div className={`relative ${className}`}>
+    <div className={`relative h-full w-full ${className}`}>
       {figurinha.jogador ? (
         <PlayerCard
           jogador={figurinha.jogador}
@@ -29,7 +29,7 @@ export default function StickerCard({ figurinha, className = "", children }: Sti
           codigoPais={figurinha.selecao.codigoPais}
         />
       ) : (
-        <div className="flex aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="flex h-full w-full aspect-[3/4] flex-col items-center justify-center rounded-xl border border-zinc-200 bg-stone-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
           <FlagIcon codigo={figurinha.selecao.codigoPais} className="mb-2 h-10 w-auto rounded-sm" />
           <span className="text-center text-xs font-bold">{figurinha.selecao.nome}</span>
           <span className="text-[10px] text-zinc-400">#{figurinha.numero}</span>
