@@ -242,6 +242,12 @@ O sistema fomenta o aspecto social do Bolão, permitindo que os usuários acesse
 - **Microinterações e Feedback Tátil:** Descreva a substituição de alertas nativos (`alert()`) por um sistema unificado de `Toast` customizado com _Pause on Hover_ e timers, além das interações de botões e cards (`active:scale-95`, `hover:-translate-y-1`).
 - **Animações Fluídas (Framer Motion):** Documente a transformação da Home Page e do FAQ. Destaque o uso de `whileInView` para o _Scroll Reveal_ da Linha do Tempo Histórica (de 1930 a 2022), o efeito de entrada em cascata (Stagger) das estatísticas, e os componentes sanfona (Accordion) das páginas institucionais.
 
+## Ecossistema: Design System Avançado e Micro-UI
+
+- **Contraste Absoluto e Escala Zinc:** Erradicação sistemática do branco (`#FFFFFF`) e preto puro (`#000000`) para evitar fadiga visual (eye strain). A paleta foi ancorada na escala `zinc` do Tailwind: uso de tons "Gelo/Marfim" (`zinc-50`/`zinc-100`) no Light Mode e fixação do fundo absoluto em `zinc-900` (`#18181b`) no Dark Mode, reservando o `zinc-800` para superfícies elevadas (Header, Footer, Cards) com o uso de Glassmorphism.
+- **Otimização de Real Estate (Mobile):** Técnicas matemáticas de resgate de espaço horizontal em telas pequenas. Como exemplo, o reposicionamento do eixo da Linha do Tempo Histórica (de `left-12` para `left-4`), recuperando 40 pixels de área útil para evitar o truncamento de nomes de seleções longos.
+- **Geometria SVG e Microinterações (Página 404):** Resolução do bug de renderização (corte superior) da bola animada através da dilatação vetorial do `viewBox` do SVG (de `0 -20 100 150` para `0 -40 100 170`), garantindo a preservação visual do rebote vertical. A página de erro 404 também foi transformada e gamificada para o conceito de "Gol Anulado".
+
 ## Registro de Alterações (14-15/07/2026)
 
 - **Correção de Persistência (IDs):** Ajuste na estratégia de auto-incremento de IDs de partidas para separar logicamente o domínio de Grupos do domínio de Mata-Mata.
@@ -301,26 +307,29 @@ O sistema fomenta o aspecto social do Bolão, permitindo que os usuários acesse
 
 ## Mapeamento Estrutural e Grafo de Dependências
 
-| Camada / Arquivo                  | Responsabilidade       | Depende de         | É Dependido por        | Motivo da Dependência                            |
-| :-------------------------------- | :--------------------- | :----------------- | :--------------------- | :----------------------------------------------- |
-| `lib/prisma.ts`                   | Conexão Única com BD   | -                  | Todos os `services`    | Singleton para evitar estouro de pools.          |
-| `services/*.service.ts`           | Regras de Negócio      | `lib/prisma.ts`    | `api/` routes          | Centralizar regra e isolar DB da UI.             |
-| `app/api/`                        | Adaptadores REST       | `services/`        | `hooks/`               | Separar request/response da lógica.              |
-| `components/`                     | Interface (UI)         | `types/`           | `app/pages`            | Modularização de visual (Tailwind).              |
-| `lib/compute-bracket.ts`          | Lógica de Chaveamento  | -                  | `simulacao-mata-mata`  | Abstrair cálculo complexo da UI.                 |
-| `/tabela/grupos`                  | Visualização Grupos    | `palpite.service`  | UI / Next.js           | Exibir classificação atualizada.                 |
-| `/tabela/oficial`                 | Resultados Oficiais    | `ResultadoOficial` | UI / Next.js           | Acesso público à verdade oficial.                |
-| `apurador.service.ts`             | Cálculo de Pontos      | Função Pura (Math) | `api/admin/apurar`     | Isolar regra de pontuação do DB (SoC).           |
-| `/admin/tabela/oficial`           | Gatilho de Apuração    | `apurador.service` | UI / Next.js           | Controle de distribuição de pontos.              |
-| `album.service.ts`                | Motor Gacha e Limites  | Função Pura / DB   | `/album`               | Controle de limite diário e sorteio aleatório.   |
-| `troca.service.ts`                | Transações Atômicas    | DB                 | `/trocas`              | Máquina de estados de inventário entre usuários. |
-| `/album`                          | UI do Gacha            | `album.service`    | UI / Next.js           | Visualização do álbum e animação de abertura.    |
-| `/trocas`                         | Gestão de Propostas    | `troca.service`    | UI / Next.js           | Caixa de entrada de negociações de cartas.       |
-| `/perfil/[slug]`                  | Vitrine Pública        | API de Usuários    | UI / Next.js           | Exibição sanitizada e acesso às repetidas.       |
-| `/trocas/nova/...`                | Funil de Troca (P2P)   | API de Trocas      | UI / Next.js           | Orquestração visual da montagem de proposta.     |
-| `components/layout/BottomNav.tsx` | Navegação Mobile-First | `usePathname`      | UI / Next.js           | Menu nativo inferior.                            |
-| `components/ui/Toast.tsx`         | Feedback de Ações      | Framer Motion      | Formulários e Services | Substituição de alertas nativos.                 |
-| `app/(main)/page.tsx`             | Landing Page           | Framer Motion      | Usuário Final          | Animação de entrada e Linha do Tempo.            |
+| Camada / Arquivo                  | Responsabilidade         | Depende de         | É Dependido por        | Motivo da Dependência                                          |
+| :-------------------------------- | :----------------------- | :----------------- | :--------------------- | :------------------------------------------------------------- |
+| `lib/prisma.ts`                   | Conexão Única com BD     | -                  | Todos os `services`    | Singleton para evitar estouro de pools.                        |
+| `services/*.service.ts`           | Regras de Negócio        | `lib/prisma.ts`    | `api/` routes          | Centralizar regra e isolar DB da UI.                           |
+| `app/api/`                        | Adaptadores REST         | `services/`        | `hooks/`               | Separar request/response da lógica.                            |
+| `components/`                     | Interface (UI)           | `types/`           | `app/pages`            | Modularização de visual (Tailwind).                            |
+| `lib/compute-bracket.ts`          | Lógica de Chaveamento    | -                  | `simulacao-mata-mata`  | Abstrair cálculo complexo da UI.                               |
+| `/tabela/grupos`                  | Visualização Grupos      | `palpite.service`  | UI / Next.js           | Exibir classificação atualizada.                               |
+| `/tabela/oficial`                 | Resultados Oficiais      | `ResultadoOficial` | UI / Next.js           | Acesso público à verdade oficial.                              |
+| `apurador.service.ts`             | Cálculo de Pontos        | Função Pura (Math) | `api/admin/apurar`     | Isolar regra de pontuação do DB (SoC).                         |
+| `/admin/tabela/oficial`           | Gatilho de Apuração      | `apurador.service` | UI / Next.js           | Controle de distribuição de pontos.                            |
+| `album.service.ts`                | Motor Gacha e Limites    | Função Pura / DB   | `/album`               | Controle de limite diário e sorteio aleatório.                 |
+| `troca.service.ts`                | Transações Atômicas      | DB                 | `/trocas`              | Máquina de estados de inventário entre usuários.               |
+| `/album`                          | UI do Gacha              | `album.service`    | UI / Next.js           | Visualização do álbum e animação de abertura.                  |
+| `/trocas`                         | Gestão de Propostas      | `troca.service`    | UI / Next.js           | Caixa de entrada de negociações de cartas.                     |
+| `/perfil/[slug]`                  | Vitrine Pública          | API de Usuários    | UI / Next.js           | Exibição sanitizada e acesso às repetidas.                     |
+| `/trocas/nova/...`                | Funil de Troca (P2P)     | API de Trocas      | UI / Next.js           | Orquestração visual da montagem de proposta.                   |
+| `components/layout/BottomNav.tsx` | Navegação Mobile-First   | `usePathname`      | UI / Next.js           | Menu nativo inferior.                                          |
+| `components/ui/Toast.tsx`         | Feedback de Ações        | Framer Motion      | Formulários e Services | Substituição de alertas nativos.                               |
+| `app/(main)/page.tsx`             | Landing Page             | Framer Motion      | Usuário Final          | Animação de entrada e Linha do Tempo.                          |
+| `app/globals.css`                 | Design System Base       | Variáveis CSS      | UI / Global            | Definição estrita da paleta Zinc e erradicação de cores puras. |
+| `app/not-found.tsx`               | Página 404 (Gol Anulado) | Framer / SVG       | Usuário Final          | Fallback visual gamificado com rebote ajustado.                |
+| `components/BolaAnimada.tsx`      | Componente Vetorial      | viewBox / SVG      | UI                     | SVG com caixa delimitadora dilatada para animações Y.          |
 
 ### Pontos de Ruptura (God Objects)
 
