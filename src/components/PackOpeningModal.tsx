@@ -141,11 +141,11 @@ export default function PackOpeningModal({ figurinhas, onClose }: PackOpeningMod
                         initial={{ scale: 0, x: 0, y: 100 }}
                         animate={{ scale: 1, x: 0, y: 0 }}
                         transition={{ type: "spring", delay: i * 0.1, bounce: 0.4 }}
-                        className="group perspective-1000 w-[150px] sm:w-[180px] md:w-[220px] cursor-pointer"
+                        className="group perspective-1000 w-[160px] h-[280px] sm:w-[180px] sm:h-[320px] md:w-[220px] md:h-[360px] cursor-pointer"
                         onClick={() => flipCard(i)}
                       >
                         <motion.div
-                          className="relative w-full aspect-[3/4] transform-style-3d transition-transform duration-700 ease-out"
+                          className="relative h-full w-full transform-style-3d transition-transform duration-700 ease-out"
                           animate={{ rotateY: isFlipped ? 180 : 0 }}
                         >
                           {/* Costas da Carta (Face Down) */}
