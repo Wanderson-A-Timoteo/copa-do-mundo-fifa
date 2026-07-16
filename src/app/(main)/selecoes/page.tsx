@@ -65,12 +65,12 @@ export default function SelecoesPage() {
             <Link
               key={sel.id}
               href={`/selecoes/${sel.slug || sel.id}`}
-              className="group rounded-xl border border-zinc-200 p-5 transition-all hover:border-zinc-400 hover:shadow-md dark:border-zinc-800 dark:hover:border-zinc-600"
+              className="group rounded-xl border border-zinc-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]"
             >
               <div className="flex items-center gap-4">
-                <FlagIcon codigo={sel.codigoPais} className="h-10 w-auto rounded-sm" />
+                <FlagIcon codigo={sel.codigoPais} className="h-10 w-auto rounded-sm drop-shadow-sm" />
                 <div>
-                  <h2 className="font-semibold group-hover:underline">{sel.nome}</h2>
+                  <h2 className="font-semibold text-zinc-800 transition-colors group-hover:text-emerald-600 dark:text-zinc-100 dark:group-hover:text-emerald-400">{sel.nome}</h2>
                   <p className="text-xs text-zinc-500">
                     Grupo {sel.grupoId} · {sel.continente}
                     {sel.titulos > 0 && ` · ${sel.titulos} títulos`}
