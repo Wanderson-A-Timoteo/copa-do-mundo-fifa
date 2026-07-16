@@ -97,13 +97,25 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
       {/* Hero Section */}
       <section className="relative flex min-h-[60vh] w-full flex-col justify-end overflow-hidden">
         {estadio.fotoUrl ? (
-          <Image src={estadio.fotoUrl} alt={estadio.nome} fill className="object-cover" priority unoptimized />
+          <motion.div
+            initial={{ scale: 1.1, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="absolute inset-0"
+          >
+            <Image src={estadio.fotoUrl} alt={estadio.nome} fill className="object-cover" priority unoptimized />
+          </motion.div>
         ) : (
           <div className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800" />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 
-        <div className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-12 pt-32">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-12 pt-32"
+        >
           <nav className="mb-4 text-sm text-zinc-300">
             <Link href="/estadios" className="hover:text-white transition-colors">
               Estádios
@@ -125,32 +137,42 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
               </span>
             )}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       <div className="mx-auto max-w-5xl px-6">
         {/* Grid de Info */}
-        <section className="relative z-20 -mt-8 mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/80">
+        <motion.section 
+          initial="hidden"
+          animate="show"
+          variants={{
+            hidden: { opacity: 0 },
+            show: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.4 } }
+          }}
+          className="relative z-20 -mt-8 mb-12 grid grid-cols-1 gap-4 sm:grid-cols-3"
+        >
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-950/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Localização</h3>
-            <p className="mt-2 flex items-center gap-1.5 text-lg font-semibold">
+            <p className="mt-2 flex items-center gap-1.5 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               <IconMapPin className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               {estadio.cidade}, {estadio.pais}
             </p>
-          </div>
-          <div className="rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/80">
+          </motion.div>
+          
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-950/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Capacidade</h3>
-            <p className="mt-2 text-lg font-semibold">
+            <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               {estadio.capacidade.toLocaleString()} lugares
             </p>
-          </div>
-          <div className="rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md dark:border-zinc-800/50 dark:bg-zinc-950/80">
+          </motion.div>
+          
+          <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-950/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
               Jogos Programados
             </h3>
-            <p className="mt-2 text-lg font-semibold">{estadio.partidas.length} partidas</p>
-          </div>
-        </section>
+            <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">{estadio.partidas.length} partidas</p>
+          </motion.div>
+        </motion.section>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
           <div className="space-y-12 lg:col-span-2">
@@ -237,7 +259,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
                   href={`https://www.google.com/maps?q=${estadio.latitude},${estadio.longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-100 p-3 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-100 p-3 text-sm font-medium text-zinc-700 transition-all duration-300 hover:scale-[1.02] hover:bg-zinc-200 hover:shadow-lg dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] active:scale-95"
                 >
                   <IconMapPin className="h-5 w-5" />
                   Abrir no Google Maps
