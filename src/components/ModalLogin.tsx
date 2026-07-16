@@ -21,7 +21,7 @@ export default function ModalLogin({ onClose }: { onClose: () => void }) {
         </p>
 
         <div className="mb-4">
-          <GoogleLoginButton onSuccess={onClose} />
+          <GoogleLoginButton onSuccess={() => window.location.reload()} />
         </div>
 
         <div className="relative mb-4">

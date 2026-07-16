@@ -15,7 +15,7 @@ export default function LoginPage() {
   const [carregando, setCarregando] = useState(false);
 
   function handleGoogleSuccess() {
-    router.push("/");
+    window.location.href = "/";
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,7 +39,7 @@ export default function LoginPage() {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-      router.push("/");
+      window.location.href = "/";
     } catch {
       setErro("Erro ao conectar com o servidor");
     } finally {
