@@ -178,7 +178,7 @@ export default function TrocasPage() {
         </div>
       )}
 
-      <div className="mb-6 flex gap-2">
+      <div className="mb-6 flex flex-wrap gap-2">
         {(["disponiveis", "recebidas", "enviadas"] as const).map((t) => {
           const label =
             t === "disponiveis" ? "Disponíveis" : t === "recebidas" ? "Recebidas" : "Enviadas";
@@ -220,7 +220,7 @@ export default function TrocasPage() {
           </div>
 
           {carregando ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2 min-[400px]:gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4">
               {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                 <div key={i} className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
                   <Skeleton className="h-32 w-full rounded-lg" />
@@ -244,7 +244,7 @@ export default function TrocasPage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-2 min-[400px]:gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
               {pagDispItens.map((grupo) => (
                 <Link
                   key={grupo.figurinha.id}
@@ -327,7 +327,7 @@ export default function TrocasPage() {
                   key={troca.id}
                   className="rounded-xl border border-zinc-200 bg-zinc-100 p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
                 >
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-2 text-sm text-zinc-500">
                       <IconUser className="h-4 w-4" />
                       <span>
@@ -362,16 +362,16 @@ export default function TrocasPage() {
                   </div>
 
                   {troca.status === "pendente" && isRecebida && (
-                    <div className="mt-4 flex gap-2">
+                    <div className="mt-4 flex flex-wrap sm:flex-nowrap gap-2">
                       <button
                         onClick={() => aceitarTroca(troca.id)}
-                        className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-50 transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                        className="w-full sm:w-auto rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-50 transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
                       >
                         Aceitar Troca
                       </button>
                       <button
                         onClick={() => recusarTroca(troca.id)}
-                        className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                        className="w-full sm:w-auto rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
                       >
                         Recusar
                       </button>

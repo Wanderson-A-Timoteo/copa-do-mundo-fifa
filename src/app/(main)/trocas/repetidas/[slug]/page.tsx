@@ -106,7 +106,7 @@ export default async function RepetidasDetalhePage({
             {usuarios.map((usr) => (
               <div
                 key={usr.id}
-                className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-100 p-4 dark:border-zinc-800 dark:bg-zinc-900"
+                className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-xl border border-zinc-200 bg-zinc-100 p-4 dark:border-zinc-800 dark:bg-zinc-900"
               >
                 <div className="flex items-center gap-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-200 text-sm font-bold dark:bg-zinc-700">
@@ -119,7 +119,7 @@ export default async function RepetidasDetalhePage({
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                   <TradeLink userId={usr.id} figurinhaSlug={figurinha!.slug} />
                   <Link
                     href={`/perfil/${usr.slug || usr.id}`}

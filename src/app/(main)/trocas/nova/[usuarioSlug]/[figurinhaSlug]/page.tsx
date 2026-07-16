@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -162,14 +162,14 @@ export default function NovaTrocaPage() {
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-2 min-[400px]:gap-3 sm:gap-4 sm:grid-cols-3">
                 {minhasRepetidas.map((item) => {
                   const selecionado = selecionadas.has(item.figurinhaId);
                   return (
                     <button
                       key={item.figurinhaId}
                       onClick={() => toggleSelecao(item.figurinhaId)}
-                      className={`relative cursor-pointer text-left transition-all ${
+                      className={`relative flex flex-col h-full cursor-pointer text-left transition-all ${
                         selecionado
                           ? "ring-2 ring-emerald-500 ring-offset-2 dark:ring-offset-zinc-900 scale-[1.02]"
                           : "hover:scale-[1.02]"
