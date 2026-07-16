@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     const resultado = await apurarPartida(partidaId);
     return NextResponse.json(resultado);
-  } catch (error: any) {
+  } catch (error: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) {
     console.error("Erro na apuração:", error);
     return NextResponse.json({ erro: error.message || "Erro interno" }, { status: 500 });
   }

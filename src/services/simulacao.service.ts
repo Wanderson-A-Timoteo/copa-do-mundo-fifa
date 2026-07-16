@@ -65,7 +65,7 @@ export async function salvarSimulacaoMataMata(
     throw new Error("INVALID_GOALS");
   }
 
-  const data: any = { golsMandante, golsVisitante };
+  const data: Record<string, number | null> = { golsMandante, golsVisitante };
   if (penaltisMandante !== undefined) data.penaltisMandante = penaltisMandante;
   if (penaltisVisitante !== undefined) data.penaltisVisitante = penaltisVisitante;
 

@@ -35,7 +35,7 @@ export default function TermosDeUsoPage() {
           </h2>
           <p>
             Todos os direitos sobre a marca, design, logotipos e conteúdo original deste aplicativo
-            pertencem aos seus desenvolvedores. Os nomes "FIFA", "Copa do Mundo" e escudos de
+            pertencem aos seus desenvolvedores. Os nomes &quot;FIFA&quot;, &quot;Copa do Mundo&quot; e escudos de
             seleções são propriedades de suas respectivas entidades e são usados aqui em caráter
             meramente informativo e de entretenimento (fair use).
           </p>

@@ -86,7 +86,7 @@ export async function apurarPartida(partidaId: number) {
     penaltisVisitante: partida.resultadoOficial?.penaltisVisitante
   };
 
-  const operacoes: any[] = [];
+  const operacoes: any[] /* eslint-disable-line @typescript-eslint/no-explicit-any */ = [];
 
   if (!isMataMata) {
     const palpites = await prisma.palpite.findMany({

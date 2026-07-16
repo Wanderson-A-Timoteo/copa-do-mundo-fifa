@@ -20,8 +20,8 @@ export async function GET() {
     orderBy: { id: "asc" },
   });
 
-  const gruposStandings = gruposDB.map((g: any) => {
-    const selecoes = g.selecoes.map((s: any) => {
+  const gruposStandings = gruposDB.map((g: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
+    const selecoes = g.selecoes.map((s: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
       let v = 0,
         e = 0,
         d = 0,
@@ -65,7 +65,7 @@ export async function GET() {
       };
     });
 
-    selecoes.sort((a: any, b: any) => {
+    selecoes.sort((a: any /* eslint-disable-line @typescript-eslint/no-explicit-any */, b: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
       if (b.p !== a.p) return b.p - a.p;
       if (b.sg !== a.sg) return b.sg - a.sg;
       if (b.gp !== a.gp) return b.gp - a.gp;

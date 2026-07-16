@@ -49,7 +49,7 @@ export default function MataMataPartidaEditor({
       const data = await res.json();
       if (!res.ok) throw new Error(data.erro || "Erro ao apurar");
       toast.success(`${data.palpitesApurados} palpites apurados com sucesso!`);
-    } catch (e: any) {
+    } catch (e: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) {
       toast.error(e.message);
     } finally {
       setIsApurando(false);

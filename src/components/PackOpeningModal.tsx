@@ -63,7 +63,7 @@ export default function PackOpeningModal({ figurinhas, onClose }: PackOpeningMod
 
   const dispararConfetti = () => {
     const duration = 3000;
-    const animationEnd = Date.now() + duration;
+    const animationEnd = Date.now() + duration; // eslint-disable-line react-hooks/purity
     const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 250 };
 
     const interval = setInterval(function () {
