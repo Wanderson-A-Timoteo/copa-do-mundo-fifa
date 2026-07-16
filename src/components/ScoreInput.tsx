@@ -7,6 +7,7 @@ interface ScoreInputProps {
   disabled?: boolean;
   isMobile?: boolean;
 
+  salvando?: boolean;
   showOverlay?: boolean;
   onOverlayClick?: () => void;
   dataHora?: string;
