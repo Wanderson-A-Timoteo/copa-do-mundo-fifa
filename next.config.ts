@@ -11,7 +11,7 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://accounts.google.com https://apis.google.com",
-      "style-src 'self' 'unsafe-inline'",
+      "style-src 'self' 'unsafe-inline' https://accounts.google.com",
       "img-src 'self' data: blob: https: http:",
       "font-src 'self'",
       "connect-src 'self' https://accounts.google.com https://oauth2.googleapis.com https://www.googleapis.com",
@@ -23,6 +23,7 @@ const securityHeaders = [
 const poweredByHeader = { key: "X-Powered-By", value: "" };
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["localhost", "127.0.0.1", "172.27.58.212", "10.255.255.254"],
   async headers() {
     return [
       {

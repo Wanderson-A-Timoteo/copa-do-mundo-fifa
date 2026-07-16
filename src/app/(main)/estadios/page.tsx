@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 export default async function EstadiosPage() {
   const estadios = await prisma.estadio.findMany({
     orderBy: { nome: "asc" },
@@ -43,6 +45,7 @@ export default async function EstadiosPage() {
                       width={400}
                       height={192}
                       className="h-48 w-full object-cover"
+                      unoptimized
                     />
                   )}
                   <div className="p-5">

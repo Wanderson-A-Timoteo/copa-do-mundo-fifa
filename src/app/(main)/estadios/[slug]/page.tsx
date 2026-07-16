@@ -93,11 +93,11 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
   const badge = capacidadeBadge(estadio.capacidade);
 
   return (
-    <main className="pb-12">
+    <main className="pb-12 overflow-x-clip">
       {/* Hero Section */}
-      <section className="relative flex min-h-[60vh] w-full flex-col justify-end">
+      <section className="relative flex min-h-[60vh] w-full flex-col justify-end overflow-hidden">
         {estadio.fotoUrl ? (
-          <Image src={estadio.fotoUrl} alt={estadio.nome} fill className="object-cover" priority />
+          <Image src={estadio.fotoUrl} alt={estadio.nome} fill className="object-cover" priority unoptimized />
         ) : (
           <div className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800" />
         )}
@@ -113,7 +113,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
           </nav>
 
           <div className="flex flex-wrap items-end gap-4">
-            <h1 className="text-4xl font-extrabold text-white sm:text-6xl drop-shadow-lg">
+            <h1 className="text-4xl font-extrabold text-white sm:text-6xl drop-shadow-lg break-words max-w-full">
               {estadio.nome}
             </h1>
             {badge && (
@@ -190,6 +190,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
                         width={600}
                         height={400}
                         className="h-auto w-full object-cover transition-transform duration-300 hover:scale-105"
+                        unoptimized
                       />
                     </div>
                   ))}
