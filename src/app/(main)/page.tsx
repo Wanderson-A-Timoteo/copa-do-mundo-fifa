@@ -126,7 +126,7 @@ export default function Home() {
         >
           <motion.div
             variants={itemVariants}
-            className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
+            className="group flex flex-col items-center text-center relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
           >
             <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-emerald-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <Globe className="mb-4 h-8 w-8 text-emerald-500" />
@@ -136,7 +136,7 @@ export default function Home() {
 
           <motion.div
             variants={itemVariants}
-            className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
+            className="group flex flex-col items-center text-center relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
           >
             <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-teal-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <Calendar className="mb-4 h-8 w-8 text-teal-500" />
@@ -146,7 +146,7 @@ export default function Home() {
 
           <motion.div
             variants={itemVariants}
-            className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
+            className="group flex flex-col items-center text-center relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800"
           >
             <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-blue-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <MapPin className="mb-4 h-8 w-8 text-blue-500" />
