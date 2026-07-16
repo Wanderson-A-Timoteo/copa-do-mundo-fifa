@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+
 import Link from "next/link";
 import Image from "next/image";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
 import PaginaAnimada from "@/components/PaginaAnimada";
 
 export default function LoginPage() {
-  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");

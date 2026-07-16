@@ -295,7 +295,7 @@ export default function BolaoPage() {
             <h2 className="mb-4 mt-10 text-xl font-bold">Fase Eliminatória</h2>
             <div className="space-y-10">
               {bracket.fases.map((fase) => {
-                const temPartidas = fase.partidas.some((p) => true);
+                const temPartidas = fase.partidas.length > 0;
                 if (!temPartidas) return null;
 
                 return (

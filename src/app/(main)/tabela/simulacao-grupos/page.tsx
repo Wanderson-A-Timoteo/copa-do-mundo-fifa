@@ -4,8 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { FlagIcon } from "@/components/FlagIcon";
 import ModalLogin from "@/components/ModalLogin";
 
-import { IconClock, IconMapPin } from "@/components/Icons";
-import { formatarData, formatarHora } from "@/lib/format";
+
 import type { ClassificacaoSelecao, PartidaResumo } from "@/types";
 import PlacarCard from "@/components/PlacarCard";
 

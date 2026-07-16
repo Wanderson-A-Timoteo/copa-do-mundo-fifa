@@ -6,7 +6,7 @@ interface ScoreInputProps {
   onBlur?: () => void;
   disabled?: boolean;
   isMobile?: boolean;
-  salvando?: boolean;
+
   showOverlay?: boolean;
   onOverlayClick?: () => void;
   dataHora?: string;
@@ -18,7 +18,7 @@ export default function ScoreInput({
   onBlur,
   disabled = false,
   isMobile = false,
-  salvando = false,
+
   showOverlay = false,
   onOverlayClick,
   dataHora,

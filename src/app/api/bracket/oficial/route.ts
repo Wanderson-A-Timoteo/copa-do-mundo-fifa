@@ -65,7 +65,8 @@ export async function GET() {
       };
     });
 
-    selecoes.sort((a: any /* eslint-disable-line @typescript-eslint/no-explicit-any */, b: any /* eslint-disable-line @typescript-eslint/no-explicit-any */) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    selecoes.sort((a: any, b: any) => {
       if (b.p !== a.p) return b.p - a.p;
       if (b.sg !== a.sg) return b.sg - a.sg;
       if (b.gp !== a.gp) return b.gp - a.gp;
