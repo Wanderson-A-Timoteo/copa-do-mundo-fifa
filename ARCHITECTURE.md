@@ -335,3 +335,23 @@ O sistema fomenta o aspecto social do Bolão, permitindo que os usuários acesse
 
 - **Ponto Crítico:** `src/lib/prisma.ts` é o ponto de maior impacto. Qualquer alteração no schema reflete em todo o sistema.
 - **Isolamento:** A camada `src/services/` protege a camada de persistência de mudanças abruptas na UI, atuando como um buffer de validação.
+
+---
+
+## Melhorias Recentes de UI/UX e Correções Estruturais (Julho/2026)
+
+Esta seção documenta a evolução recente do Frontend, direcionada pelos pilares do projeto (Gamificação, Mobile-First e Performance).
+
+### 1. Refatoração de Tabelas e Scroll Horizontal
+- **Expansão de Dados e Layout Responsivo:** Inclusão de estatísticas completas (Gols Pró, Gols Contra, etc) nas tabelas de grupos. Para suportar o aumento horizontal sem quebrar a experiência do usuário, as tabelas foram envolvidas em containers roláveis (`overflow-x-auto`). No Desktop, o grid foi ajustado para comportar duas colunas fixas sem estrangulamento visual.
+- **Prevenção de Blowout:** Correção de estouro de largura do layout no mobile (grid blowout), garantindo que os cartões de tabela contenham o scroll internamente com `overflow-hidden`.
+- **Comportamento Sticky Otimizado:** Em telas pequenas, a ancoragem (`sticky`) da coluna de "Seleção" foi desabilitada para prevenir que os nomes dos times engolissem toda a área de visualização. Apenas o índice (`#`) permaneceu afixado.
+- **Contenção de Vazamento Transparente:** Resolução de bugs de Z-Index/Transparência durante a rolagem de tabelas, onde números deslizavam "por trás" do cabeçalho devido à falta de fundo sólido nas tags `<tr>`. Foi imposta herança de cor na tabela base.
+
+### 2. Identidade Visual Avançada (Glassmorphism e Palette)
+- **Consolidação Escala Zinc:** Exclusão de cores como `#FFFFFF` puro dos painéis das tabelas. Em favor da paleta unificada, todas as grades (Classificações, Resultados, Simulador) agora usam a matriz oficial: `bg-zinc-100` no Modo Claro e `bg-zinc-800` no Modo Escuro. 
+- **Alinhamento do PlacarCard:** Reposicionamento dinâmico e polimento dos metadados dos jogos (Data, Hora, Estádio) removendo quebras de linha forçadas (`w-full`) que encavalavam o layout mobile.
+
+### 3. Modais e Autenticação
+- **Centralização via React Portal:** Refatoração de modais cruciais como o `ModalConfirm` (logout). Renderizados no `document.body` e unificados com `backdrop-blur`, impedem colisões de `z-index` e sobreposições bizarras no Mobile, centralizando o componente no viewport real.
+- **Reidratação Pós-Login:** Adequação do ciclo de vida de acesso. Após o login/cadastro bem sucedido da API, foi inserido um _hard-reload_ (`window.location.href`) cirúrgico para assegurar que os Contextos (`useAuth`) do App Router do Next.js leiam a sessão hidratada sem artefatos de cache legados.
