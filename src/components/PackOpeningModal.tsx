@@ -68,7 +68,7 @@ export default function PackOpeningModal({ figurinhas, onClose }: PackOpeningMod
 
   return (
     <div
-      className="fixed inset-0 z-50 overflow-y-auto bg-zinc-900/90 backdrop-blur-md p-4 sm:p-8"
+      className="fixed inset-0 z-[200] overflow-y-auto bg-zinc-900/95 backdrop-blur-xl p-4 sm:p-8"
       onClick={flippedIndex.length === figurinhas.length ? onClose : undefined}
     >
       <div className="min-h-full flex items-center justify-center">
