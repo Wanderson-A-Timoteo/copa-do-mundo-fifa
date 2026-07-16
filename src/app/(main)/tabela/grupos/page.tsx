@@ -38,7 +38,7 @@ export default function TabelaPage() {
           {grupos.map((grupo) => (
             <div
               key={grupo.id}
-              className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+              className="overflow-hidden rounded-xl border border-zinc-200 bg-white p-4 sm:p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
             >
               <h2 className="mb-4 text-lg font-bold">{grupo.nome}</h2>
               <div className="overflow-x-auto pb-2">
