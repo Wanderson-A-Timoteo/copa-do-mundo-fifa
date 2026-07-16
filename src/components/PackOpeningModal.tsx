@@ -38,16 +38,33 @@ export default function PackOpeningModal({ figurinhas, onClose }: PackOpeningMod
     const newFlipped = [...flippedIndex, index];
     setFlippedIndex(newFlipped);
 
+    // Se for rara, dispara um pequeno efeito dourado imediato
+    if (figurinhas[index].raridade === "rara") {
+      dispararConfettiDourado();
+    }
+
     // Verifica se virou todas
     if (newFlipped.length === figurinhas.length) {
-      dispararConfetti();
+      setTimeout(() => {
+        dispararConfetti();
+      }, 300);
     }
+  };
+
+  const dispararConfettiDourado = () => {
+    confetti({
+      particleCount: 80,
+      spread: 100,
+      origin: { y: 0.6 },
+      colors: ["#FBBF24", "#F59E0B", "#D97706", "#FFFBEB"],
+      zIndex: 250,
+    });
   };
 
   const dispararConfetti = () => {
     const duration = 3000;
     const animationEnd = Date.now() + duration;
-    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 250 };
 
     const interval = setInterval(function () {
       const timeLeft = animationEnd - Date.now();
@@ -146,7 +163,18 @@ export default function PackOpeningModal({ figurinhas, onClose }: PackOpeningMod
                       >
                         <motion.div
                           className="relative h-full w-full transform-style-3d transition-transform duration-700 ease-out"
-                          animate={{ rotateY: isFlipped ? 180 : 0 }}
+                          animate={
+                            isFlipped
+                              ? isRara
+                                ? {
+                                    rotateY: 180,
+                                    scale: [1, 1.15, 1],
+                                    filter: ["brightness(1)", "brightness(1.5)", "brightness(1)"],
+                                  }
+                                : { rotateY: 180, scale: [1, 1.05, 1] }
+                              : { rotateY: 0, scale: 1 }
+                          }
+                          transition={{ duration: 0.8 }}
                         >
                           {/* Costas da Carta (Face Down) */}
                           <div className="absolute inset-0 flex flex-col items-center justify-center rounded-xl border-4 border-indigo-300 bg-gradient-to-br from-indigo-800 to-blue-900 shadow-[0_0_20px_rgba(55,48,163,0.5)] backface-hidden group-hover:-translate-y-2 group-hover:shadow-[0_0_30px_rgba(55,48,163,0.8)] transition-all duration-300">
