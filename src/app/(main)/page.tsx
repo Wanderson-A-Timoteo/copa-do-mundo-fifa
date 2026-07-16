@@ -167,7 +167,7 @@ export default function Home() {
 
         <div className="relative">
           {/* Linha Central */}
-          <div className="absolute bottom-0 left-12 top-0 w-0.5 bg-zinc-200 dark:bg-zinc-800 sm:left-1/2 sm:-translate-x-1/2" />
+          <div className="absolute bottom-0 left-4 top-0 w-0.5 bg-zinc-200 dark:bg-zinc-800 sm:left-1/2 sm:-translate-x-1/2" />
 
           <div className="space-y-12">
             {copasAnteriores.map((copa, index) => {
@@ -182,11 +182,11 @@ export default function Home() {
                   className={`relative flex items-center ${isEven ? "sm:flex-row-reverse" : ""}`}
                 >
                   {/* Ponto Central */}
-                  <div className="absolute left-12 h-4 w-4 -translate-x-1/2 rounded-full border-4 border-zinc-100 bg-emerald-500 shadow-sm dark:border-zinc-900 sm:left-1/2" />
+                  <div className="absolute left-4 h-4 w-4 -translate-x-1/2 rounded-full border-4 border-zinc-100 bg-emerald-500 shadow-sm dark:border-zinc-900 sm:left-1/2" />
 
                   {/* Card do Campeão */}
                   <div
-                    className={`ml-20 flex w-full flex-col sm:ml-0 sm:w-1/2 ${isEven ? "sm:pl-10" : "sm:pr-10 sm:text-right"}`}
+                    className={`ml-10 flex w-full flex-col sm:ml-0 sm:w-1/2 ${isEven ? "sm:pl-10" : "sm:pr-10 sm:text-right"}`}
                   >
                     <div className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500">
                       {/* Selo do Ano e Sede */}
