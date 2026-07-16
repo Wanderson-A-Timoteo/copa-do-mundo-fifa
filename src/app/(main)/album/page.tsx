@@ -155,7 +155,7 @@ export default function AlbumPage() {
 
   return (
     <>
-      <main className="mx-auto max-w-6xl p-4 md:p-8 space-y-8">
+      <main className="mx-auto max-w-6xl p-2 sm:p-4 md:p-8 space-y-8 overflow-hidden">
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-2xl p-8 text-zinc-50 shadow-xl flex flex-wrap items-center justify-between gap-6">
           <div>
@@ -171,8 +171,8 @@ export default function AlbumPage() {
             </div>
           </div>
           {user ? (
-            <div className="flex flex-col items-end gap-3 min-w-[250px]">
-              <div className="flex items-center gap-3">
+            <div className="flex flex-col items-center sm:items-end gap-3 w-full sm:w-auto sm:min-w-[250px]">
+              <div className="flex flex-wrap justify-center sm:justify-end items-center gap-3 w-full">
                 <Link
                   href="/trocas"
                   className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-100/20 bg-zinc-100/10 px-4 py-2.5 text-sm font-medium transition-colors hover:bg-zinc-100/20 backdrop-blur-sm"
@@ -192,7 +192,7 @@ export default function AlbumPage() {
                       : "Abrir Pacotinho"}
                 </button>
               </div>
-              <div className="w-full text-right">
+              <div className="w-full text-center sm:text-right">
                 <span className="text-sm font-medium text-blue-200 block mb-1">
                   Pacotes: {pacotesAbertosHoje} / {limiteDiario}
                 </span>
@@ -229,8 +229,8 @@ export default function AlbumPage() {
           </div>
         )}
 
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex gap-2">
+        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
+          <div className="flex flex-wrap justify-center sm:justify-start gap-2">
             {["todas", "tenho", "faltando", "repetida"].map((s) => (
               <button
                 key={s}
@@ -304,7 +304,7 @@ export default function AlbumPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                    <div className="grid grid-cols-2 gap-2 min-[400px]:gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                       {figurinhasAtuais.map((fig) => {
                         const status = statusFigurinha(fig.id);
                         const faltando = status === "faltando";
@@ -335,11 +335,11 @@ export default function AlbumPage() {
               })()}
             </AnimatePresence>
 
-            <div className="mt-8 flex items-center justify-between">
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
               <button
                 onClick={() => setPaginaAtual((p) => Math.max(0, p - 1))}
                 disabled={paginaAtual === 0}
-                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-100 px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-100 px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
               >
                 &#9664; Anterior
               </button>
@@ -349,7 +349,7 @@ export default function AlbumPage() {
               <button
                 onClick={() => setPaginaAtual((p) => Math.min(selecoesFiltradas.length - 1, p + 1))}
                 disabled={paginaAtual === selecoesFiltradas.length - 1}
-                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-100 px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
+                className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-zinc-100 px-5 py-2.5 text-sm font-medium shadow-sm transition-colors hover:bg-zinc-50 disabled:opacity-40 disabled:cursor-not-allowed dark:border-zinc-800 dark:bg-zinc-900 dark:hover:bg-zinc-800"
               >
                 Próxima &#9654;
               </button>
