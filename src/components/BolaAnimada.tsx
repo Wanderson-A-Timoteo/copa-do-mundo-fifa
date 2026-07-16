@@ -1,7 +1,7 @@
 export default function BolaAnimada({ className = "h-32 w-32" }: { className?: string }) {
   return (
     <div className={className}>
-      <svg viewBox="0 -20 100 150" className="h-full w-full">
+      <svg viewBox="0 -40 100 170" className="h-full w-full">
         <defs>
           <radialGradient id="bola-grad" cx="35%" cy="35%" r="65%">
             <stop offset="0%" stopColor="#f4f4f5" />
