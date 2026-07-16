@@ -62,14 +62,20 @@ export default async function DetalheSelecaoPage({
       >
         &larr; Voltar
       </Link>
-      
-      <div className="flex flex-col gap-6 sm:flex-row sm:items-center rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
+
+      <div className="flex flex-col items-center text-center sm:text-left sm:flex-row sm:items-center gap-6 rounded-2xl border border-zinc-200 bg-zinc-100 p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
         <FlagIcon codigo={selecao.codigoPais} className="h-24 w-auto rounded-md drop-shadow-md" />
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">{selecao.nome}</h1>
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">
-            <span className="rounded-full bg-zinc-100 px-3 py-1 dark:bg-zinc-700/50">{selecao.grupo.nome}</span>
-            <span className="rounded-full bg-zinc-100 px-3 py-1 dark:bg-zinc-700/50">{selecao.continente}</span>
+        <div className="flex flex-col items-center sm:items-start">
+          <h1 className="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 sm:text-4xl">
+            {selecao.nome}
+          </h1>
+          <div className="mt-2 flex flex-wrap justify-center sm:justify-start items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+            <span className="rounded-full bg-zinc-100 px-3 py-1 dark:bg-zinc-700/50">
+              {selecao.grupo.nome}
+            </span>
+            <span className="rounded-full bg-zinc-100 px-3 py-1 dark:bg-zinc-700/50">
+              {selecao.continente}
+            </span>
             {selecao.titulos > 0 && (
               <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
                 {selecao.titulos} {selecao.titulos === 1 ? "título mundial" : "títulos mundiais"}
@@ -81,7 +87,11 @@ export default async function DetalheSelecaoPage({
               </span>
             )}
           </div>
-          {selecao.tecnico && <p className="mt-4 text-sm font-medium text-zinc-500">Técnico: <span className="text-zinc-700 dark:text-zinc-300">{selecao.tecnico}</span></p>}
+          {selecao.tecnico && (
+            <p className="mt-4 text-sm font-medium text-zinc-500">
+              Técnico: <span className="text-zinc-700 dark:text-zinc-300">{selecao.tecnico}</span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -126,7 +136,8 @@ export default async function DetalheSelecaoPage({
                     {p.fase === "GRUPOS" ? "F. Grupos" : p.fase}
                   </span>
                   <span className="text-zinc-700 dark:text-zinc-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-                    {p.mandante?.nome ?? "A definir"} <span className="text-zinc-400 mx-1">vs</span> {p.visitante?.nome ?? "A definir"}
+                    {p.mandante?.nome ?? "A definir"} <span className="text-zinc-400 mx-1">vs</span>{" "}
+                    {p.visitante?.nome ?? "A definir"}
                   </span>
                 </div>
                 <div className="text-sm">
