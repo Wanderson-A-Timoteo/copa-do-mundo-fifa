@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FlagIcon } from "@/components/FlagIcon";
 import { IconStar, IconUser, IconTrophy, IconRepeat } from "@/components/Icons";
 import StickerCard from "@/components/StickerCard";
+import PackOpeningModal from "@/components/PackOpeningModal";
 import { SkeletonAlbum } from "@/components/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
 import type { FigurinhaResumo } from "@/types";
@@ -364,41 +365,7 @@ export default function AlbumPage() {
       </main>
 
       {showAnimacao && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-zinc-900/80 backdrop-blur-md p-4 sm:p-8"
-          onClick={() => setShowAnimacao(false)}
-        >
-          <div className="w-full max-w-3xl text-center" onClick={(e) => e.stopPropagation()}>
-            <h2 className="mb-8 flex items-center justify-center gap-3 text-3xl font-extrabold text-zinc-50 drop-shadow-lg">
-              <IconStar className="h-8 w-8 text-amber-400 animate-pulse" />
-              Novas Figurinhas!
-            </h2>
-
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              animate="show"
-              className="mx-auto grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4"
-            >
-              {novasFigurinhas.map((fig, i) => (
-                <motion.div
-                  key={i}
-                  variants={staggerItem}
-                  className="mx-auto w-full h-full flex flex-col max-w-[220px] transition-all duration-300 hover:-translate-y-2 hover:scale-105"
-                >
-                  <StickerCard figurinha={fig} />
-                </motion.div>
-              ))}
-            </motion.div>
-
-            <button
-              onClick={() => setShowAnimacao(false)}
-              className="mt-12 mb-8 rounded-xl bg-zinc-100 px-10 py-3.5 text-sm font-bold text-zinc-900 shadow-xl transition-all hover:scale-105 hover:bg-zinc-100"
-            >
-              Continuar Colecionando
-            </button>
-          </div>
-        </div>
+        <PackOpeningModal figurinhas={novasFigurinhas} onClose={() => setShowAnimacao(false)} />
       )}
     </>
   );
