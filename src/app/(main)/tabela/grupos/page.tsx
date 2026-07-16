@@ -67,12 +67,12 @@ export default function TabelaPage() {
                     {grupo.selecoes.map((sel, idx) => (
                       <tr
                         key={sel.id}
-                        className="border-t border-zinc-100 dark:border-zinc-800 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 even:bg-zinc-50/50 dark:even:bg-zinc-800/30 group"
+                        className="border-t border-zinc-100 dark:border-zinc-800 transition-colors bg-white hover:bg-zinc-50 even:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:even:bg-zinc-800/50 group"
                       >
-                        <td className="py-2.5 text-center font-bold text-zinc-400 sticky left-0 z-10 bg-inherit group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800/50">
+                        <td className="py-2.5 text-center font-bold text-zinc-400 sticky left-0 z-10 bg-inherit">
                           {idx + 1}
                         </td>
-                        <td className="py-2.5 sticky left-8 z-10 bg-inherit group-hover:bg-zinc-50 dark:group-hover:bg-zinc-800/50 after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
+                        <td className="py-2.5 sticky left-8 z-10 bg-inherit after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
                           <div className="flex items-center gap-2">
                             <FlagIcon
                               codigo={sel.codigoPais}
