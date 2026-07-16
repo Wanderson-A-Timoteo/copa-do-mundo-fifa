@@ -271,8 +271,8 @@ export default function PlacarCard({
             <IconClock className="h-3 w-3" />
             {formatarData(p.dataHora)} - {formatarHora(p.dataHora)}
           </span>
-          <span className="text-zinc-300 hidden sm:inline">|</span>
-          <span className="inline-flex items-center gap-1 w-full sm:w-auto">
+          <span className="text-zinc-300">|</span>
+          <span className="inline-flex items-center gap-1">
             <IconMapPin className="h-3 w-3" />
             {p.estadio.nome}
           </span>
