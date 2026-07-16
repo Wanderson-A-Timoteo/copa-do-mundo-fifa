@@ -45,12 +45,10 @@ export default function TabelaPage() {
                 <table className="w-full text-sm min-w-[500px] table-fixed">
                   <thead>
                     <tr className="text-left text-xs text-zinc-500">
-                      <th className="pb-2 text-center font-medium sticky left-0 z-10 bg-white dark:bg-zinc-900 w-8">
+                      <th className="pb-2 text-center font-medium sticky left-0 z-10 bg-white dark:bg-zinc-900 w-8 after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
                         #
                       </th>
-                      <th className="pb-2 font-medium sticky left-8 z-10 bg-white dark:bg-zinc-900 after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
-                        Seleção
-                      </th>
+                      <th className="pb-2 font-medium">Seleção</th>
                       <th className="pb-2 text-center font-medium w-8 text-zinc-900 dark:text-zinc-100">
                         P
                       </th>
@@ -69,10 +67,10 @@ export default function TabelaPage() {
                         key={sel.id}
                         className="border-t border-zinc-100 dark:border-zinc-800 transition-colors bg-white hover:bg-zinc-50 even:bg-zinc-50 dark:bg-zinc-900 dark:hover:bg-zinc-800 dark:even:bg-zinc-800/50 group"
                       >
-                        <td className="py-2.5 text-center font-bold text-zinc-400 sticky left-0 z-10 bg-inherit">
+                        <td className="py-2.5 text-center font-bold text-zinc-400 sticky left-0 z-10 bg-inherit after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
                           {idx + 1}
                         </td>
-                        <td className="py-2.5 sticky left-8 z-10 bg-inherit after:absolute after:inset-y-0 after:right-[-4px] after:w-[4px] after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] dark:after:shadow-[2px_0_4px_-2px_rgba(0,0,0,0.5)]">
+                        <td className="py-2.5">
                           <div className="flex items-center gap-2">
                             <FlagIcon
                               codigo={sel.codigoPais}
