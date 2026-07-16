@@ -198,7 +198,7 @@ export function BottomNav() {
               <Link
                 key={item.name}
                 href={item.path}
-                className={`flex flex-col items-center justify-center gap-1 w-16 h-full transition-all duration-300 active:scale-95 ${
+                className={`flex flex-1 flex-col items-center justify-center gap-1 h-full transition-all duration-300 active:scale-95 ${
                   isActive
                     ? "text-emerald-500 translate-y-[-4px]"
                     : "text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
@@ -219,7 +219,7 @@ export function BottomNav() {
           {/* Menu Trigger Button */}
           <button
             onClick={() => setIsMenuOpen(true)}
-            className="flex flex-col items-center justify-center gap-1 w-16 h-full text-zinc-500 transition-all duration-300 active:scale-95 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+            className="flex flex-1 flex-col items-center justify-center gap-1 h-full text-zinc-500 transition-all duration-300 active:scale-95 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
           >
             <div className="flex items-center justify-center rounded-xl p-1.5 transition-colors">
               <Menu className="h-5 w-5" />
