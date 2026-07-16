@@ -73,9 +73,8 @@ export default function EstadiosGrid({ paises, estadios }: EstadiosGridProps) {
                       {/* Gradient Overlay for modern look */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                       
-                      {/* Capacidade Pill */}
                       <div className="absolute right-3 top-3 rounded-full bg-black/60 px-3 py-1 text-xs font-semibold text-white backdrop-blur-md">
-                        {e.capacidade.toLocaleString()}
+                        {e.capacidade.toLocaleString("pt-BR")}
                       </div>
                     </div>
 

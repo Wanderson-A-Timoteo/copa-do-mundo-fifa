@@ -20,7 +20,7 @@ export default async function EstadiosPage() {
   const paises = ["Estados Unidos", "México", "Canadá"];
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-8">
+    <main className="mx-auto max-w-7xl overflow-x-clip px-6 py-8">
       <h1 className="text-3xl font-bold">Estádios</h1>
       <p className="mt-1 text-zinc-500">As 16 sedes da Copa do Mundo 2026</p>
 

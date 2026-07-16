@@ -49,6 +49,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
   const [estadio, setEstadio] = useState<EstadioDetalhado | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(`/api/estadios/${slug}`)
@@ -162,7 +163,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }} className="group rounded-2xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-950/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]">
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Capacidade</h3>
             <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-              {estadio.capacidade.toLocaleString()} lugares
+              {estadio.capacidade.toLocaleString("pt-BR")} lugares
             </p>
           </motion.div>
           
@@ -205,15 +206,24 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
                   viewport={{ once: true }}
                 >
                   {estadio.galeria.map((url, i) => (
-                    <div key={i} className="break-inside-avoid overflow-hidden rounded-xl">
+                    <div 
+                      key={i} 
+                      className="break-inside-avoid overflow-hidden rounded-xl cursor-pointer group relative"
+                      onClick={() => setSelectedImageIndex(i)}
+                    >
                       <Image
                         src={url}
                         alt={`${estadio.nome} - Foto ${i + 1}`}
                         width={600}
                         height={400}
-                        className="h-auto w-full object-cover transition-transform duration-300 hover:scale-105"
+                        className="h-auto w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         unoptimized
                       />
+                      <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20 flex items-center justify-center">
+                        <span className="opacity-0 transition-opacity duration-300 group-hover:opacity-100 text-white drop-shadow-md font-medium text-sm">
+                          Ampliar
+                        </span>
+                      </div>
                     </div>
                   ))}
                 </motion.div>
@@ -269,6 +279,61 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
       </div>
+
+      {/* Lightbox Modal */}
+      {selectedImageIndex !== null && estadio.galeria && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
+          <button 
+            className="absolute top-6 right-6 z-50 text-white/70 hover:text-white transition-colors bg-black/50 p-2 rounded-full"
+            onClick={() => setSelectedImageIndex(null)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+          
+          <button 
+            className="absolute left-4 z-50 text-white/70 hover:text-white transition-colors bg-black/50 p-3 rounded-full hover:bg-black/80 disabled:opacity-30"
+            disabled={selectedImageIndex === 0}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedImageIndex(prev => (prev !== null && prev > 0 ? prev - 1 : prev));
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+
+          <motion.div 
+            key={selectedImageIndex}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.2 }}
+            className="relative w-full max-w-5xl h-full max-h-[80vh] flex items-center justify-center"
+            onClick={() => setSelectedImageIndex(null)}
+          >
+            <Image
+              src={estadio.galeria[selectedImageIndex]}
+              alt={`${estadio.nome} - Foto ${selectedImageIndex + 1}`}
+              fill
+              className="object-contain"
+              unoptimized
+            />
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/50 px-4 py-1.5 rounded-full text-white text-sm backdrop-blur-md">
+              {selectedImageIndex + 1} / {estadio.galeria.length}
+            </div>
+          </motion.div>
+
+          <button 
+            className="absolute right-4 z-50 text-white/70 hover:text-white transition-colors bg-black/50 p-3 rounded-full hover:bg-black/80 disabled:opacity-30"
+            disabled={selectedImageIndex === estadio.galeria.length - 1}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedImageIndex(prev => (prev !== null && prev < estadio.galeria!.length - 1 ? prev + 1 : prev));
+            }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+      )}
     </main>
   );
 }
