@@ -67,18 +67,20 @@ export default function PublicOficialPage() {
 
   return (
     <main className="mx-auto max-w-3xl px-6 py-8">
-      <h1 className="mt-2 text-3xl font-bold">Resultados Oficiais</h1>
+      <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+        Resultados Oficiais
+      </h1>
       <p className="mt-1 text-zinc-500">Acompanhe os resultados reais da competição</p>
 
       {fasesVisiveis.length > 0 && (
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-wrap gap-1.5 rounded-2xl bg-zinc-200/50 p-1.5 dark:bg-zinc-800/50 w-fit">
           {fasesVisiveis.map((fase) => (
             <button
               key={fase.key}
               onClick={() => {
                 document.getElementById(`fase-${fase.key}`)?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              className="rounded-xl px-4 py-1.5 text-sm font-medium transition-all duration-300 text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:bg-zinc-100/50 dark:hover:bg-zinc-700/50"
             >
               {fase.label}
             </button>

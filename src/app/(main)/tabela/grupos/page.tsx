@@ -20,7 +20,9 @@ export default function TabelaPage() {
   return (
     <main className="mx-auto max-w-7xl px-6 py-8">
       <div className="mb-6 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
-        <h1 className="text-3xl font-bold">Tabela de Jogos</h1>
+        <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+          Tabela de Jogos
+        </h1>
       </div>
 
       {carregando ? (
@@ -38,7 +40,7 @@ export default function TabelaPage() {
           {grupos.map((grupo) => (
             <div
               key={grupo.id}
-              className="overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 p-4 sm:p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-800"
+              className="overflow-hidden rounded-2xl border border-zinc-200/50 bg-zinc-100/90 p-4 sm:p-5 shadow-sm backdrop-blur-md dark:border-zinc-700/50 dark:bg-zinc-800/90"
             >
               <h2 className="mb-4 text-lg font-bold">{grupo.nome}</h2>
               <div className="overflow-x-auto pb-2">
