@@ -273,7 +273,7 @@ export default function AdminOficialPage() {
         </div>
       )}
 
-      <div className="sticky top-0 z-30 -mx-6 mb-6 bg-zinc-50/90 px-6 py-4 backdrop-blur-xl border-b border-zinc-200/50 dark:bg-zinc-950/90 dark:border-zinc-800/50">
+      <div className="sticky top-[60px] md:top-[64px] z-30 -mx-6 mb-6 bg-zinc-50/90 px-6 py-4 backdrop-blur-xl border-b border-zinc-200/50 dark:bg-zinc-950/90 dark:border-zinc-800/50">
         <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Fase de Grupos</h2>
       </div>
       
@@ -307,15 +307,15 @@ export default function AdminOficialPage() {
         </div>
       ) : resultadoMataMata ? (
         <div className="mt-16 space-y-12">
-          <div className="sticky top-0 z-30 -mx-6 mb-6 bg-zinc-50/90 px-6 py-4 backdrop-blur-xl border-b border-zinc-200/50 dark:bg-zinc-950/90 dark:border-zinc-800/50">
+          <div className="sticky top-[60px] md:top-[64px] z-30 -mx-6 mb-6 bg-zinc-50/90 px-6 py-4 backdrop-blur-xl border-b border-zinc-200/50 dark:bg-zinc-950/90 dark:border-zinc-800/50">
             <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Fase Eliminatória</h2>
           </div>
           {resultadoMataMata.fases.map((fase) => {
             const todasNulas = fase.partidas.every((p) => !p.mandante && !p.visitante);
             if (todasNulas) return null;
             return (
-              <section key={fase.key} id={`fase-${fase.key}`} className="relative scroll-mt-24">
-                <div className="sticky top-14 md:top-16 z-20 -mx-4 mb-6 bg-zinc-50/90 px-4 py-2 backdrop-blur-md shadow-sm border-y border-zinc-200/50 dark:bg-zinc-900/90 dark:border-zinc-800/50 sm:-mx-6 sm:px-6">
+              <section key={fase.key} id={`fase-${fase.key}`} className="relative scroll-mt-36">
+                <div className="sticky top-[125px] md:top-[132px] z-20 -mx-4 mb-6 bg-zinc-50/90 px-4 py-2 backdrop-blur-md shadow-sm border-y border-zinc-200/50 dark:bg-zinc-900/90 dark:border-zinc-800/50 sm:-mx-6 sm:px-6">
                   <h3 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400">{fase.label}</h3>
                 </div>
                 <div className="space-y-4 border-l-2 border-zinc-200 pl-4 dark:border-zinc-800 ml-2 md:ml-4">
