@@ -44,7 +44,7 @@ export default function PlayerCard({
   const isRara = raridade ? raridade === "rara" : jogador.figurinha?.raridade === "rara";
 
   return (
-    <div className="group flex h-full w-full flex-col items-center justify-between rounded-xl border border-zinc-200 bg-zinc-100 px-3 pb-4 pt-5 sm:px-5 sm:pb-5 sm:pt-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]">
+    <div className="group flex h-full w-full flex-col items-center justify-between rounded-2xl border border-zinc-200/50 bg-zinc-100/90 px-3 pb-4 pt-5 sm:px-5 sm:pb-5 sm:pt-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-700/50 dark:bg-zinc-800/90">
       <div className="flex flex-col items-center w-full">
         <div className="relative mb-3">
           {jogador.fotoUrl ? (

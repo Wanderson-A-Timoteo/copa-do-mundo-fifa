@@ -24,16 +24,18 @@ export default function SelecoesPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-6 py-8">
-      <h1 className="text-3xl font-bold">Seleções</h1>
+      <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+        Seleções
+      </h1>
       <p className="mt-1 text-zinc-500">48 seleções divididas em 12 grupos</p>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="mt-6 flex flex-wrap gap-1.5 rounded-2xl bg-zinc-200/50 p-1.5 dark:bg-zinc-800/50 w-fit">
         <button
           onClick={() => setGrupoFiltro("")}
-          className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
+          className={`rounded-xl px-4 py-1.5 text-sm font-medium transition-all duration-300 ${
             !grupoFiltro
-              ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
-              : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              ? "bg-zinc-800 text-zinc-50 shadow-sm dark:bg-zinc-300 dark:text-zinc-900"
+              : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:bg-zinc-100/50 dark:hover:bg-zinc-700/50"
           }`}
         >
           Todos
@@ -42,10 +44,10 @@ export default function SelecoesPage() {
           <button
             key={g}
             onClick={() => setGrupoFiltro(g)}
-            className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
+            className={`rounded-xl px-4 py-1.5 text-sm font-medium transition-all duration-300 ${
               grupoFiltro === g
-                ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
-                : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                ? "bg-zinc-800 text-zinc-50 shadow-sm dark:bg-zinc-300 dark:text-zinc-900"
+                : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:bg-zinc-100/50 dark:hover:bg-zinc-700/50"
             }`}
           >
             Grupo {g}
@@ -65,7 +67,7 @@ export default function SelecoesPage() {
             <Link
               key={sel.id}
               href={`/selecoes/${sel.slug || sel.id}`}
-              className="group rounded-xl border border-zinc-200 bg-zinc-100 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)]"
+              className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/90 p-5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-700/50 dark:bg-zinc-800/90"
             >
               <div className="flex items-center gap-4">
                 <FlagIcon
