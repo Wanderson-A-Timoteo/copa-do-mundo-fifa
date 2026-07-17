@@ -73,7 +73,7 @@ export default function PublicOficialPage() {
       <p className="mt-1 text-zinc-500">Acompanhe os resultados reais da competição</p>
 
       {fasesVisiveis.length > 0 && (
-        <div className="mt-6 flex flex-wrap gap-1.5 rounded-2xl bg-zinc-200/50 p-1.5 dark:bg-zinc-800/50 w-fit">
+        <div className="mt-6 mb-10 flex flex-wrap gap-1.5 rounded-2xl bg-zinc-200/50 p-1.5 dark:bg-zinc-800/50 w-fit">
           {fasesVisiveis.map((fase) => (
             <button
               key={fase.key}
