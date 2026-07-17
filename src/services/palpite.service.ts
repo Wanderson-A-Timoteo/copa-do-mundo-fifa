@@ -241,7 +241,7 @@ export async function calcularClassificacao(usuarioId?: number) {
   }));
 }
 
-export async function getRanking() {
+export async function getRanking(page?: number, limit?: number) {
   const [rankingGrupos, rankingMataMata] = await Promise.all([
     prisma.palpite.groupBy({
       by: ["usuarioId"],
@@ -273,7 +273,7 @@ export async function getRanking() {
 
   const userMap = new Map(users.map((u) => [u.id, u]));
 
-  return Array.from(mapPontos.entries())
+  const fullRanking = Array.from(mapPontos.entries())
     .map(([usuarioId, pontos]) => ({
       usuarioId,
       pontos,
@@ -285,4 +285,22 @@ export async function getRanking() {
       ...r,
       posicao: index + 1,
     }));
+
+  if (page && limit) {
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    return {
+      ranking: fullRanking.slice(startIndex, endIndex),
+      total: fullRanking.length,
+      totalPages: Math.ceil(fullRanking.length / limit),
+      currentPage: page,
+    };
+  }
+
+  return {
+    ranking: fullRanking,
+    total: fullRanking.length,
+    totalPages: 1,
+    currentPage: 1,
+  };
 }
