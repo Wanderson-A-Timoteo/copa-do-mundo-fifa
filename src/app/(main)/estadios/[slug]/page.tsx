@@ -23,6 +23,7 @@ interface EstadioDetalhado {
   longitude: number | null;
   partidas: PartidaResumida[];
   galeria: string[];
+  curiosidades: string[];
 }
 
 function capacidadeBadge(capacidade: number): { label: string; cor: string } | null {
@@ -195,21 +196,50 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
           <div className="space-y-12 lg:col-span-2">
+            {estadio.curiosidades && estadio.curiosidades.length > 0 && (
+              <section>
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 mb-6">
+                  Fatos Rápidos
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {estadio.curiosidades.map((curiosidade, i) => (
+                    <div
+                      key={i}
+                      className="flex gap-3 rounded-2xl border border-zinc-200/50 bg-zinc-100/90 p-5 shadow-sm backdrop-blur-md dark:border-zinc-700/50 dark:bg-zinc-800/90 hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-400">
+                        <IconStar className="h-5 w-5" />
+                      </div>
+                      <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                        {curiosidade}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {estadio.descricao && (
               <section>
-                <h2 className="text-2xl font-bold">Sobre o estádio</h2>
-                <p className="mt-4 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
-                  {estadio.descricao}
-                </p>
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 mb-6">
+                  Sobre o estádio
+                </h2>
+                <div className="max-w-none">
+                  <p className="text-lg leading-relaxed text-zinc-700 dark:text-zinc-300 first-letter:text-5xl first-letter:font-bold first-letter:text-emerald-600 dark:first-letter:text-emerald-400 first-letter:mr-2 first-letter:float-left">
+                    {estadio.descricao}
+                  </p>
+                </div>
               </section>
             )}
 
             {estadio.historia && (
               <section>
-                <h2 className="text-2xl font-bold">História</h2>
-                <p className="mt-4 text-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
-                  {estadio.historia}
-                </p>
+                <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 mb-6">
+                  História
+                </h2>
+                <blockquote className="border-l-4 border-emerald-500 bg-zinc-100/50 p-6 rounded-r-2xl dark:bg-zinc-800/30 text-lg italic leading-relaxed text-zinc-700 dark:text-zinc-300 shadow-sm backdrop-blur-sm">
+                  "{estadio.historia}"
+                </blockquote>
               </section>
             )}
 

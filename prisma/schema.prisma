@@ -139,6 +139,7 @@ model Estadio {
   galeria     String[] @default([])
   descricao   String?
   historia    String?
+  curiosidades String[] @default([])
   latitude    Float?
   longitude   Float?
   partidas    Partida[]
