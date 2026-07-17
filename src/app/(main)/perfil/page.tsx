@@ -50,11 +50,13 @@ export default function PerfilPage() {
 
   return (
     <main className="mx-auto max-w-lg px-6 py-8">
-      <h1 className="text-3xl font-bold">Perfil</h1>
+      <h1 className="text-3xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text drop-shadow-sm">
+        Perfil
+      </h1>
 
-      <div className="mt-8 rounded-xl border border-zinc-200 p-6 dark:border-zinc-800">
+      <div className="mt-8 rounded-2xl border border-zinc-200/50 bg-zinc-100/90 p-6 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-700/50 dark:bg-zinc-800/90">
         <div className="flex items-center gap-4">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-zinc-200 text-2xl font-bold dark:bg-zinc-700">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-2xl font-black text-white shadow-md">
             {user.nome.charAt(0).toUpperCase()}
           </span>
           <div>
@@ -86,7 +88,7 @@ export default function PerfilPage() {
       <div className="mt-6">
         <button
           onClick={() => setShowSairModal(true)}
-          className="w-full rounded-xl border border-red-300 px-4 py-2.5 text-sm font-bold text-red-600 transition-colors hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950/30 active:scale-95"
+          className="w-full rounded-xl border border-red-200 bg-white/50 px-4 py-3 text-sm font-bold text-red-600 shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-red-50 hover:shadow-md active:scale-95 dark:border-red-900/50 dark:bg-zinc-900/50 dark:text-red-400 dark:hover:bg-red-950/50"
         >
           Sair da conta
         </button>
