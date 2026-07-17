@@ -88,22 +88,26 @@ export default function PublicOficialPage() {
         </div>
       )}
 
-      <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-4">
-        <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Fases de Grupos</h2>
-      </div>
-      <div className="mt-6 space-y-8">
-        {Object.entries(partidasPorDia).map(([data, jogos]) => (
-          <GrupoPartidaDia
-            key={data}
-            jogos={jogos}
-            placares={{}}
-            onChangePlacar={() => {}}
-            isAdmin={false}
-            salvando={new Set()}
-            onSalvar={() => {}}
-          />
-        ))}
-      </div>
+      <section className="relative">
+        <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-4 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95">
+          <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+            Fases de Grupos
+          </h2>
+        </div>
+        <div className="mt-6 space-y-8">
+          {Object.entries(partidasPorDia).map(([data, jogos]) => (
+            <GrupoPartidaDia
+              key={data}
+              jogos={jogos}
+              placares={{}}
+              onChangePlacar={() => {}}
+              isAdmin={false}
+              salvando={new Set()}
+              onSalvar={() => {}}
+            />
+          ))}
+        </div>
+      </section>
 
       {/* Mata‑mata */}
       {loadingKnockout ? (
@@ -111,16 +115,18 @@ export default function PublicOficialPage() {
           <SkeletonMataMata />
         </div>
       ) : resultadoMataMata ? (
-        <div className="mt-12 space-y-10">
-          <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-4">
-            <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Fase Eliminatória</h2>
+        <section className="mt-12 space-y-10 relative">
+          <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-4 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95">
+            <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+              Fase Eliminatória
+            </h2>
           </div>
           {resultadoMataMata.fases.map((fase) => {
             const todasNulas = fase.partidas.every((p) => !p.mandante && !p.visitante);
             if (todasNulas) return null;
             return (
               <section key={fase.key} id={`fase-${fase.key}`} className="relative mb-8">
-                <div className="sticky top-[125px] md:top-[132px] z-20 mb-6 py-2">
+                <div className="sticky top-[125px] md:top-[132px] z-20 mb-6 py-2 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95">
                   <h3 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400 capitalize">
                     {fase.label}
                   </h3>
@@ -151,7 +157,7 @@ export default function PublicOficialPage() {
               </section>
             );
           })}
-        </div>
+        </section>
       ) : null}
     </main>
   );
