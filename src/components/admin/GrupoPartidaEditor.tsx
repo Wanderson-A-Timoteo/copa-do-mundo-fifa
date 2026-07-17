@@ -61,7 +61,7 @@ export default function GrupoPartidaEditor({
   };
 
   return (
-    <div className="rounded-2xl border border-white/20 bg-white/40 p-4 shadow-lg backdrop-blur-xl transition-all hover:shadow-xl dark:border-zinc-800/50 dark:bg-zinc-900/40 sm:p-6">
+    <div className="rounded-2xl border border-zinc-200/50 bg-zinc-100/90 p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-700/50 dark:bg-zinc-800/90 sm:p-6">
       <div className="hidden md:block">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">

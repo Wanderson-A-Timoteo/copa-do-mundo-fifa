@@ -63,7 +63,7 @@ export default function MataMataPartidaEditor({
   const penInputClass = `w-12 rounded-lg border border-zinc-300/50 bg-white/50 px-2 py-1 text-center text-xs font-bold text-zinc-800 shadow-sm transition-colors focus:border-emerald-500 focus:outline-none dark:border-zinc-700/50 dark:bg-zinc-900/60 dark:text-zinc-100 sm:w-14 sm:text-sm`;
 
   return (
-    <div className="rounded-2xl border border-white/20 bg-white/40 p-4 shadow-lg backdrop-blur-xl transition-all hover:shadow-xl dark:border-zinc-800/50 dark:bg-zinc-900/40 sm:p-6">
+    <div className="rounded-2xl border border-zinc-200/50 bg-zinc-100/90 p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-700/50 dark:bg-zinc-800/90 sm:p-6">
       {/* Desktop */}
       <div className="hidden md:block">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
