@@ -221,7 +221,7 @@ export function GrupoPartidaDia({
 }) {
   return (
     <section className="relative mb-8">
-      <div className="sticky top-[125px] md:top-[132px] z-20 mb-6 py-2">
+      <div className="mb-6">
         <h2 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400 capitalize">
           {formatarDataLonga(jogos[0].dataHora)}
         </h2>
