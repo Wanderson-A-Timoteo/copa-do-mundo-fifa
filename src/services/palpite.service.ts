@@ -242,7 +242,7 @@ export async function calcularClassificacao(usuarioId?: number) {
 }
 
 export async function getRanking(page?: number, limit?: number) {
-  const [rankingGrupos, rankingMataMata] = await Promise.all([
+  const [rankingGrupos, rankingMataMata, trocasEnviadas, trocasRecebidas] = await Promise.all([
     prisma.palpite.groupBy({
       by: ["usuarioId"],
       _sum: { pontos: true },
@@ -250,6 +250,16 @@ export async function getRanking(page?: number, limit?: number) {
     prisma.palpiteMataMata.groupBy({
       by: ["usuarioId"],
       _sum: { pontos: true },
+    }),
+    prisma.troca.groupBy({
+      by: ["remetenteId"],
+      where: { status: "aceita" },
+      _count: { id: true },
+    }),
+    prisma.troca.groupBy({
+      by: ["destinatarioId"],
+      where: { status: "aceita" },
+      _count: { id: true },
     }),
   ]);
 
@@ -262,6 +272,18 @@ export async function getRanking(page?: number, limit?: number) {
   for (const r of rankingMataMata) {
     const atual = mapPontos.get(r.usuarioId) || 0;
     mapPontos.set(r.usuarioId, atual + (r._sum.pontos || 0));
+  }
+
+  const PONTOS_POR_TROCA = 3;
+
+  for (const t of trocasEnviadas) {
+    const atual = mapPontos.get(t.remetenteId) || 0;
+    mapPontos.set(t.remetenteId, atual + t._count.id * PONTOS_POR_TROCA);
+  }
+
+  for (const t of trocasRecebidas) {
+    const atual = mapPontos.get(t.destinatarioId) || 0;
+    mapPontos.set(t.destinatarioId, atual + t._count.id * PONTOS_POR_TROCA);
   }
 
   const userIds = Array.from(mapPontos.keys());

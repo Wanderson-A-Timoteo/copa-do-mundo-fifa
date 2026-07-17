@@ -124,6 +124,10 @@ export default function RankingPage() {
             <strong className="font-black">+ bônus</strong>{" "}
             <span className="opacity-80">Pênaltis</span>
           </div>
+          <div className="rounded-xl border border-orange-200 bg-orange-50 px-3 py-1.5 text-orange-800 shadow-sm dark:border-orange-900/50 dark:bg-orange-900/20 dark:text-orange-300 md:px-4 md:py-2">
+            <strong className="font-black">+3 pts</strong>{" "}
+            <span className="opacity-80">Troca Aceita</span>
+          </div>
         </div>
       </div>
 
