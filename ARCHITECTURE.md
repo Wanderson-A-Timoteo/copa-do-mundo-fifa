@@ -340,7 +340,23 @@ O sistema fomenta o aspecto social do Bolão, permitindo que os usuários acesse
 
 ## Melhorias Recentes de UI/UX e Correções Estruturais (Julho/2026)
 
-Esta seção documenta a evolução recente do Frontend, direcionada pelos pilares do projeto (Gamificação, Mobile-First e Performance).
+Esta seção documenta a evolução recente do Frontend e Backend, direcionada pelos pilares do projeto (Gamificação, Mobile-First e Performance).
+
+### 5. Navegação Estrutural Nativa (Bottom Nav e Sidebar)
+
+- **Erradicação do NavHeader Complexo:** A antiga barra superior complexa foi substituída por uma abordagem 100% nativa. Em telas móveis, o app agora utiliza uma **Navegação Inferior (Bottom Nav)** ancorada no rodapé (`pb-safe`), utilizando efeitos de _Glassmorphism_ (`backdrop-blur-md`). Isso foca nos polegares e facilita o acesso rápido.
+- **Sidebar Desktop:** Para telas grandes (md+), a navegação foi encapsulada em uma barra lateral limpa, reaproveitando o espaço horizontal.
+
+### 6. Estabilidade de Banco de Dados e Cache (Mata-Mata)
+
+- **Injeção Base de Mata-Mata (Seed):** Identificação e resolução de uma falha crítica de banco de dados onde placares do mata-mata recusavam ser salvos. Foi introduzido o `seed-mata-mata.ts` para injetar os "esqueletos" das partidas 73 a 104, satisfazendo as constraints de chave estrangeira (Foreign Keys) nas tabelas `ResultadoOficial` e `PalpiteMataMata`.
+- **Prevenção de Cache Agressivo (Vercel):** Adicionada a instrução `export const dynamic = "force-dynamic"` nas API Routes de resultados para forçar a comunicação ao vivo com o banco, resolvendo o bug do "Placar Fantasma" onde a interface restaurava valores antigos estáticos (cache do Next.js App Router).
+
+### 7. Refinamento de Componentes de Input
+
+- **Remoção de Spinners Nativos:** Limpeza visual agressiva do `ScoreInput.tsx` com as classes `appearance-none` e esconderijo dos `spin-buttons` (setas de input numérico), garantindo que os placares fiquem matematicamente centralizados na tela, independentemente do navegador Safari/Chrome.
+- **Correção de Sobreposição em Sticky Headers:** Adicionada margem de rolagem compensatória (`scroll-mt-[220px]`) aos containers seccionais de Fases de Grupos e Eliminatórias na Tabela Oficial, impedindo que títulos flutuantes encavalassem no topo das partidas.
+
 
 ### 1. Refatoração de Tabelas e Scroll Horizontal
 
