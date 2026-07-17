@@ -214,7 +214,7 @@ export default function PlacarPage() {
                                 : "border-l-red-500"
                           }`}
                         >
-                          <td className="px-3 py-3 sticky left-0 z-10 bg-zinc-100/90 backdrop-blur-sm dark:bg-zinc-800/90 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] group-hover:bg-zinc-200/90 dark:group-hover:bg-zinc-700/90 transition-colors">
+                          <td className="px-3 py-3 sticky left-0 z-10 bg-inherit backdrop-blur-md shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] transition-colors">
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-zinc-400 w-4">{idx + 1}</span>
                               <FlagIcon codigo={sel.codigoPais} className="h-5 w-auto rounded-sm" />
