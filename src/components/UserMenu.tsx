@@ -90,7 +90,7 @@ export default function UserMenu() {
             <Link
               href="/perfil"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="flex items-center gap-3 px-4 py-2 text-sm transition-colors hover:bg-zinc-200/60 dark:hover:bg-zinc-800"
             >
               <IconUser className="h-4 w-4 text-zinc-400" />
               Perfil
@@ -101,7 +101,7 @@ export default function UserMenu() {
                 <Link
                   href="/admin"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  className="flex items-center gap-3 px-4 py-2 text-sm transition-colors hover:bg-zinc-200/60 dark:hover:bg-zinc-800"
                 >
                   <IconShield className="h-4 w-4 text-zinc-400" />
                   Admin
@@ -109,7 +109,7 @@ export default function UserMenu() {
                 <Link
                   href="/admin/tabela/oficial"
                   onClick={() => setOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2 text-sm transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  className="flex items-center gap-3 px-4 py-2 text-sm transition-colors hover:bg-zinc-200/60 dark:hover:bg-zinc-800"
                 >
                   <IconTrophy className="h-4 w-4 text-zinc-400" />
                   Oficial
@@ -119,7 +119,7 @@ export default function UserMenu() {
 
             <button
               onClick={() => setShowSairModal(true)}
-              className="flex w-full cursor-pointer items-center gap-3 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              className="flex w-full cursor-pointer items-center gap-3 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-zinc-200/60 dark:hover:bg-zinc-800"
             >
               <IconLogout className="h-4 w-4 text-red-400" />
               Sair

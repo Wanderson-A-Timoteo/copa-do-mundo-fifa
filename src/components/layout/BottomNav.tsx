@@ -55,16 +55,16 @@ export function BottomNav() {
 
   const navItems = [
     { name: "Início", path: "/", icon: Home },
-    { name: "Tabela", path: "/tabela/grupos", icon: CalendarDays },
+    { name: "Tabela", path: "/tabela/oficial", icon: Trophy },
     { name: "Álbum", path: "/album", icon: Book },
-    { name: "Perfil", path: mounted && user?.slug ? `/perfil/${user.slug}` : "/login", icon: User },
+    { name: "Perfil", path: mounted && user ? "/perfil" : "/login", icon: User },
   ];
 
   const menuGridItems = [
     {
-      name: "Tabela Oficial",
-      path: "/tabela/oficial",
-      icon: Trophy,
+      name: "Tabela Grupos",
+      path: "/tabela/grupos",
+      icon: CalendarDays,
       color: "text-amber-500",
       bg: "bg-amber-500/10",
     },
