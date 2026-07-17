@@ -116,7 +116,10 @@ export default function AdminPage() {
             </thead>
             <tbody>
               {usuarios.map((u) => (
-                <tr key={u.id} className="border-t border-zinc-100 dark:border-zinc-800">
+                <tr
+                  key={u.id}
+                  className="border-t border-zinc-200/50 dark:border-zinc-700/50 transition-colors hover:bg-zinc-200/50 dark:hover:bg-zinc-800/50 even:bg-zinc-50/50 dark:even:bg-zinc-900/30"
+                >
                   <td className="px-4 py-3 font-medium">{u.nome}</td>
                   <td className="px-4 py-3 text-zinc-500">{u.email}</td>
                   <td className="px-4 py-3">
