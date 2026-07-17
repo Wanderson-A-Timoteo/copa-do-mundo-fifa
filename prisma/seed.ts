@@ -20,6 +20,10 @@ async function main() {
   const { main: seedEstadiosConteudo } = await import("./seed-estadios-conteudo");
   await seedEstadiosConteudo();
 
+  console.log("\n--- Executando seed-mata-mata ---");
+  const { main: seedMataMata } = await import("./seed-mata-mata");
+  await seedMataMata();
+
   console.log("\n=== Seed completo! ===");
 }
 
