@@ -162,10 +162,10 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
         >
           <motion.div
             variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
-            className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+            className="group flex flex-col items-center text-center rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
           >
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Localização</h3>
-            <p className="mt-2 flex items-center gap-1.5 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+            <p className="mt-2 flex items-center justify-center gap-1.5 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               <IconMapPin className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               {estadio.cidade}, {estadio.pais}
             </p>
@@ -173,7 +173,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
 
           <motion.div
             variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
-            className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+            className="group flex flex-col items-center text-center rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
           >
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Capacidade</h3>
             <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
@@ -183,7 +183,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
 
           <motion.div
             variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
-            className="group rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+            className="group flex flex-col items-center text-center rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
           >
             <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
               Jogos Programados
