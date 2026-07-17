@@ -19,6 +19,7 @@ import {
   Flag,
   Shield,
   LogOut,
+  Medal,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import ModalConfirm from "@/components/ModalConfirm";
@@ -73,6 +74,13 @@ export function BottomNav() {
       icon: Target,
       color: "text-emerald-500",
       bg: "bg-emerald-500/10",
+    },
+    {
+      name: "Ranking",
+      path: "/palpites/bolao/ranking",
+      icon: Medal,
+      color: "text-yellow-500",
+      bg: "bg-yellow-500/10",
     },
     { name: "Trocas", path: "/trocas", icon: Repeat, color: "text-blue-500", bg: "bg-blue-500/10" },
     {
