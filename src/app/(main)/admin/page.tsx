@@ -96,18 +96,18 @@ export default function AdminPage() {
 
   return (
     <main className="mx-auto w-full max-w-3xl overflow-x-hidden px-6 py-8">
-      <h1 className="text-3xl font-bold">
-        <IconShield className="mr-2 inline-block h-7 w-7" />
+      <h1 className="text-3xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text drop-shadow-sm flex items-center gap-2">
+        <IconShield className="h-8 w-8 text-emerald-500" />
         Admin
       </h1>
       <p className="mt-1 text-zinc-500">Gerencie os usuários da plataforma</p>
 
       <section className="mt-8">
-        <h2 className="mb-4 text-lg font-bold">Usuários</h2>
-        <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <h2 className="mb-4 text-lg font-black text-zinc-800 dark:text-zinc-200">Usuários</h2>
+        <div className="hidden md:block overflow-x-auto rounded-2xl border border-zinc-200/50 bg-zinc-100/90 shadow-sm backdrop-blur-md dark:border-zinc-700/50 dark:bg-zinc-800/90">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-zinc-50 text-left text-xs text-zinc-500 dark:bg-zinc-900">
+              <tr className="bg-zinc-200/50 text-left text-xs text-zinc-600 dark:bg-zinc-900/50 dark:text-zinc-400">
                 <th className="px-4 py-3 font-medium">Nome</th>
                 <th className="px-4 py-3 font-medium">Email</th>
                 <th className="px-4 py-3 font-medium">Perfil</th>
@@ -145,9 +145,9 @@ export default function AdminPage() {
                       <button
                         onClick={() => promover(u.id)}
                         disabled={promovendo === u.id}
-                        className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs text-zinc-50 transition-colors hover:bg-zinc-700 disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                        className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-3 py-1.5 text-xs font-bold text-white shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-50"
                       >
-                        {promovendo === u.id ? "..." : "Promover a Admin"}
+                        {promovendo === u.id ? "Promovendo..." : "Promover a Admin"}
                       </button>
                     )}
                   </td>
@@ -162,7 +162,7 @@ export default function AdminPage() {
           {usuarios.map((u) => (
             <div
               key={u.id}
-              className="p-4 bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg shadow-sm"
+              className="p-5 rounded-2xl border border-zinc-200/50 bg-zinc-100/90 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-700/50 dark:bg-zinc-800/90"
             >
               <div className="font-bold">{u.nome}</div>
               <div className="text-sm text-zinc-500">{u.email}</div>
@@ -190,7 +190,7 @@ export default function AdminPage() {
                   <button
                     onClick={() => promover(u.id)}
                     disabled={promovendo === u.id}
-                    className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs text-zinc-50 transition-colors hover:bg-zinc-700 disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+                    className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-3 py-1.5 text-xs font-bold text-white shadow-md transition-all hover:-translate-y-0.5 disabled:opacity-50"
                   >
                     {promovendo === u.id ? "..." : "Promover"}
                   </button>
