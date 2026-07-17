@@ -23,7 +23,7 @@ export default function PartidaCard({ p }: { p: PartidaResumida }) {
   const placarV = ehFutura ? "-" : (p.golsVisitante ?? "-");
 
   return (
-    <div className="group w-full max-w-full overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] sm:p-5">
+    <div className="group w-full max-w-full overflow-hidden rounded-2xl border border-zinc-200/50 bg-zinc-100/90 p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-700/50 dark:bg-zinc-800/90 dark:hover:border-zinc-500/50 dark:hover:shadow-[0_0_15px_rgba(255,255,255,0.05)] sm:p-5">
       {/* Layout Desktop */}
       <div className="hidden md:flex items-center gap-4">
         <div className="flex flex-1 items-center justify-end gap-3">

@@ -40,7 +40,7 @@ export default function EstadiosGrid({ paises, estadios }: EstadiosGridProps) {
         const estadiosDoPais = estadios.filter((e) => e.pais === pais);
         if (estadiosDoPais.length === 0) return null;
         return (
-          <section key={pais} className="mt-10">
+          <section key={pais} id={pais.toLowerCase().replace(/ /g, "-")} className="mt-10 pt-4">
             <h2 className="mb-4 text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
               {pais}
             </h2>
@@ -55,7 +55,7 @@ export default function EstadiosGrid({ paises, estadios }: EstadiosGridProps) {
                 <motion.div key={e.id} variants={itemVariants}>
                   <Link
                     href={`/estadios/${e.slug}`}
-                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-500 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
+                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/50 bg-zinc-100/90 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-zinc-700/50 dark:bg-zinc-800/90 dark:hover:border-zinc-500/50 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                   >
                     <div className="relative h-48 w-full overflow-hidden">
                       {e.fotoUrl ? (
