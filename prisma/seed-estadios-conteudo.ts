@@ -99,7 +99,7 @@ const conteudos: Record<string, { descricao: string; historia: string; curiosida
       "O 'anel de luz' que circunda o estádio é feito de painéis transparentes com luzes LED programáveis que mudam de cor.",
       "Foi o palco principal das Cerimônias de Abertura e Encerramento das Olimpíadas de Inverno de 2010.",
     ],
-  }
+  },
 };
 
 export async function main() {
@@ -121,17 +121,19 @@ export async function main() {
   console.log("Preenchendo fallback para os demais estádios...");
   await prisma.estadio.updateMany({
     where: {
-      descricao: null
+      descricao: null,
     },
     data: {
-      descricao: "Esta imponente arena é um dos palcos selecionados para receber a magia do futebol mundial na Copa de 2026. Preparado com instalações de última geração, ele trará uma experiência inesquecível para milhões de fãs de todos os continentes.",
-      historia: "Construído e modernizado com foco na sustentabilidade e conforto do torcedor, o estádio já recebeu dezenas de eventos esportivos memoráveis ao longo de sua existência, consolidando-se como um patrimônio esportivo de sua respectiva cidade.",
+      descricao:
+        "Esta imponente arena é um dos palcos selecionados para receber a magia do futebol mundial na Copa de 2026. Preparado com instalações de última geração, ele trará uma experiência inesquecível para milhões de fãs de todos os continentes.",
+      historia:
+        "Construído e modernizado com foco na sustentabilidade e conforto do torcedor, o estádio já recebeu dezenas de eventos esportivos memoráveis ao longo de sua existência, consolidando-se como um patrimônio esportivo de sua respectiva cidade.",
       curiosidades: [
         "Selecionado oficialmente pela FIFA após um longo e rigoroso processo de qualificação técnica.",
         "Possui infraestrutura de padrão internacional que atende as rigorosas normas de sustentabilidade.",
-        "Está preparando 'Fan Zones' gigantescas nos seus arredores para abrigar a festa multicultural da Copa."
-      ]
-    }
+        "Está preparando 'Fan Zones' gigantescas nos seus arredores para abrigar a festa multicultural da Copa.",
+      ],
+    },
   });
 
   console.log("Conteúdo de todos os estádios atualizado com sucesso!");

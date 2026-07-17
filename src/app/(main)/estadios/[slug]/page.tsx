@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import ListaPartidas from "@/components/estadios/ListaPartidas";
 import type { PartidaResumida } from "@/components/estadios/PartidaResumidaCard";
 import { SkeletonCard } from "@/components/Skeleton";
-import { IconMapPin, IconStar } from "@/components/Icons";
+import { IconMapPin, IconStar, IconUser, IconCalendar } from "@/components/Icons";
 
 interface EstadioDetalhado {
   id: number;
@@ -164,9 +164,11 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
             variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
             className="group flex flex-col items-center text-center rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
           >
-            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Localização</h3>
-            <p className="mt-2 flex items-center justify-center gap-1.5 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
-              <IconMapPin className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+            <h3 className="flex items-center justify-center gap-1.5 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+              <IconMapPin className="h-4 w-4" />
+              Localização
+            </h3>
+            <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               {estadio.cidade}, {estadio.pais}
             </p>
           </motion.div>
@@ -175,7 +177,10 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
             variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
             className="group flex flex-col items-center text-center rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
           >
-            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Capacidade</h3>
+            <h3 className="flex items-center justify-center gap-1.5 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+              <IconUser className="h-4 w-4" />
+              Capacidade
+            </h3>
             <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
               {estadio.capacidade.toLocaleString("pt-BR")} lugares
             </p>
@@ -185,7 +190,8 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
             variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
             className="group flex flex-col items-center text-center rounded-2xl border border-zinc-200/50 bg-zinc-100/80 p-6 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl dark:border-zinc-800/50 dark:bg-zinc-800/80 dark:hover:border-zinc-500/50 dark:hover:bg-zinc-900/90 dark:hover:shadow-[0_0_20px_rgba(255,255,255,0.05)]"
           >
-            <h3 className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+            <h3 className="flex items-center justify-center gap-1.5 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+              <IconCalendar className="h-4 w-4" />
               Jogos Programados
             </h3>
             <p className="mt-2 text-lg font-semibold group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
