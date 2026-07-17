@@ -115,26 +115,32 @@ export default function PublicOficialPage() {
             const todasNulas = fase.partidas.every((p) => !p.mandante && !p.visitante);
             if (todasNulas) return null;
             return (
-              <section key={fase.key} id={`fase-${fase.key}`}>
-                <h3 className="mb-4 text-lg font-bold">{fase.label}</h3>
-                <div className="space-y-3">
+              <section key={fase.key} id={`fase-${fase.key}`} className="relative mb-8">
+                <div className="sticky top-14 md:top-16 z-20 -mx-4 mb-6 bg-zinc-50/90 px-4 py-2 backdrop-blur-md shadow-sm border-y border-zinc-200/50 dark:bg-zinc-900/90 dark:border-zinc-800/50 sm:-mx-6 sm:px-6">
+                  <h3 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400 capitalize">
+                    {fase.label}
+                  </h3>
+                </div>
+                <div className="space-y-4 border-l-2 border-zinc-200 pl-4 dark:border-zinc-800 ml-2 md:ml-4">
                   {fase.partidas.map((p) => {
                     if (!p.mandante && !p.visitante) return null;
                     return (
-                      <MataMataPartidaEditor
-                        key={p.numero}
-                        partida={p}
-                        placar={{
-                          golsMandante: "",
-                          golsVisitante: "",
-                          penaltisMandante: "",
-                          penaltisVisitante: "",
-                        }}
-                        onChangePlacar={() => {}}
-                        isAdmin={false}
-                        salvando={false}
-                        onSalvar={() => {}}
-                      />
+                      <div key={p.numero} className="relative">
+                        <div className="absolute -left-[21px] top-1/2 -mt-1.5 h-3 w-3 rounded-full border-2 border-zinc-50 bg-zinc-300 dark:border-zinc-900 dark:bg-zinc-600" />
+                        <MataMataPartidaEditor
+                          partida={p}
+                          placar={{
+                            golsMandante: "",
+                            golsVisitante: "",
+                            penaltisMandante: "",
+                            penaltisVisitante: "",
+                          }}
+                          onChangePlacar={() => {}}
+                          isAdmin={false}
+                          salvando={false}
+                          onSalvar={() => {}}
+                        />
+                      </div>
                     );
                   })}
                 </div>
