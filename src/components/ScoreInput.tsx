@@ -26,7 +26,7 @@ export default function ScoreInput({
 }: ScoreInputProps) {
   const jogoIniciado = dataHora ? new Date() >= new Date(dataHora) : false;
   const baseClasses =
-    "rounded-xl text-center border border-zinc-300/80 bg-zinc-50 font-mono font-bold text-zinc-900 shadow-inner transition-all duration-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 disabled:cursor-not-allowed dark:border-zinc-700/50 dark:bg-zinc-950 dark:text-zinc-100";
+    "rounded-xl text-center border border-zinc-300/80 bg-zinc-50 font-mono font-bold text-zinc-900 shadow-inner transition-all duration-200 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 disabled:cursor-not-allowed dark:border-zinc-700/50 dark:bg-zinc-950 dark:text-zinc-100 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
 
   const sizeClasses = isMobile
     ? "w-12 px-2 py-1 text-sm"
