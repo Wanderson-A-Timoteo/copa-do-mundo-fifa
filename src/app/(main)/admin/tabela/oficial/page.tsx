@@ -248,18 +248,24 @@ export default function AdminOficialPage() {
       >
         ← Voltar
       </a>
-      <h1 className="mt-2 text-3xl font-bold">Resultados Oficiais</h1>
-      <p className="mt-1 text-zinc-500">Cadastre os resultados reais das partidas</p>
+      <div className="mb-8">
+        <h1 className="text-3xl font-black bg-gradient-to-r from-emerald-400 to-teal-400 text-transparent bg-clip-text">
+          Resultados Oficiais
+        </h1>
+        <p className="mt-1 text-zinc-500 dark:text-zinc-400">
+          Cadastre os resultados reais das partidas
+        </p>
+      </div>
 
       {fasesVisiveis.length > 0 && (
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-6 mb-10 flex flex-wrap gap-2">
           {fasesVisiveis.map((fase) => (
             <button
               key={fase.key}
               onClick={() => {
                 document.getElementById(`fase-${fase.key}`)?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              className="rounded-xl border border-zinc-300/50 bg-white/50 px-4 py-2 text-sm font-medium text-zinc-700 backdrop-blur-sm transition-all hover:bg-zinc-100 hover:shadow-sm dark:border-zinc-700/50 dark:bg-zinc-800/50 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               {fase.label}
             </button>
@@ -267,8 +273,11 @@ export default function AdminOficialPage() {
         </div>
       )}
 
-      <h2 className="mt-10 text-2xl font-bold">Fases de Grupos</h2>
-      <div className="mt-6 space-y-8">
+      <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-4">
+        <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Fase de Grupos</h2>
+      </div>
+      
+      <div className="mt-6 space-y-10">
         {Object.entries(partidasPorDia).map(([data, jogos]) => (
           <GrupoPartidaDia
             key={data}
@@ -297,15 +306,19 @@ export default function AdminOficialPage() {
           <SkeletonMataMata />
         </div>
       ) : resultadoMataMata ? (
-        <div className="mt-12 space-y-10">
-          <h2 className="text-2xl font-bold">Fase Eliminatória</h2>
+        <div className="mt-16 space-y-12">
+          <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-4">
+            <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">Fase Eliminatória</h2>
+          </div>
           {resultadoMataMata.fases.map((fase) => {
             const todasNulas = fase.partidas.every((p) => !p.mandante && !p.visitante);
             if (todasNulas) return null;
             return (
-              <section key={fase.key} id={`fase-${fase.key}`}>
-                <h3 className="mb-4 text-lg font-bold">{fase.label}</h3>
-                <div className="space-y-3">
+              <section key={fase.key} id={`fase-${fase.key}`} className="relative scroll-mt-36">
+                <div className="sticky top-[125px] md:top-[132px] z-20 mb-6 py-2">
+                  <h3 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400">{fase.label}</h3>
+                </div>
+                <div className="space-y-4 border-l-2 border-zinc-200 pl-4 dark:border-zinc-800 ml-2 md:ml-4">
                   {fase.partidas.map((p) => {
                     if (!p.mandante && !p.visitante) return null;
                     return (

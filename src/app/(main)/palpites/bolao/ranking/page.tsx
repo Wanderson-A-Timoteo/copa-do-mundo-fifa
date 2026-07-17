@@ -68,8 +68,27 @@ export default function RankingPage() {
           Ranking Global
         </h1>
         <p className="text-lg text-zinc-500 dark:text-zinc-400 max-w-2xl mx-auto">
-          Os melhores palpiteiros da Copa. Acerto exato = 3 pts, Acertar vencedor = 1 pt.
+          Os melhores palpiteiros da Copa. Acompanhe sua pontuação atualizada!
         </p>
+
+        <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm">
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-emerald-800 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300">
+            <strong className="font-black">5 pts</strong>{" "}
+            <span className="opacity-80">Placar Exato</span>
+          </div>
+          <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-2 text-blue-800 shadow-sm dark:border-blue-900/50 dark:bg-blue-900/20 dark:text-blue-300">
+            <strong className="font-black">3 pts</strong>{" "}
+            <span className="opacity-80">Vencedor + Saldo</span>
+          </div>
+          <div className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-zinc-800 shadow-sm dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+            <strong className="font-black">1 pt</strong>{" "}
+            <span className="opacity-80">Acerto Vencedor</span>
+          </div>
+          <div className="rounded-xl border border-purple-200 bg-purple-50 px-4 py-2 text-purple-800 shadow-sm dark:border-purple-900/50 dark:bg-purple-900/20 dark:text-purple-300">
+            <strong className="font-black">+ bônus</strong>{" "}
+            <span className="opacity-80">Pênaltis no Mata-Mata</span>
+          </div>
+        </div>
       </div>
 
       {/* Top 3 Cards Bento Grid */}
