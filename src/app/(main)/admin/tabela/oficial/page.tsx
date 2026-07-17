@@ -319,7 +319,11 @@ export default function AdminOficialPage() {
             const todasNulas = fase.partidas.every((p) => !p.mandante && !p.visitante);
             if (todasNulas) return null;
             return (
-              <section key={fase.key} id={`fase-${fase.key}`} className="relative mb-10">
+              <section
+                key={fase.key}
+                id={`fase-${fase.key}`}
+                className="relative mb-10 scroll-mt-[220px] md:scroll-mt-[230px]"
+              >
                 <div className="sticky top-[125px] md:top-[132px] z-20 mb-6 py-3 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95 border-b border-zinc-200/50 dark:border-zinc-800/50">
                   <h3 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400 capitalize text-center">
                     {fase.label}
