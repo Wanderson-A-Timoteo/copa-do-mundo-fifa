@@ -358,3 +358,11 @@ Esta seção documenta a evolução recente do Frontend, direcionada pelos pilar
 
 - **Centralização via React Portal:** Refatoração de modais cruciais como o `ModalConfirm` (logout). Renderizados no `document.body` e unificados com `backdrop-blur`, impedem colisões de `z-index` e sobreposições bizarras no Mobile, centralizando o componente no viewport real.
 - **Reidratação Pós-Login:** Adequação do ciclo de vida de acesso. Após o login/cadastro bem sucedido da API, foi inserido um _hard-reload_ (`window.location.href`) cirúrgico para assegurar que os Contextos (`useAuth`) do App Router do Next.js leiam a sessão hidratada sem artefatos de cache legados.
+
+### 4. Gamificação e Engajamento Social (Ranking)
+
+- **Pódio Animado (Framer Motion):** O clássico grid Top 3 foi promovido a um pódio visual imersivo. Utilizando `framer-motion` para transições coreografadas (slide up vertical), o líder do ranking e os subsequentes ganharam destaque em altura, cores douradas e avatares visuais.
+- **Microinterações Mobile-First (Cards):** Erradicação de tabelas longas no ranking em prol de list-cards horizontais e independentes (`flex`). O sistema interage fluidamente com o toque (`active:scale-95`), com feedback tátil limpo.
+- **Botões Virais (Share to WhatsApp):** A inserção de Call-to-Actions (CTAs) em cada card do ranking para acionamento nativo de links com o aplicativo do WhatsApp (`wa.me`), com formatação amigável, incentivando a rivalidade P2P no bolão.
+- **HUD Flutuante (Ego-Tracker):** Inclusão de um *Bottom Sheet* fixo em Glassmorphism que atua como Heads-Up Display (HUD) focado no próprio usuário logado caso ele não esteja no pódio. Garante a entrega de valor imediata ao poupar a rolagem da lista inteira.
+- **Paginação Dinâmica:** Evolução do Leaderboard para ler parâmetros de rota (`?page=`) e servir blocos limitados gerenciados por um motor de paginação no backend e botões interativos "Carregar Mais" no frontend, blindando o cliente de travamentos de memória.
