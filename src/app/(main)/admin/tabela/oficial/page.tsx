@@ -274,8 +274,8 @@ export default function AdminOficialPage() {
       )}
 
       <section className="relative">
-        <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-4 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95">
-          <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+        <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-5 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95 border-b border-zinc-200/50 dark:border-zinc-800/50">
+          <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 text-center">
             Fase de Grupos
           </h2>
         </div>
@@ -310,8 +310,8 @@ export default function AdminOficialPage() {
         </div>
       ) : resultadoMataMata ? (
         <section className="mt-12 space-y-10 relative">
-          <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-4 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95">
-            <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50">
+          <div className="sticky top-[60px] md:top-[64px] z-30 mb-6 py-5 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95 border-b border-zinc-200/50 dark:border-zinc-800/50">
+            <h2 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-zinc-50 text-center">
               Fase Eliminatória
             </h2>
           </div>
@@ -319,9 +319,9 @@ export default function AdminOficialPage() {
             const todasNulas = fase.partidas.every((p) => !p.mandante && !p.visitante);
             if (todasNulas) return null;
             return (
-              <section key={fase.key} id={`fase-${fase.key}`} className="relative mb-8">
-                <div className="sticky top-[125px] md:top-[132px] z-20 mb-6 py-2 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95">
-                  <h3 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400 capitalize">
+              <section key={fase.key} id={`fase-${fase.key}`} className="relative mb-10">
+                <div className="sticky top-[125px] md:top-[132px] z-20 mb-6 py-3 bg-zinc-50/95 backdrop-blur-md dark:bg-zinc-950/95 border-b border-zinc-200/50 dark:border-zinc-800/50">
+                  <h3 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400 capitalize text-center">
                     {fase.label}
                   </h3>
                 </div>
