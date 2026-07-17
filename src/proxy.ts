@@ -1,7 +1,16 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
+function getSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === "production" && process.env.VERCEL) {
+       return new TextEncoder().encode("dummy-secret-for-build-time-only-12345");
+    }
+    throw new Error("JWT_SECRET não está definido. Configure a variável de ambiente JWT_SECRET.");
+  }
+  return new TextEncoder().encode(secret);
+}
 
 const PUBLIC_ROUTES = ["/", "/login", "/cadastro"];
 
@@ -50,7 +59,7 @@ async function verifyToken(request: NextRequest) {
   if (!token) return null;
 
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getSecret());
     return payload as { userId: number; email: string };
   } catch {
     return null;

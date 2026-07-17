@@ -112,7 +112,7 @@ export async function main() {
         data: conteudo,
       });
       console.log(`✅ ${slug} atualizado.`);
-    } catch (e) {
+    } catch {
       console.error(`❌ Erro ao atualizar ${slug}`);
     }
   }

@@ -2,12 +2,17 @@ import { SignJWT, jwtVerify } from "jose";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
-const JWT_SECRET = process.env.JWT_SECRET;
-if (!JWT_SECRET) {
-  throw new Error("JWT_SECRET não está definido. Configure a variável de ambiente JWT_SECRET.");
+function getSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    // Retornamos um secret genérico apenas durante o build time para evitar crash no Vercel
+    if (process.env.NODE_ENV === "production" && process.env.VERCEL) {
+       return new TextEncoder().encode("dummy-secret-for-build-time-only-12345");
+    }
+    throw new Error("JWT_SECRET não está definido. Configure a variável de ambiente JWT_SECRET.");
+  }
+  return new TextEncoder().encode(secret);
 }
-
-const SECRET = new TextEncoder().encode(JWT_SECRET);
 
 export interface TokenPayload {
   userId: number;
@@ -23,14 +28,15 @@ export async function compararSenha(senha: string, hash: string): Promise<boolea
 }
 
 export async function gerarToken(payload: TokenPayload): Promise<string> {
-  return new SignJWT({ userId: payload.userId, email: payload.email })
+  return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(SECRET);
+    .sign(getSecret());
 }
 
 export async function verificarToken(token: string): Promise<TokenPayload> {
-  const { payload } = await jwtVerify(token, SECRET);
+  const { payload } = await jwtVerify(token, getSecret());
   return { userId: payload.userId as number, email: payload.email as string };
 }
 

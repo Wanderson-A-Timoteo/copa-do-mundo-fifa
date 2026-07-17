@@ -244,7 +244,7 @@ export default function EstadioDetailPage({ params }: { params: Promise<{ slug: 
                   História
                 </h2>
                 <blockquote className="border-l-4 border-emerald-500 bg-zinc-100/50 p-6 rounded-r-2xl dark:bg-zinc-800/30 text-lg italic leading-relaxed text-zinc-700 dark:text-zinc-300 shadow-sm backdrop-blur-sm">
-                  "{estadio.historia}"
+                  &quot;{estadio.historia}&quot;
                 </blockquote>
               </section>
             )}
