@@ -149,7 +149,9 @@ export default function PlacarPage() {
         >
           ← Voltar
         </a>
-        <h1 className="mt-2 text-3xl font-bold">Simulador de Grupos</h1>
+        <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+          Simulador de Grupos
+        </h1>
         <p className="mt-1 text-zinc-500">Simule os resultados dos jogos da fase de grupos</p>
 
         {!token ? (
@@ -164,15 +166,15 @@ export default function PlacarPage() {
           </div>
         ) : (
           <>
-            <div className="mt-6 flex flex-wrap gap-2">
+            <div className="mt-6 flex flex-wrap gap-1.5 rounded-2xl bg-zinc-200/50 p-1.5 dark:bg-zinc-800/50 w-fit">
               {grupos.map((g) => (
                 <button
                   key={g.id}
                   onClick={() => setGrupoAtivo(g.id)}
-                  className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
+                  className={`rounded-xl px-4 py-1.5 text-sm font-medium transition-all duration-300 ${
                     grupoAtivo === g.id
-                      ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
-                      : "border border-zinc-300 hover:bg-zinc-100 dark:border-zinc-700 dark:hover:bg-zinc-800"
+                      ? "bg-zinc-800 text-zinc-50 shadow-sm dark:bg-zinc-300 dark:text-zinc-900"
+                      : "text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-200 hover:bg-zinc-100/50 dark:hover:bg-zinc-700/50"
                   }`}
                 >
                   Grupo {g.id}
@@ -183,11 +185,11 @@ export default function PlacarPage() {
             {grupo && (
               <section className="mt-8">
                 <h2 className="mb-4 text-lg font-bold">{grupo.nome}</h2>
-                <div className="w-full max-w-full overflow-x-auto mb-8 shadow-sm rounded-xl border border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-800">
+                <div className="w-full max-w-full overflow-x-auto mb-8 shadow-sm rounded-2xl border border-zinc-200/50 bg-zinc-100/80 backdrop-blur-md dark:border-zinc-700/50 dark:bg-zinc-800/80">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-left text-xs text-zinc-500">
-                        <th className="px-3 py-2 font-medium sticky left-0 z-20 bg-zinc-100 dark:bg-zinc-800 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                        <th className="px-3 py-2 font-medium sticky left-0 z-20 bg-zinc-100/90 backdrop-blur-sm dark:bg-zinc-800/90 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                           Seleção
                         </th>
                         <th className="px-3 py-2 text-center font-medium">P</th>
@@ -212,7 +214,7 @@ export default function PlacarPage() {
                                 : "border-l-red-500"
                           }`}
                         >
-                          <td className="px-3 py-3 sticky left-0 z-10 bg-inherit shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                          <td className="px-3 py-3 sticky left-0 z-10 bg-zinc-100/90 backdrop-blur-sm dark:bg-zinc-800/90 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] group-hover:bg-zinc-200/90 dark:group-hover:bg-zinc-700/90 transition-colors">
                             <div className="flex items-center gap-2">
                               <span className="font-bold text-zinc-400 w-4">{idx + 1}</span>
                               <FlagIcon codigo={sel.codigoPais} className="h-5 w-auto rounded-sm" />

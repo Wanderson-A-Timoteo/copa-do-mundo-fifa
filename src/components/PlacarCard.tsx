@@ -44,7 +44,7 @@ export default function PlacarCard({
   const penInputClass = `w-12 rounded-lg border border-zinc-300 px-2 py-1 text-center text-xs focus:border-zinc-500 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 sm:w-14 sm:text-sm`;
 
   return (
-    <div className="w-full max-w-full overflow-hidden flex flex-col md:block rounded-xl border border-zinc-200 bg-zinc-100 p-4 transition-shadow hover:shadow-md dark:border-zinc-800 dark:bg-zinc-800 sm:p-6">
+    <div className="w-full max-w-full overflow-hidden flex flex-col md:block rounded-2xl border border-zinc-200/50 bg-zinc-100/90 p-4 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-zinc-700/50 dark:bg-zinc-800/90 sm:p-6">
       <div className="hidden md:block">
         <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
@@ -102,8 +102,8 @@ export default function PlacarCard({
           p.visitante &&
           onChangePenaltisMandante &&
           onChangePenaltisVisitante && (
-            <div className="mt-4 flex flex-col items-center justify-center border-t border-dashed border-zinc-200 pt-4 dark:border-zinc-800">
-              <span className="mb-3 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+            <div className="mt-4 flex flex-col items-center justify-center rounded-xl bg-zinc-200/50 p-4 shadow-inner dark:bg-zinc-900/50">
+              <span className="mb-3 text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Pênaltis
               </span>
               <div className="flex items-center justify-center gap-3">
@@ -219,8 +219,8 @@ export default function PlacarCard({
           p.visitante &&
           onChangePenaltisMandante &&
           onChangePenaltisVisitante && (
-            <div className="mt-4 flex flex-col items-center justify-center border-t border-dashed border-zinc-200 pt-3 dark:border-zinc-800">
-              <span className="mb-2 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+            <div className="mt-4 flex flex-col items-center justify-center rounded-xl bg-zinc-200/50 p-3 shadow-inner dark:bg-zinc-900/50">
+              <span className="mb-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
                 Pênaltis
               </span>
               <div className="flex items-center justify-center gap-2">

@@ -205,7 +205,9 @@ export default function BolaoPage() {
         >
           ← Voltar
         </a>
-        <h1 className="mt-2 text-3xl font-bold">Bolão Oficial</h1>
+        <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+          Bolão Oficial
+        </h1>
         <p className="mt-1 text-zinc-500">Faça seus palpites oficiais e concorra no ranking</p>
 
         {!token ? (
@@ -224,11 +226,13 @@ export default function BolaoPage() {
               <p className="text-zinc-500">Nenhum jogo encontrado.</p>
             ) : (
               Object.entries(partidasPorDia).map(([data, jogos]) => (
-                <section key={data}>
-                  <h2 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-200">
-                    {data}
-                  </h2>
-                  <div className="space-y-3">
+                <section key={data} className="relative mb-8">
+                  <div className="sticky top-14 md:top-16 z-20 -mx-4 mb-6 bg-zinc-50/90 px-4 py-2 backdrop-blur-md shadow-sm border-y border-zinc-200/50 dark:bg-zinc-900/90 dark:border-zinc-800/50 sm:-mx-6 sm:px-6">
+                    <h2 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+                      {data}
+                    </h2>
+                  </div>
+                  <div className="space-y-4 border-l-2 border-zinc-200 pl-4 dark:border-zinc-800 ml-2 md:ml-4">
                     {jogos.map((p) => {
                       const golsM = placares[p.id]?.golsMandante ?? "";
                       const golsV = placares[p.id]?.golsVisitante ?? "";
@@ -238,6 +242,7 @@ export default function BolaoPage() {
 
                       return (
                         <div key={p.id} className="relative">
+                          <div className="absolute -left-[21px] top-1/2 -mt-1.5 h-3 w-3 rounded-full border-2 border-zinc-50 bg-zinc-300 dark:border-zinc-900 dark:bg-zinc-600" />
                           {isBloqueado && (
                             <div className="absolute -top-3 right-2 z-10 flex items-center gap-1 rounded-full bg-zinc-800 px-2 py-1 text-[10px] text-zinc-200">
                               <IconLock className="h-3 w-3" />
@@ -290,18 +295,22 @@ export default function BolaoPage() {
 
         {bracket && (
           <div className="mt-16 border-t border-zinc-200 pt-10 dark:border-zinc-800">
-            <h2 className="mb-4 mt-10 text-xl font-bold">Fase Eliminatória</h2>
+            <h2 className="mb-8 mt-10 text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+              Fase Eliminatória
+            </h2>
             <div className="space-y-10">
               {bracket.fases.map((fase) => {
                 const temPartidas = fase.partidas.length > 0;
                 if (!temPartidas) return null;
 
                 return (
-                  <section key={fase.key}>
-                    <h3 className="mb-4 text-lg font-bold text-zinc-800 dark:text-zinc-200">
-                      {fase.label}
-                    </h3>
-                    <div className="space-y-3">
+                  <section key={fase.key} className="relative mb-8">
+                    <div className="sticky top-14 md:top-16 z-20 -mx-4 mb-6 bg-zinc-50/90 px-4 py-2 backdrop-blur-md shadow-sm border-y border-zinc-200/50 dark:bg-zinc-900/90 dark:border-zinc-800/50 sm:-mx-6 sm:px-6">
+                      <h3 className="text-lg font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+                        {fase.label}
+                      </h3>
+                    </div>
+                    <div className="space-y-4 border-l-2 border-zinc-200 pl-4 dark:border-zinc-800 ml-2 md:ml-4">
                       {fase.partidas.map((p) => {
                         // Parse into PartidaResumo shape for PlacarCard
                         const partidaFake = {
@@ -341,6 +350,7 @@ export default function BolaoPage() {
 
                         return (
                           <div key={p.numero} className="relative">
+                            <div className="absolute -left-[21px] top-1/2 -mt-1.5 h-3 w-3 rounded-full border-2 border-zinc-50 bg-zinc-300 dark:border-zinc-900 dark:bg-zinc-600" />
                             {isBloqueado && (
                               <div className="absolute -top-3 right-2 z-10 flex items-center gap-1 rounded-full bg-zinc-800 px-2 py-1 text-[10px] text-zinc-200">
                                 <IconLock className="h-3 w-3" />
