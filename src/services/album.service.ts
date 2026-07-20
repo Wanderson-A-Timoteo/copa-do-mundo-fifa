@@ -88,7 +88,7 @@ export async function abrirPacote(usuarioId: number) {
   }
 
   const allIds = await prisma.figurinha.findMany({ select: { id: true } });
-  
+
   if (allIds.length === 0) {
     throw new Error("DATABASE_EMPTY");
   }

@@ -6,17 +6,17 @@ import { calcularClassificacao } from "../src/services/palpite.service";
 async function main() {
   const grupos = await calcularClassificacao();
   const resultados = await prisma.resultadoOficial.findMany();
-  const palpites = resultados.map(r => ({
+  const palpites = resultados.map((r) => ({
     partidaId: r.partidaId,
     golsMandante: r.golsMandante,
     golsVisitante: r.golsVisitante,
     penaltisMandante: r.penaltisMandante,
-    penaltisVisitante: r.penaltisVisitante
+    penaltisVisitante: r.penaltisVisitante,
   }));
 
   const bracket = computeBracket(formatoCopa, grupos as unknown as GrupoStanding[], palpites);
 
-  const groupF = grupos.find(g => g.nome === "Grupo F");
+  const groupF = grupos.find((g) => g.nome === "Grupo F");
   console.log("=== Grupo F Standings ===");
   if (groupF) {
     for (const s of groupF.selecoes) {
@@ -26,14 +26,15 @@ async function main() {
 
   const matches = await prisma.partida.findMany({
     where: { grupo: { nome: "Grupo F" } },
-    include: { mandante: true, visitante: true }
+    include: { mandante: true, visitante: true },
   });
   console.log("=== Grupo F Matches ===");
-  matches.forEach(m => {
-    console.log(`${m.mandante?.nome} ${m.golsMandante} x ${m.golsVisitante} ${m.visitante?.nome} (Encerrada: ${m.encerrada})`);
+  matches.forEach((m) => {
+    console.log(
+      `${m.mandante?.nome} ${m.golsMandante} x ${m.golsVisitante} ${m.visitante?.nome} (Encerrada: ${m.encerrada})`,
+    );
   });
 
-  
   for (const f of bracket.fases) {
     console.log(`\n=== ${f.label} ===`);
     for (const p of f.partidas) {

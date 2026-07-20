@@ -5,7 +5,7 @@ function getSecret() {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     if (process.env.NODE_ENV === "production" && process.env.VERCEL) {
-       return new TextEncoder().encode("dummy-secret-for-build-time-only-12345");
+      return new TextEncoder().encode("dummy-secret-for-build-time-only-12345");
     }
     throw new Error("JWT_SECRET não está definido. Configure a variável de ambiente JWT_SECRET.");
   }
