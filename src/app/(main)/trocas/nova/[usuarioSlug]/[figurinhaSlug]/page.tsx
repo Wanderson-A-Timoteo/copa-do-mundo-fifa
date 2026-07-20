@@ -174,7 +174,7 @@ export default function NovaTrocaPage() {
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-2 min-[400px]:gap-3 sm:gap-4 sm:grid-cols-3">
+              <div className="mt-4 grid grid-cols-2 gap-x-2 gap-y-6 min-[400px]:gap-x-3 sm:gap-x-4 sm:gap-y-8 sm:grid-cols-3">
                 {minhasRepetidas.map((item) => {
                   const selecionado = selecionadas.has(item.figurinhaId);
                   const destinatarioNaoTem = !posseDestinatario.has(item.figurinhaId);
