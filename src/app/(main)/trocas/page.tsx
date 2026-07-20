@@ -175,11 +175,18 @@ export default function TrocasPage() {
     }
   };
 
+  const normalizeStr = (s: string) =>
+    s
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
   const repetidasFiltradas = filtroBusca
     ? repetidas.filter(
         (r) =>
-          r.figurinha.jogador?.nome.toLowerCase().includes(filtroBusca.toLowerCase()) ||
-          r.figurinha.selecao.nome.toLowerCase().includes(filtroBusca.toLowerCase()),
+          (r.figurinha.jogador?.nome &&
+            normalizeStr(r.figurinha.jogador.nome).includes(normalizeStr(filtroBusca))) ||
+          normalizeStr(r.figurinha.selecao.nome).includes(normalizeStr(filtroBusca)),
       )
     : repetidas;
 

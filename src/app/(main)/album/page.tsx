@@ -117,8 +117,14 @@ export default function AlbumPage() {
   }, [figurinhas]);
 
   const selecoesFiltradas = useMemo(() => {
+    const normalizeStr = (s: string) =>
+      s
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+
     return selecoesAgrupadas.filter(({ selecao, figurinhas }) => {
-      if (filtroNome && !selecao.nome.toLowerCase().includes(filtroNome.toLowerCase()))
+      if (filtroNome && !normalizeStr(selecao.nome).includes(normalizeStr(filtroNome)))
         return false;
       return figurinhas.some((f) => {
         const status = statusFigurinha(f.id);
