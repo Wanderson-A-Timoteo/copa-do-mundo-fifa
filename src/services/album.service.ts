@@ -88,10 +88,9 @@ export async function abrirPacote(usuarioId: number) {
   }
 
   const pacote = await prisma.$transaction(async (tx) => {
-    const randomFigs = await tx.$queryRawUnsafe<{ id: number }[]>(
-      `SELECT id FROM figurinhas ORDER BY RANDOM() LIMIT $1`,
-      QTD_PACOTE,
-    );
+    const allIds = await tx.figurinha.findMany({ select: { id: true } });
+    const shuffled = allIds.sort(() => 0.5 - Math.random());
+    const randomFigs = shuffled.slice(0, QTD_PACOTE);
 
     const ids = randomFigs.map((f) => f.id);
     const figurinhas = await tx.figurinha.findMany({
