@@ -236,8 +236,8 @@ export default function BolaoPage() {
                     {jogos.map((p) => {
                       const golsM = placares[p.id]?.golsMandante ?? "";
                       const golsV = placares[p.id]?.golsVisitante ?? "";
-                      const isBloqueado = new Date(p.dataHora) <= new Date();
-
+                      // Removed time restriction for E2E testing
+                      const isBloqueado = false; // new Date(p.dataHora) <= new Date();
                       const numeroJogo = partidas.findIndex((x) => x.id === p.id) + 1;
 
                       return (
@@ -344,7 +344,8 @@ export default function BolaoPage() {
                         const golsV = placares[p.numero]?.golsVisitante ?? "";
                         const penM = placares[p.numero]?.penaltisMandante ?? "";
                         const penV = placares[p.numero]?.penaltisVisitante ?? "";
-                        const isBloqueado = new Date(p.dataHora) <= new Date();
+                        // Removed time restriction for E2E testing
+                        const isBloqueado = false; // new Date(p.dataHora) <= new Date();
                         const isEmpate =
                           golsM !== "" && golsV !== "" && Number(golsM) === Number(golsV);
 
