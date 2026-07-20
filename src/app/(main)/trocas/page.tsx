@@ -36,7 +36,7 @@ export default function TrocasPage() {
   const [filtroBusca, setFiltroBusca] = useState("");
   const [pendentesRec, setPendentesRec] = useState(0);
   const [pendentesEnv, setPendentesEnv] = useState(0);
-  const [bannerFechado, setBannerFechado] = useState(false);
+
   const [paginaDisponiveis, setPaginaDisponiveis] = useState(0);
   const [paginaTrocas, setPaginaTrocas] = useState(0);
 
@@ -158,25 +158,6 @@ export default function TrocasPage() {
         <h1 className="text-3xl font-bold">Trocas</h1>
         <p className="mt-1 text-zinc-500">Encontre figurinhas para completar seu álbum</p>
       </div>
-
-      {user && (pendentesRec > 0 || pendentesEnv > 0) && !bannerFechado && (
-        <div className="relative mb-6 rounded-lg bg-emerald-50 px-4 py-3 pr-10 text-sm text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-200">
-          <span className="font-medium">
-            Você tem {pendentesRec + pendentesEnv} troca
-            {pendentesRec + pendentesEnv !== 1 ? "s" : ""} pendente
-            {pendentesRec + pendentesEnv !== 1 ? "s" : ""}
-            {pendentesRec > 0 && ` (${pendentesRec} recebida${pendentesRec !== 1 ? "s" : ""})`}
-            {pendentesEnv > 0 && ` (${pendentesEnv} enviada${pendentesEnv !== 1 ? "s" : ""})`}.
-          </span>
-          <button
-            onClick={() => setBannerFechado(true)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-emerald-500 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-200"
-            aria-label="Fechar"
-          >
-            ✕
-          </button>
-        </div>
-      )}
 
       <div className="mb-6 flex flex-wrap gap-2">
         {(["disponiveis", "recebidas", "enviadas"] as const).map((t) => {
