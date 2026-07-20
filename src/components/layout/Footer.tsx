@@ -127,7 +127,7 @@ export function Footer() {
       {/* Bottom Bar */}
       <div className="mx-auto mt-12 flex max-w-5xl flex-col-reverse items-center justify-between gap-4 border-t border-zinc-200/50 pt-8 dark:border-zinc-800/50 md:flex-row">
         <div className="text-center text-xs font-medium text-zinc-400">
-          &copy; {new Date().getFullYear()} Bolão da Copa. Todos os direitos reservados.
+          &copy; {new Date().getFullYear()} Copa do Mundo. Todos os direitos reservados.
         </div>
 
         <button
