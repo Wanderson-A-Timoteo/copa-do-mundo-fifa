@@ -16,14 +16,14 @@ export default function GlobalTradeAlert() {
     if (!user) return;
     try {
       const [resRec, resEnv] = await Promise.all([
-        fetch("/api/trocas?tipo=recebidas", { headers: getAuthHeaders() }),
-        fetch("/api/trocas?tipo=enviadas", { headers: getAuthHeaders() }),
+        fetch("/api/trocas?tipo=pendentes", { headers: getAuthHeaders() }),
+        fetch("/api/trocas?tipo=recusadas", { headers: getAuthHeaders() }),
       ]);
 
       if (resRec.ok) {
         const data = await resRec.json();
         const pending = (data.trocas || []).filter(
-          (t: { status: string }) => t.status === "pendente",
+          (t: { status: string; destinatario: { id: number } }) => t.destinatario.id === user.id,
         ).length;
 
         if (pending > 0 && pendentesRec === 0) setFechado(false);
@@ -32,9 +32,7 @@ export default function GlobalTradeAlert() {
 
       if (resEnv.ok) {
         const dataEnv = await resEnv.json();
-        const rejected = (dataEnv.trocas || []).filter(
-          (t: { status: string }) => t.status === "recusada",
-        ).length;
+        const rejected = (dataEnv.trocas || []).length;
 
         if (rejected > 0 && recusadasEnv === 0) setRecusadasFechado(false);
         setRecusadasEnv(rejected);

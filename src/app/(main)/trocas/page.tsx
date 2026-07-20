@@ -37,8 +37,8 @@ export default function TrocasPage() {
   const [meuAlbumIds, setMeuAlbumIds] = useState<Set<number>>(new Set());
   const [carregando, setCarregando] = useState(true);
   const [filtroBusca, setFiltroBusca] = useState("");
-  const [pendentesRec, setPendentesRec] = useState(0);
-  const [pendentesEnv, setPendentesEnv] = useState(0);
+  const [countPendentes, setCountPendentes] = useState(0);
+  const [countRecusadas, setCountRecusadas] = useState(0);
 
   const [paginaDisponiveis, setPaginaDisponiveis] = useState(0);
   const [paginaTrocas, setPaginaTrocas] = useState(0);
@@ -87,16 +87,19 @@ export default function TrocasPage() {
 
   const refreshCounts = useCallback(async () => {
     if (!user) return;
-    const [rec, env] = await Promise.all([
-      fetch("/api/trocas?tipo=recebidas", { headers: getAuthHeaders() }).then((r) => r.json()),
-      fetch("/api/trocas?tipo=enviadas", { headers: getAuthHeaders() }).then((r) => r.json()),
+    const [pend, rec] = await Promise.all([
+      fetch("/api/trocas?tipo=pendentes", { headers: getAuthHeaders() }).then((r) => r.json()),
+      fetch("/api/trocas?tipo=recusadas", { headers: getAuthHeaders() }).then((r) => r.json()),
     ]);
-    setPendentesRec(
-      (rec.trocas || []).filter((t: { status: string }) => t.status === "pendente").length,
+
+    // Mostra bolinha amarela APENAS para trocas que exigem sua ação (você é o destinatário)
+    setCountPendentes(
+      (pend.trocas || []).filter(
+        (t: { status: string; destinatario: { id: number } }) => t.destinatario.id === user.id,
+      ).length,
     );
-    setPendentesEnv(
-      (env.trocas || []).filter((t: { status: string }) => t.status === "pendente").length,
-    );
+
+    setCountRecusadas((rec.trocas || []).length);
   }, [user, getAuthHeaders]);
 
   useEffect(() => {
@@ -143,6 +146,20 @@ export default function TrocasPage() {
     }
   };
 
+  const apagarTroca = async (id: number) => {
+    const res = await fetch(`/api/trocas/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    if (res.ok) {
+      success("Troca apagada do histórico.");
+      carregarTrocas();
+      refreshCounts();
+    } else {
+      error("Erro ao apagar a troca.");
+    }
+  };
+
   const repetidasFiltradas = filtroBusca
     ? repetidas.filter(
         (r) =>
@@ -177,10 +194,16 @@ export default function TrocasPage() {
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2">
-        {(["disponiveis", "recebidas", "enviadas"] as const).map((t) => {
+        {(["disponiveis", "pendentes", "aceitas", "recusadas"] as const).map((t) => {
           const label =
-            t === "disponiveis" ? "Disponíveis" : t === "recebidas" ? "Recebidas" : "Enviadas";
-          const pendentes = t === "recebidas" ? pendentesRec : t === "enviadas" ? pendentesEnv : 0;
+            t === "disponiveis"
+              ? "Disponíveis"
+              : t === "pendentes"
+                ? "Pendentes"
+                : t === "aceitas"
+                  ? "Aceitas"
+                  : "Recusadas";
+          const count = t === "pendentes" ? countPendentes : t === "recusadas" ? countRecusadas : 0;
           return (
             <button
               key={t}
@@ -192,9 +215,9 @@ export default function TrocasPage() {
               }`}
             >
               {label}
-              {pendentes > 0 && (
+              {count > 0 && (
                 <span className="ml-1.5 rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-zinc-50">
-                  {pendentes}
+                  {count}
                 </span>
               )}
             </button>
@@ -263,7 +286,7 @@ export default function TrocasPage() {
         </>
       )}
 
-      {(aba === "recebidas" || aba === "enviadas") && !user && (
+      {aba !== "disponiveis" && !user && (
         <div className="mt-16 text-center text-zinc-400">
           <IconBook className="mx-auto h-12 w-12" />
           <p className="mt-4 text-lg font-medium">Faça login para ver suas trocas</p>
@@ -276,7 +299,7 @@ export default function TrocasPage() {
         </div>
       )}
 
-      {(aba === "recebidas" || aba === "enviadas") && user && carregando && (
+      {aba !== "disponiveis" && user && carregando && (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
             <div key={i} className="rounded-xl border border-zinc-200 p-5 dark:border-zinc-800">
@@ -296,28 +319,28 @@ export default function TrocasPage() {
         </div>
       )}
 
-      {(aba === "recebidas" || aba === "enviadas") &&
-        user &&
-        !carregando &&
-        trocas.length === 0 && (
-          <div className="mt-16 text-center text-zinc-400">
-            <IconRepeat className="mx-auto h-12 w-12" />
-            <p className="mt-4 text-lg font-medium">
-              Nenhuma troca {aba === "recebidas" ? "recebida" : "enviada"}
-            </p>
-            <p className="mt-1 text-sm">
-              {aba === "recebidas"
-                ? "Quando alguém oferecer uma troca, ela aparecerá aqui."
-                : "Vá até a aba Disponíveis e escolha uma figurinha para trocar."}
-            </p>
-          </div>
-        )}
+      {aba !== "disponiveis" && user && !carregando && trocas.length === 0 && (
+        <div className="mt-16 text-center text-zinc-400">
+          <IconRepeat className="mx-auto h-12 w-12" />
+          <p className="mt-4 text-lg font-medium">
+            Nenhuma troca{" "}
+            {aba === "pendentes" ? "pendente" : aba === "aceitas" ? "aceita" : "recusada"}
+          </p>
+          <p className="mt-1 text-sm">
+            {aba === "pendentes"
+              ? "Você não possui nenhuma troca aguardando ação."
+              : aba === "aceitas"
+                ? "Seu histórico de trocas aceitas está vazio."
+                : "Seu histórico de trocas recusadas está vazio."}
+          </p>
+        </div>
+      )}
 
-      {(aba === "recebidas" || aba === "enviadas") && user && !carregando && trocas.length > 0 && (
+      {aba !== "disponiveis" && user && !carregando && trocas.length > 0 && (
         <>
           <div className="space-y-4">
             {pagTrocasItens.map((troca) => {
-              const isRecebida = aba === "recebidas";
+              const isRecebida = troca.destinatario.id === user.id;
               const outroUsuario = isRecebida ? troca.remetente : troca.destinatario;
 
               return (
@@ -403,9 +426,46 @@ export default function TrocasPage() {
                   )}
 
                   {troca.status === "pendente" && !isRecebida && (
-                    <p className="mt-3 text-xs text-zinc-400">
-                      Aguardando resposta de {outroUsuario.nome}
-                    </p>
+                    <div className="mt-4 flex flex-col sm:flex-row items-center gap-3">
+                      <p className="text-xs text-zinc-400">
+                        Aguardando resposta de {outroUsuario.nome}
+                      </p>
+                      <button
+                        onClick={() => apagarTroca(troca.id)}
+                        className="w-full sm:w-auto rounded-lg border border-red-200 text-red-600 px-4 py-2 text-xs font-bold transition-colors hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-900/30"
+                      >
+                        Cancelar Solicitação
+                      </button>
+                    </div>
+                  )}
+
+                  {troca.status === "recusada" && (
+                    <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-zinc-200 pt-4 dark:border-zinc-800">
+                      <p className="text-xs font-medium text-red-600 dark:text-red-400">
+                        {isRecebida
+                          ? "Você recusou esta oferta."
+                          : "Esta solicitação foi recusada."}
+                      </p>
+                      <button
+                        onClick={() => apagarTroca(troca.id)}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-lg bg-zinc-200 px-4 py-2 text-xs font-bold text-zinc-600 transition-colors hover:bg-zinc-300 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                      >
+                        <svg
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                        Apagar do Histórico
+                      </button>
+                    </div>
                   )}
 
                   {troca.status === "aceita" && (

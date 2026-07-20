@@ -7,8 +7,19 @@ export interface CriarTrocaInput {
   destinatarioId: number;
 }
 
-export async function listarTrocas(usuarioId: number, tipo = "recebidas") {
-  const where = tipo === "enviadas" ? { remetenteId: usuarioId } : { destinatarioId: usuarioId };
+export async function listarTrocas(usuarioId: number, tipo = "pendentes") {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let where: any = {};
+
+  if (tipo === "pendentes" || tipo === "aceitas" || tipo === "recusadas") {
+    where = {
+      status: tipo === "pendentes" ? "pendente" : tipo === "aceitas" ? "aceita" : "recusada",
+      OR: [{ remetenteId: usuarioId }, { destinatarioId: usuarioId }],
+    };
+  } else {
+    // Mantém compatibilidade caso algo chame as rotas antigas
+    where = tipo === "enviadas" ? { remetenteId: usuarioId } : { destinatarioId: usuarioId };
+  }
 
   return prisma.troca.findMany({
     where,
@@ -170,4 +181,19 @@ export async function responderTroca(
   );
 
   await prisma.$transaction(operacoes);
+}
+
+export async function deletarTroca(usuarioId: number, trocaId: number) {
+  const troca = await prisma.troca.findUnique({
+    where: { id: trocaId },
+  });
+
+  if (!troca) throw new Error("TRADE_NOT_FOUND");
+  if (troca.remetenteId !== usuarioId && troca.destinatarioId !== usuarioId) {
+    throw new Error("NOT_AUTHORIZED");
+  }
+
+  await prisma.troca.delete({
+    where: { id: trocaId },
+  });
 }

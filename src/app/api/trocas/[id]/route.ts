@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { extractUserIdFromRequest } from "@/lib/auth";
-import { responderTroca } from "@/services/troca.service";
+import { responderTroca, deletarTroca } from "@/services/troca.service";
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const usuarioId = await extractUserIdFromRequest(request);
@@ -60,5 +60,34 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       }
     }
     return NextResponse.json({ erro: "Erro ao processar solicitação" }, { status: 400 });
+  }
+}
+
+export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const usuarioId = await extractUserIdFromRequest(request);
+  if (!usuarioId) {
+    return NextResponse.json({ erro: "Usuário não identificado" }, { status: 401 });
+  }
+
+  const { id } = await params;
+  const trocaId = parseInt(id, 10);
+
+  if (isNaN(trocaId)) {
+    return NextResponse.json({ erro: "ID inválido" }, { status: 400 });
+  }
+
+  try {
+    await deletarTroca(usuarioId, trocaId);
+    return NextResponse.json({ mensagem: "Troca excluída com sucesso" });
+  } catch (e) {
+    if (e instanceof Error) {
+      if (e.message === "TRADE_NOT_FOUND") {
+        return NextResponse.json({ erro: "Troca não encontrada" }, { status: 404 });
+      }
+      if (e.message === "NOT_AUTHORIZED") {
+        return NextResponse.json({ erro: "Não autorizado a excluir esta troca" }, { status: 403 });
+      }
+    }
+    return NextResponse.json({ erro: "Erro ao excluir troca" }, { status: 400 });
   }
 }

@@ -102,4 +102,4 @@ export interface RepetidaItem {
   figurinha: FigurinhaResumo;
 }
 
-export type Aba = "disponiveis" | "recebidas" | "enviadas";
+export type Aba = "disponiveis" | "pendentes" | "aceitas" | "recusadas";
