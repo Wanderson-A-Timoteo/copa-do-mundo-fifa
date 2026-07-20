@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 
-const LIMITE_DIARIO = 10;
+const LIMITE_DIARIO = 999999;
 const QTD_PACOTE = 4;
 
 export interface AlbumResult {

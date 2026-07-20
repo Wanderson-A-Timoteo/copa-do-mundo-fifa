@@ -33,9 +33,9 @@ export async function salvarPalpite(
   const partida = await prisma.partida.findUnique({ where: { id: partidaId } });
   if (!partida) throw new Error("MATCH_NOT_FOUND");
 
-  if (new Date() >= partida.dataHora) {
-    throw new Error("O jogo já começou! Palpites encerrados.");
-  }
+  // if (new Date() >= partida.dataHora) {
+  //   throw new Error("O jogo já começou! Palpites encerrados.");
+  // }
 
   if (golsMandante === null && golsVisitante === null) {
     await prisma.palpite.deleteMany({ where: { usuarioId, partidaId } });
@@ -64,9 +64,9 @@ export async function salvarPalpiteMataMata(
   const partida = await prisma.partida.findUnique({ where: { id: partidaId } });
   if (!partida) throw new Error("MATCH_NOT_FOUND");
 
-  if (new Date() >= partida.dataHora) {
-    throw new Error("O jogo já começou! Palpites encerrados.");
-  }
+  // if (new Date() >= partida.dataHora) {
+  //   throw new Error("O jogo já começou! Palpites encerrados.");
+  // }
 
   if (golsMandante === null && golsVisitante === null) {
     await prisma.palpiteMataMata.deleteMany({ where: { usuarioId, partidaId } });

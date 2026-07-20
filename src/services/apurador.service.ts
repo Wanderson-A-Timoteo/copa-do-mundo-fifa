@@ -71,15 +71,15 @@ export async function apurarPartida(partidaId: number) {
   const isMataMata = partida.fase !== "GRUPOS";
 
   // Regra de bloqueio
-  if (!isMataMata) {
-    if (!partida.encerrada) {
-      throw new Error("A partida ainda não possui resultado oficial consolidado");
-    }
-  } else {
-    if (!partida.resultadoOficial) {
-      throw new Error("A partida ainda não possui resultado oficial consolidado");
-    }
-  }
+  // if (!isMataMata) {
+  //   if (!partida.encerrada) {
+  //     throw new Error("A partida ainda não possui resultado oficial consolidado");
+  //   }
+  // } else {
+  //   if (!partida.resultadoOficial) {
+  //     throw new Error("A partida ainda não possui resultado oficial consolidado");
+  //   }
+  // }
 
   const realPlacar: Placar = {
     golsMandante: partida.golsMandante ?? 0,
