@@ -22,6 +22,18 @@ export async function POST(request: Request) {
           { status: 429 },
         );
       }
+      if (e.message === "DATABASE_EMPTY") {
+        return NextResponse.json(
+          { erro: "O banco de dados de figurinhas está vazio. Execute o seed primeiro." },
+          { status: 500 },
+        );
+      }
+      if (e.message === "FAILED_TO_FETCH_CARDS") {
+        return NextResponse.json(
+          { erro: "Falha ao recuperar as cartas sorteadas no banco de dados." },
+          { status: 500 },
+        );
+      }
     }
     return NextResponse.json({ erro: "Erro ao processar pacote" }, { status: 500 });
   }

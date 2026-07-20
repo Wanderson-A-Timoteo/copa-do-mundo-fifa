@@ -9,6 +9,7 @@ import StickerCard from "@/components/StickerCard";
 import PackOpeningModal from "@/components/PackOpeningModal";
 import { SkeletonAlbum } from "@/components/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import type { FigurinhaResumo } from "@/types";
 
 interface Figurinha extends FigurinhaResumo {
@@ -23,6 +24,7 @@ interface AlbumItem {
 
 export default function AlbumPage() {
   const { user, getAuthHeaders } = useAuth();
+  const toast = useToast();
   const [figurinhas, setFigurinhas] = useState<Figurinha[]>([]);
   const [album, setAlbum] = useState<Map<number, AlbumItem>>(new Map());
   const [filtroStatus, setFiltroStatus] = useState("todas");
@@ -75,6 +77,13 @@ export default function AlbumPage() {
     if (!res.ok) {
       setAbrindo(false);
       setPacotesRestantesHoje(data.pacotesRestantesHoje ?? 0);
+      toast.error(data.erro || "Erro ao abrir pacote!");
+      return;
+    }
+
+    if (!data.figurinhas || data.figurinhas.length === 0) {
+      setAbrindo(false);
+      toast.error("Ocorreu um erro: Nenhuma figurinha foi gerada.");
       return;
     }
 
