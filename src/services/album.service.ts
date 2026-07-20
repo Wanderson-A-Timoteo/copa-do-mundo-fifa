@@ -87,16 +87,25 @@ export async function abrirPacote(usuarioId: number) {
     throw new Error("DAILY_LIMIT_REACHED");
   }
 
-  const pacote = await prisma.$transaction(async (tx) => {
-    const allIds = await tx.figurinha.findMany({ select: { id: true } });
-    const shuffled = allIds.sort(() => 0.5 - Math.random());
-    const randomFigs = shuffled.slice(0, QTD_PACOTE);
+  const allIds = await prisma.figurinha.findMany({ select: { id: true } });
+  
+  if (allIds.length === 0) {
+    throw new Error("DATABASE_EMPTY");
+  }
 
-    const ids = randomFigs.map((f) => f.id);
+  const shuffled = allIds.sort(() => 0.5 - Math.random());
+  const randomFigs = shuffled.slice(0, QTD_PACOTE);
+  const ids = randomFigs.map((f) => f.id);
+
+  const pacote = await prisma.$transaction(async (tx) => {
     const figurinhas = await tx.figurinha.findMany({
       where: { id: { in: ids } },
       include: { selecao: true, jogador: true },
     });
+
+    if (figurinhas.length === 0) {
+      throw new Error("FAILED_TO_FETCH_CARDS");
+    }
 
     for (const fig of figurinhas) {
       await tx.albumFigurinha.upsert({
