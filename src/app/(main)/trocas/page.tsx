@@ -321,23 +321,28 @@ export default function TrocasPage() {
                     <StatusBadge status={troca.status} />
                   </div>
 
-                  <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                    <div>
-                      <p className="mb-2 text-xs font-medium text-zinc-400">
+                  <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div className="flex flex-col items-center sm:items-start">
+                      <p className="mb-3 text-xs font-medium text-zinc-400">
                         {isRecebida ? "Oferecendo" : "Ofereceu"}
                       </p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-4 w-full">
                         {troca.figurinhasOferecidas.map((of) => (
-                          <div key={of.figurinha.id} className="w-[140px]">
+                          <div
+                            key={of.figurinha.id}
+                            className="w-[220px] sm:w-[200px] md:w-[240px]"
+                          >
                             <StickerCard figurinha={of.figurinha} />
                           </div>
                         ))}
                       </div>
                     </div>
-                    <div>
-                      <p className="mb-2 text-xs font-medium text-zinc-400">Quer receber</p>
-                      <div className="w-[140px]">
-                        <StickerCard figurinha={troca.figurinhaDesejada} />
+                    <div className="flex flex-col items-center sm:items-start">
+                      <p className="mb-3 text-xs font-medium text-zinc-400">Quer receber</p>
+                      <div className="flex justify-center sm:justify-start w-full">
+                        <div className="w-[220px] sm:w-[200px] md:w-[240px]">
+                          <StickerCard figurinha={troca.figurinhaDesejada} />
+                        </div>
                       </div>
                     </div>
                   </div>
