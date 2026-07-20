@@ -39,25 +39,30 @@ export default function NovaTrocaPage() {
 
   const carregarDados = useCallback(async () => {
     try {
-      const [albumRes, userRes] = await Promise.all([
-        fetch("/api/album", { headers: getAuthHeaders() }),
-        fetch(`/api/usuarios/${usuarioSlug}/repetidas`),
-      ]);
-
-      const albumData = await albumRes.json();
-      const userData = await userRes.json();
-
-      if (albumData.album) {
-        const repetidas = albumData.album.filter((item: FigurinhaAlbum) => item.quantidade >= 2);
-        setMinhasRepetidas(repetidas);
+      setCarregando(true);
+      const albumRes = await fetch("/api/album", { headers: getAuthHeaders() });
+      if (albumRes.ok) {
+        const albumData = await albumRes.json();
+        if (albumData.album) {
+          const repetidas = albumData.album.filter((item: FigurinhaAlbum) => item.quantidade >= 2);
+          setMinhasRepetidas(repetidas);
+        }
       }
+    } catch {
+      // silent
+    }
 
-      if (userData.usuario) setDestinatario(userData.usuario);
-      if (userData.repetidas) {
-        const desejadaItem = userData.repetidas.find(
-          (r: { figurinha: FigurinhaResumo }) => r.figurinha.slug === figurinhaSlug,
-        );
-        if (desejadaItem) setDesejada(desejadaItem.figurinha);
+    try {
+      const userRes = await fetch(`/api/usuarios/${usuarioSlug}/repetidas`);
+      if (userRes.ok) {
+        const userData = await userRes.json();
+        if (userData.usuario) setDestinatario(userData.usuario);
+        if (userData.repetidas) {
+          const desejadaItem = userData.repetidas.find(
+            (r: { figurinha: FigurinhaResumo }) => r.figurinha.slug === figurinhaSlug,
+          );
+          if (desejadaItem) setDesejada(desejadaItem.figurinha);
+        }
       }
     } catch {
       // silent

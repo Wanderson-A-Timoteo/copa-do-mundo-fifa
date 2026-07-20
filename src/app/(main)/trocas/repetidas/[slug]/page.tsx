@@ -120,7 +120,7 @@ export default async function RepetidasDetalhePage({
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-                  <TradeLink userId={usr.id} figurinhaSlug={figurinha!.slug} />
+                  <TradeLink userId={usr.id} userSlug={usr.slug} figurinhaSlug={figurinha!.slug} />
                   <Link
                     href={`/perfil/${usr.slug || usr.id}`}
                     className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-50 transition-colors hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
