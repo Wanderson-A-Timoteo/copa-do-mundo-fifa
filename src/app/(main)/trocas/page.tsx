@@ -32,6 +32,7 @@ export default function TrocasPage() {
   const [aba, setAba] = useState<Aba>("disponiveis");
   const [trocas, setTrocas] = useState<TrocaItem[]>([]);
   const [repetidas, setRepetidas] = useState<RepetidaGrupo[]>([]);
+  const [meuAlbumIds, setMeuAlbumIds] = useState<Set<number>>(new Set());
   const [carregando, setCarregando] = useState(true);
   const [filtroBusca, setFiltroBusca] = useState("");
   const [pendentesRec, setPendentesRec] = useState(0);
@@ -47,10 +48,18 @@ export default function TrocasPage() {
     if (!user) return;
     setCarregando(true);
     try {
-      const res = await fetch(`/api/trocas?tipo=${aba}`, { headers: getAuthHeaders() });
+      const [res, albumRes] = await Promise.all([
+        fetch(`/api/trocas?tipo=${aba}`, { headers: getAuthHeaders() }),
+        fetch("/api/album", { headers: getAuthHeaders() }),
+      ]);
       if (res.ok) {
         const data = await res.json();
         setTrocas(data.trocas);
+      }
+      if (albumRes.ok) {
+        const albumData = await albumRes.json();
+        const ids = (albumData.album || []).map((a: any) => a.figurinhaId);
+        setMeuAlbumIds(new Set(ids));
       }
     } catch {
       // silent
@@ -327,14 +336,35 @@ export default function TrocasPage() {
                         {isRecebida ? "Oferecendo" : "Ofereceu"}
                       </p>
                       <div className="flex flex-wrap justify-center sm:justify-start gap-4 w-full">
-                        {troca.figurinhasOferecidas.map((of) => (
-                          <div
-                            key={of.figurinha.id}
-                            className="w-[220px] sm:w-[200px] md:w-[240px]"
-                          >
-                            <StickerCard figurinha={of.figurinha} />
-                          </div>
-                        ))}
+                        {troca.figurinhasOferecidas.map((of) => {
+                          const jaPossui = isRecebida && meuAlbumIds.has(of.figurinha.id);
+                          const isNova = isRecebida && !meuAlbumIds.has(of.figurinha.id);
+
+                          return (
+                            <div
+                              key={of.figurinha.id}
+                              className="relative w-[220px] sm:w-[200px] md:w-[240px]"
+                            >
+                              <div
+                                className={`transition-all duration-300 ${isNova ? "ring-2 ring-emerald-500 ring-offset-2 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)]" : jaPossui ? "opacity-75 grayscale-[30%]" : ""}`}
+                              >
+                                <StickerCard figurinha={of.figurinha} />
+                              </div>
+
+                              {isNova && (
+                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 whitespace-nowrap rounded-full bg-emerald-500 px-3 py-0.5 text-[10px] font-bold text-zinc-50 shadow-md">
+                                  ✨ Nova!
+                                </div>
+                              )}
+
+                              {jaPossui && (
+                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 whitespace-nowrap rounded-full bg-zinc-600 px-3 py-0.5 text-[10px] font-bold text-zinc-50 shadow-md">
+                                  Já possui
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                     <div className="flex flex-col items-center sm:items-start">

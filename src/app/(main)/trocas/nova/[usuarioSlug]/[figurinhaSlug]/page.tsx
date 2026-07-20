@@ -22,6 +22,7 @@ export default function NovaTrocaPage() {
     nome: string;
     slug: string;
   } | null>(null);
+  const [posseDestinatario, setPosseDestinatario] = useState<Set<number>>(new Set());
   const [minhasRepetidas, setMinhasRepetidas] = useState<FigurinhaAlbum[]>([]);
   const [selecionadas, setSelecionadas] = useState<Set<number>>(new Set());
   const [carregando, setCarregando] = useState(true);
@@ -63,6 +64,12 @@ export default function NovaTrocaPage() {
           );
           if (desejadaItem) setDesejada(desejadaItem.figurinha);
         }
+      }
+
+      const posseRes = await fetch(`/api/usuarios/${usuarioSlug}/posse`);
+      if (posseRes.ok) {
+        const posseData = await posseRes.json();
+        setPosseDestinatario(new Set(posseData.posse || []));
       }
     } catch {
       // silent
@@ -170,6 +177,7 @@ export default function NovaTrocaPage() {
               <div className="grid grid-cols-2 gap-2 min-[400px]:gap-3 sm:gap-4 sm:grid-cols-3">
                 {minhasRepetidas.map((item) => {
                   const selecionado = selecionadas.has(item.figurinhaId);
+                  const destinatarioNaoTem = !posseDestinatario.has(item.figurinhaId);
                   return (
                     <button
                       key={item.figurinhaId}
@@ -180,7 +188,18 @@ export default function NovaTrocaPage() {
                           : "hover:scale-[1.02]"
                       }`}
                     >
-                      <StickerCard figurinha={item.figurinha} />
+                      <div
+                        className={`transition-all duration-300 ${destinatarioNaoTem && !selecionado ? "ring-2 ring-amber-400 ring-offset-1 rounded-xl dark:ring-amber-500/80 shadow-[0_0_15px_rgba(251,191,36,0.4)]" : ""}`}
+                      >
+                        <StickerCard figurinha={item.figurinha} />
+                      </div>
+
+                      {destinatarioNaoTem && (
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 whitespace-nowrap rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-bold text-amber-950 shadow-sm animate-bounce shadow-amber-400/50">
+                          ✨ Ele precisa!
+                        </div>
+                      )}
+
                       {selecionado && (
                         <span className="absolute -right-1 -top-1 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-xs font-bold text-zinc-50">
                           &#10003;
