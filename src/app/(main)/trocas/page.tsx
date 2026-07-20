@@ -60,7 +60,7 @@ export default function TrocasPage() {
       }
       if (albumRes.ok) {
         const albumData = await albumRes.json();
-        const ids = (albumData.album || []).map((a: any) => a.figurinhaId);
+        const ids = (albumData.album || []).map((a: { figurinhaId: number }) => a.figurinhaId);
         setMeuAlbumIds(new Set(ids));
       }
     } catch {
