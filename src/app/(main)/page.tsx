@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Globe, Calendar, MapPin, Trophy, BookOpen } from "lucide-react";
 
 const copasAnteriores = [
+  { ano: 2026, sede: "EUA/Canadá/México", campeao: "Espanha", siglaCampeao: "es", siglaSede: "us" },
   { ano: 2022, sede: "Catar", campeao: "Argentina", siglaCampeao: "ar", siglaSede: "qa" },
   { ano: 2018, sede: "Rússia", campeao: "França", siglaCampeao: "fr", siglaSede: "ru" },
   { ano: 2014, sede: "Brasil", campeao: "Alemanha", siglaCampeao: "de", siglaSede: "br" },
