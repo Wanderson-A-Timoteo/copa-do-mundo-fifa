@@ -99,7 +99,8 @@ export default function TrocasPage() {
       ).length,
     );
 
-    setCountRecusadas((rec.trocas || []).length);
+    const totalRecusadas = (rec.trocas || []).length;
+    setCountRecusadas(totalRecusadas);
   }, [user, getAuthHeaders]);
 
   useEffect(() => {
@@ -115,6 +116,13 @@ export default function TrocasPage() {
       setCarregando(false);
     }
   }, [aba, user, carregarRepetidas, carregarTrocas]);
+
+  // Limpa o badge se acessar a aba recusadas
+  useEffect(() => {
+    if (aba === "recusadas" && countRecusadas > 0) {
+      localStorage.setItem("vistasRecusadas", countRecusadas.toString());
+    }
+  }, [aba, countRecusadas]);
 
   const aceitarTroca = async (id: number) => {
     const res = await fetch(`/api/trocas/${id}`, {
@@ -153,6 +161,13 @@ export default function TrocasPage() {
     });
     if (res.ok) {
       success("Troca apagada do histórico.");
+
+      // Ajusta o contador de vistas no localStorage para não quebrar a lógica de novas recusas
+      const lastSeen = parseInt(localStorage.getItem("vistasRecusadas") || "0", 10);
+      if (lastSeen > 0) {
+        localStorage.setItem("vistasRecusadas", (lastSeen - 1).toString());
+      }
+
       carregarTrocas();
       refreshCounts();
     } else {
@@ -203,7 +218,17 @@ export default function TrocasPage() {
                 : t === "aceitas"
                   ? "Aceitas"
                   : "Recusadas";
-          const count = t === "pendentes" ? countPendentes : t === "recusadas" ? countRecusadas : 0;
+
+          let count = 0;
+          if (t === "pendentes") {
+            count = countPendentes;
+          } else if (t === "recusadas") {
+            const lastSeen =
+              typeof window !== "undefined"
+                ? parseInt(localStorage.getItem("vistasRecusadas") || "0", 10)
+                : 0;
+            count = Math.max(0, countRecusadas - lastSeen);
+          }
           return (
             <button
               key={t}

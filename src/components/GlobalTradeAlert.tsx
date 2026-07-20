@@ -34,7 +34,9 @@ export default function GlobalTradeAlert() {
         const dataEnv = await resEnv.json();
         const rejected = (dataEnv.trocas || []).length;
 
-        if (rejected > 0 && recusadasEnv === 0) setRecusadasFechado(false);
+        const lastSeen = parseInt(localStorage.getItem("vistasRecusadas") || "0", 10);
+
+        if (rejected > lastSeen && recusadasEnv === 0) setRecusadasFechado(false);
         setRecusadasEnv(rejected);
       }
     } catch {
@@ -50,7 +52,18 @@ export default function GlobalTradeAlert() {
     return () => clearInterval(interval);
   }, [user, fetchPendentes]);
 
-  if (!user || (pendentesRec === 0 && recusadasEnv === 0) || (fechado && recusadasFechado))
+  const handleDismissRecusadas = () => {
+    setRecusadasFechado(true);
+    localStorage.setItem("vistasRecusadas", recusadasEnv.toString());
+  };
+
+  const lastSeen =
+    typeof window !== "undefined"
+      ? parseInt(localStorage.getItem("vistasRecusadas") || "0", 10)
+      : 0;
+  const showRecusadasBanner = recusadasEnv > lastSeen && !recusadasFechado;
+
+  if (!user || (pendentesRec === 0 && recusadasEnv === 0) || (fechado && !showRecusadasBanner))
     return null;
 
   return (
@@ -87,7 +100,7 @@ export default function GlobalTradeAlert() {
         </div>
       )}
 
-      {recusadasEnv > 0 && !recusadasFechado && (
+      {showRecusadasBanner && (
         <div className="border-b border-red-200/50 bg-red-50/95 p-3 backdrop-blur-md shadow-sm dark:border-red-900/50 dark:bg-red-900/90">
           <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-2 sm:px-6">
             <div className="flex items-center gap-3">
@@ -108,20 +121,21 @@ export default function GlobalTradeAlert() {
               </div>
               <div>
                 <p className="text-sm font-medium text-red-800 dark:text-red-200">
-                  Você tem {recusadasEnv} solicitação{recusadasEnv !== 1 ? "ões" : ""} recusada
-                  {recusadasEnv !== 1 ? "s" : ""}.
+                  Você tem {recusadasEnv - lastSeen} nova{recusadasEnv - lastSeen !== 1 ? "s" : ""}{" "}
+                  solicitação{recusadasEnv - lastSeen !== 1 ? "ões" : ""} recusada
+                  {recusadasEnv - lastSeen !== 1 ? "s" : ""}.
                 </p>
                 <Link
-                  href="/trocas"
-                  onClick={() => setRecusadasFechado(true)}
+                  href="/trocas?aba=recusadas"
+                  onClick={handleDismissRecusadas}
                   className="mt-0.5 inline-block text-xs font-bold text-red-600 hover:text-red-700 underline dark:text-red-400 dark:hover:text-red-300 transition-colors"
                 >
-                  Ver trocas enviadas
+                  Ver trocas recusadas
                 </Link>
               </div>
             </div>
             <button
-              onClick={() => setRecusadasFechado(true)}
+              onClick={handleDismissRecusadas}
               className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-red-600 hover:bg-red-100 dark:text-red-400 dark:hover:bg-red-800/50 transition-colors"
             >
               &times;
