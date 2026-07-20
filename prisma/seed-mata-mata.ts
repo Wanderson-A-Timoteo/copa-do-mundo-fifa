@@ -16,7 +16,6 @@ export async function main() {
     { numFrom: 104, numTo: 104, fase: "FINAL" },
   ];
 
-  let idCounter = 73;
   const partidas = [];
 
   const estadio = await prisma.estadio.findFirst();
@@ -25,7 +24,7 @@ export async function main() {
     for (let i = f.numFrom; i <= f.numTo; i++) {
       partidas.push({
         id: i, // Force ID 73 to 104
-        fase: f.fase as any,
+        fase: f.fase as "SEGUNDAS" | "OITAVAS" | "QUARTAS" | "SEMI" | "TERCEIRO" | "FINAL",
         dataHora: new Date(),
         estadioId: estadio?.id ?? 1,
         encerrada: false,
