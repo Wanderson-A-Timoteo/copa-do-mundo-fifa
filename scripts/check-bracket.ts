@@ -1,5 +1,5 @@
 import { prisma } from "../prisma/lib";
-import { computeBracket } from "../src/lib/compute-bracket";
+import { computeBracket, GrupoStanding } from "../src/lib/compute-bracket";
 import { formatoCopa } from "../src/data/formato-copa";
 import { calcularClassificacao } from "../src/services/palpite.service";
 
@@ -14,7 +14,7 @@ async function main() {
     penaltisVisitante: r.penaltisVisitante
   }));
 
-  const bracket = computeBracket(formatoCopa, grupos as any, palpites);
+  const bracket = computeBracket(formatoCopa, grupos as unknown as GrupoStanding[], palpites);
 
   const groupF = grupos.find(g => g.nome === "Grupo F");
   console.log("=== Grupo F Standings ===");
