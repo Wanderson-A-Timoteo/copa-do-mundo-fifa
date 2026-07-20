@@ -6,6 +6,7 @@ import { IconRepeat, IconBook, IconUser, IconShield } from "@/components/Icons";
 import StickerCard from "@/components/StickerCard";
 import { Skeleton } from "@/components/Skeleton";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import Pagination from "@/components/Pagination";
 import type { TrocaItem, RepetidaGrupo, Aba } from "@/types";
 
@@ -29,6 +30,7 @@ function StatusBadge({ status }: { status: string }) {
 
 export default function TrocasPage() {
   const { user, getAuthHeaders } = useAuth();
+  const { success, error } = useToast();
   const [aba, setAba] = useState<Aba>("disponiveis");
   const [trocas, setTrocas] = useState<TrocaItem[]>([]);
   const [repetidas, setRepetidas] = useState<RepetidaGrupo[]>([]);
@@ -118,8 +120,11 @@ export default function TrocasPage() {
       body: JSON.stringify({ acao: "aceitar" }),
     });
     if (res.ok) {
+      success("Troca aceita com sucesso!");
       carregarTrocas();
       refreshCounts();
+    } else {
+      error("Erro ao aceitar a troca.");
     }
   };
 
@@ -130,8 +135,11 @@ export default function TrocasPage() {
       body: JSON.stringify({ acao: "recusar" }),
     });
     if (res.ok) {
+      error("Proposta recusada."); // Usa o toast vermelho (error) para dar feedback visual de recusa
       carregarTrocas();
       refreshCounts();
+    } else {
+      error("Erro ao recusar a troca.");
     }
   };
 
