@@ -5,6 +5,7 @@ import { FlagIcon } from "@/components/FlagIcon";
 
 import { IconTrophy, IconClock, IconMapPin } from "@/components/Icons";
 import ModalLogin from "@/components/ModalLogin";
+import PlacarCard from "@/components/PlacarCard";
 import { SkeletonMataMata } from "@/components/Skeleton";
 import { formatarData, formatarHora } from "@/lib/format";
 import {
@@ -370,7 +371,9 @@ export default function TabelaMataMataPage() {
         >
           ← Voltar
         </a>
-        <h1 className="mt-2 text-3xl font-bold">Simulador de Mata-Mata</h1>
+        <h1 className="mt-2 text-3xl md:text-4xl font-black tracking-tight bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent dark:from-emerald-400 dark:to-teal-300">
+          Simulador de Mata-Mata
+        </h1>
         <p className="mt-1 text-zinc-500">Simule o chaveamento eliminatório</p>
 
         {!token ? (
@@ -408,7 +411,7 @@ export default function TabelaMataMataPage() {
         ) : (
           <>
             {resultado.classificadosTerceiros.length > 0 && (
-              <div className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="mb-6 rounded-xl border border-zinc-200/50 bg-zinc-100/90 p-3 shadow-sm backdrop-blur-md dark:border-zinc-700/50 dark:bg-zinc-800/90">
                 <h3 className="mb-2 text-sm font-semibold">8 melhores 3º colocados</h3>
                 <div className="flex flex-wrap gap-2">
                   {resultado.classificadosTerceiros.map((s) => (
@@ -437,13 +440,17 @@ export default function TabelaMataMataPage() {
                     const from = layoutNodes.get(fromNum);
                     const to = layoutNodes.get(toNum);
                     if (!from || !to) return null;
+
+                    const pFrom = partidasPorNumero.get(fromNum);
+                    const isResolved = pFrom?.vencedor != null;
+
                     return (
                       <path
                         key={i}
                         d={connectorPath(from, to)}
                         fill="none"
-                        strokeWidth="2"
-                        className="stroke-zinc-300 dark:stroke-zinc-600"
+                        strokeWidth={isResolved ? "3" : "2"}
+                        className={`transition-all duration-500 ${isResolved ? "stroke-emerald-500 dark:stroke-emerald-400 drop-shadow-[0_0_3px_rgba(16,185,129,0.5)]" : "stroke-zinc-300 dark:stroke-zinc-600"}`}
                       />
                     );
                   })}
@@ -493,7 +500,7 @@ export default function TabelaMataMataPage() {
                   return (
                     <div
                       key={num}
-                      className="absolute rounded-lg border border-zinc-200 bg-zinc-100 p-2.5 dark:border-zinc-800 dark:bg-zinc-900"
+                      className="absolute rounded-xl border border-zinc-200/50 bg-zinc-100/90 p-2.5 shadow-sm backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-700/50 dark:bg-zinc-800/90"
                       style={{ left: x, top: y, width: CARD_W, height: CARD_H, zIndex: 1 }}
                     >
                       {p.mandante || p.visitante ? (
@@ -531,7 +538,7 @@ export default function TabelaMataMataPage() {
                                 onChange={(e) =>
                                   handleChange(p.numero, "golsMandante", e.target.value)
                                 }
-                                className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                className={`w-7 rounded border px-0.5 py-0 text-center text-xs focus:border-zinc-500 focus:outline-none bg-white dark:bg-zinc-900 ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700`}
                               />
                             ) : (
                               <span className="w-7 text-center text-xs font-bold">
@@ -570,7 +577,7 @@ export default function TabelaMataMataPage() {
                                 onChange={(e) =>
                                   handleChange(p.numero, "golsVisitante", e.target.value)
                                 }
-                                className={`w-7 rounded border px-0.5 py-0 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                className={`w-7 rounded border px-0.5 py-0 text-center text-xs focus:border-zinc-500 focus:outline-none bg-white dark:bg-zinc-900 ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700`}
                               />
                             ) : (
                               <span className="w-7 text-center text-xs font-bold">
@@ -776,7 +783,7 @@ export default function TabelaMataMataPage() {
                                       onChange={(e) =>
                                         handleChange(p.numero, "penaltisMandante", e.target.value)
                                       }
-                                      className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                      className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] focus:border-zinc-500 focus:outline-none bg-white dark:bg-zinc-900 ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700`}
                                     />
                                     <span className="text-xs text-zinc-400">x</span>
                                     <input
@@ -787,7 +794,7 @@ export default function TabelaMataMataPage() {
                                       onChange={(e) =>
                                         handleChange(p.numero, "penaltisVisitante", e.target.value)
                                       }
-                                      className={`w-7 rounded border px-1 py-0.5 text-center text-xs ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700 dark:bg-zinc-800`}
+                                      className={`w-5 rounded border px-0.5 py-0 text-center text-[10px] focus:border-zinc-500 focus:outline-none bg-white dark:bg-zinc-900 ${salvandoAgora ? "opacity-50" : ""} dark:border-zinc-700`}
                                     />
                                     {p.visitante && (
                                       <FlagIcon
