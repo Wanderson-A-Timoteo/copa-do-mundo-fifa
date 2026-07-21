@@ -27,11 +27,13 @@ export function Footer() {
           </Link>
           <div className="space-y-2 text-sm text-zinc-500 dark:text-zinc-400">
             <p>
-              Aplicação desenvolvida com objetivos educacionais, para o curso técnico em {" "}
-              <strong>Desenvolvimento Full Stack</strong> do <strong>SENAC | SESC Escola Cuiabá</strong>.
+              Aplicação desenvolvida com objetivos educacionais, para o curso técnico em{" "}
+              <strong>Desenvolvimento Full Stack</strong> do{" "}
+              <strong>SENAC | SESC Escola Cuiabá</strong>.
             </p>
             <p className="text-xs">
-              Desenvolvimento e Design: <strong className="block md:inline text-emerald-500">Prof. Wanderson Timóteo</strong>.
+              Desenvolvimento e Design:{" "}
+              <strong className="block md:inline text-emerald-500">Prof. Wanderson Timóteo</strong>.
             </p>
           </div>
         </div>
