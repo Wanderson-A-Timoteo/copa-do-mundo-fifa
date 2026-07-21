@@ -43,9 +43,11 @@ next-env.d.ts
 
 /src/generated/prisma
 
+ARCHITECTURE.md
+
 dead-files.md
 
-dead-files/
+dead-files/*
 
 # VSCode
 .vscode/
